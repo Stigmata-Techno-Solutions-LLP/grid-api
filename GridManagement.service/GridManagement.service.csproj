@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\GridManagement.Model\GridManagement.Model.csproj" />
+    <ProjectReference Include="..\GridManagement.repository\GridManagement.repository.csproj" />
+    <ProjectReference Include="..\GridManagement.common\GridManagement.common.csproj" />
+  </ItemGroup>
+</Project>
