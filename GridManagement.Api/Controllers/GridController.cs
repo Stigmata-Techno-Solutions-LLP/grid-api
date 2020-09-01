@@ -3,9 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-
 using Microsoft.Extensions.Logging;
-
 using GridManagement.service;
 using GridManagement.Model.Dto;
 using Serilog;
@@ -16,7 +14,6 @@ using Microsoft.AspNetCore.Http;
 
 namespace GridManagement.Api.Controllers
 {
-
 
     [ApiController]
     [Route("api/[controller]")]
@@ -29,7 +26,12 @@ namespace GridManagement.Api.Controllers
             _gridService = gridService;
         }
 
+
+#region Grid API endpoints 
+
         [HttpPost]
+        [ProducesResponseType(401)]
+        [ProducesResponseType(201)]        
         [Route("AddGrid")]
         public IActionResult AddGrid(AddGrid model)
         {
@@ -48,7 +50,78 @@ namespace GridManagement.Api.Controllers
             }
         }
 
+
+      
+
+        [ProducesResponseType(401)]
+        [ProducesResponseType(200)]
+        [HttpGet]
+        [Route("GridNoList")]
+        public async Task<ActionResult<List<grid>>> GetGridNoList()
+        {
+            dynamic response = null;
+           return Ok(await response);         
+        }
+
+        [HttpGet]
+        [ProducesResponseType(401)]
+        [ProducesResponseType(200)]        
+        [Route("GridList")]
+        public async Task<ActionResult<List<AddGrid>>> GetGridList(gridFilter gridFilter)
+        {
+            dynamic response = null;
+           return Ok(await response);         
+        }
+
+
+
+        [HttpDelete]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(401)]
+        [Route("DeleteGrid/{id}")]
+        public async Task<IActionResult> DeleteGrid(int id)
+        {
+            dynamic response = null;
+           return Ok(await response);         
+        }
+
+
+         [HttpPut]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(401)]
+        [Route("updateGrid/{id}")]
+        public async Task<IActionResult> EditGrid(AddGrid gridReq)
+        {
+            dynamic response = null;
+           return Ok(await response);         
+        }
+
+#endregion
+
+
+    }
+
+
+    [ApiController]
+    [Route("api/[controller]")]
+    public class LayerController : ControllerBase
+    {
+
+
+private readonly IGridService _gridService;
+
+        public LayerController(IGridService gridService)
+        {
+            _gridService = gridService;
+        }
+#region Layer API endpoints
+
         [HttpPost]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(401)]
+        [ProducesResponseType(201)]
         [Route("AddLayer")]
         public IActionResult AddLayer(AddLayer model)
         {
@@ -65,7 +138,31 @@ namespace GridManagement.Api.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
+
+        [HttpGet]
+        [ProducesResponseType(401)]
+        [ProducesResponseType(200)]        
+        [Route("GetLayerNoList")]
+        public async Task<ActionResult<List<layer>>> GetLayerNoList()
+        {
+            dynamic response = null;
+           return Ok(await response);         
+        }
+
+
+
+
+        [HttpGet]
+        [ProducesResponseType(401)]
+        [ProducesResponseType(200)]        
+        [Route("LayerList")]
+        public async Task<ActionResult<List<AddLayer>>> GetLayerList(gridFilter gridFilter)
+        {
+            dynamic response = null;
+           return Ok(await response);         
+        }
+       
+
+    #endregion
     }
-
-
 }

@@ -5,8 +5,18 @@ namespace GridManagement.Model.Dto
 {
     public class AddUser
     {
+
         [Required]
         [StringLength(100)]
+        [Display(Name = "First Name")]
+        public string firstName { get; set; }
+        
+
+        
+        [Display(Name = "Last Name")]
+        public string lastName { get; set; }
+
+
         [Display(Name = "User Name")]
         public string Username { get; set; }
         

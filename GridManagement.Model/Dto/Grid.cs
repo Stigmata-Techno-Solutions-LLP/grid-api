@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-
+using GridManagement.common;
 namespace GridManagement.Model.Dto
 {
 
@@ -29,15 +29,19 @@ namespace GridManagement.Model.Dto
         public string CG_RFIno { get; set; }
 
         [Display(Name = "RFI Inspection Date")]
+        [DataType(DataType.Date)]
         public string CG_inspection_date { get; set; }
 
 
         [Display(Name = "RFI Approval Date")]
+        [DataType(DataType.Date)]
         public string CG_approval_date { get; set; }
 
 
-        [Display(Name = "RFI Status")]
-        public string CG_RFI_status { get; set; }
+
+        
+[EnumDataType(typeof(commonEnum.CG_RFIStatus), ErrorMessage = "RFI SStatus value doesn't exist within enum")]
+public commonEnum.CG_RFIStatus CG_RFI_status { get; set;}
 
         [Required]
         public List<GridGeoLocation> gridGeoLocation { get; set;}
@@ -53,5 +57,25 @@ namespace GridManagement.Model.Dto
         [Required]
         [Display(Name = "Longitide Value")]
         public decimal longitude { get; set; }
+    }
+
+    public class grid {
+        public int Id{get;set;}
+        public string gridNo{get;set;}
+    }
+
+    public class gridFilter {
+        public  string gridId {get;set;}
+
+        public  string gridNo {get;set;}
+        public bool status { get; set; }
+
+        [Display(Name = "RFI No")]
+        public string CG_RFIno { get; set; }
+
+                
+        [EnumDataType(typeof(commonEnum.CG_RFIStatus), ErrorMessage = "RFI SStatus value doesn't exist within enum")]
+        public commonEnum.CG_RFIStatus CG_RFI_status { get; set;}
+
     }
 }

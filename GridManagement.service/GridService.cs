@@ -13,7 +13,6 @@ using System.IO;
 using GridManagement.common;
 namespace GridManagement.service
 {
-  
 
     public class GridService : IGridService
     {
