@@ -57,7 +57,7 @@ namespace GridManagement.Api.Controllers
         [ProducesResponseType(200)]
         [HttpGet]
         [Route("GridNoList")]
-        public async Task<ActionResult<List<grid>>> GetGridNoList()
+        public async Task<ActionResult<List<GridNo>>> GetGridNoList()
         {
             dynamic response = null;
            return Ok(await response);         
@@ -143,20 +143,18 @@ private readonly IGridService _gridService;
         [ProducesResponseType(401)]
         [ProducesResponseType(200)]        
         [Route("GetLayerNoList")]
-        public async Task<ActionResult<List<layer>>> GetLayerNoList()
+        public async Task<ActionResult<List<LayerNo>>> GetLayerNoList()
         {
             dynamic response = null;
            return Ok(await response);         
         }
 
 
-
-
         [HttpGet]
         [ProducesResponseType(401)]
         [ProducesResponseType(200)]        
         [Route("LayerList")]
-        public async Task<ActionResult<List<AddLayer>>> GetLayerList(gridFilter gridFilter)
+        public async Task<ActionResult<List<AddLayer>>> GetLayerList(layerFilter gridFilter)
         {
             dynamic response = null;
            return Ok(await response);         
@@ -165,4 +163,85 @@ private readonly IGridService _gridService;
 
     #endregion
     }
+
+
+
+
+
+    [ApiController]
+    [Route("api/[controller]")]
+    public class SubContController : ControllerBase
+    {
+
+
+private readonly IGridService _gridService;
+
+        public SubContController(IGridService gridService)
+        {
+            _gridService = gridService;
+        }
+#region SubContractor API endpoints
+
+        [HttpPost]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(401)]
+        [ProducesResponseType(201)]
+        [Route("AddSubcontractor")]
+        public IActionResult AddSubCont(AddSubContractor model)
+        {
+            try
+            {
+                return Ok(null);
+            }
+            catch (Exception ex)
+            {
+                Log.Logger.Error(ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+
+         [HttpPut]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(401)]
+        [ProducesResponseType(204)]
+        [Route("UpdateSubcontractor/{Id}")]
+        public IActionResult UpdateSubCont(AddSubContractor model)
+        {
+            try
+            {
+                return Ok(null);
+            }
+            catch (Exception ex)
+            {
+                Log.Logger.Error(ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+
+        [HttpGet]
+        [ProducesResponseType(401)]
+        [ProducesResponseType(200)]        
+        [Route("GetSubContractorList")]
+        public async Task<ActionResult<List<SubContractorDetails>>> GetSubContractorList()
+        {
+            dynamic response = null;
+           return Ok(await response);         
+        }
+
+
+        
+        [HttpDelete]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(401)]
+        [Route("DeleteSubCont/{id}")]
+        public async Task<IActionResult> DeleteSubCont(int id)
+        {
+            dynamic response = null;
+           return Ok(await response);         
+        }       
+
+    #endregion
+    }
+
 }

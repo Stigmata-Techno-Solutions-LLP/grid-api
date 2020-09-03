@@ -30,9 +30,7 @@ namespace GridManagement.Api.Extensions
                     .ReverseMap();
         
                 CreateMap<AddGrid, Grids>()
-                    .ForMember(dest =>
-                        dest.Id,
-                        opt => opt.MapFrom(src => src.gridId))
+                   
                     .ForMember(dest =>
                         dest.CgRfino,
                         opt => opt.MapFrom(src => src.CG_RFIno))
@@ -56,9 +54,7 @@ namespace GridManagement.Api.Extensions
 
 
         CreateMap<AddLayer, LayerDetails>()
-                    .ForMember(dest =>
-                        dest.Id,
-                        opt => opt.MapFrom(src => src.layerDtlsId))
+                    
                     .ForMember(dest =>
                         dest.GridId,
                         opt => opt.MapFrom(src => src.gridId))

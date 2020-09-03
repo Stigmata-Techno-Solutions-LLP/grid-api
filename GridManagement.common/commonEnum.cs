@@ -4,18 +4,25 @@ namespace GridManagement.common
     {
         public enum CG_RFIStatus {
 New ,
-InProgress,
 Completed
 
         }
         public enum LV_RFIStatus {
 New ,
-InProgress,
 Completed
         }
         public enum CT_RFIStatus{
 New ,
-InProgress,
+Completed
+        }
+
+              public enum GridStatus{
+New ,
+Completed
+        }
+
+              public enum LayerStatus{
+New ,
 Completed
         }
     }

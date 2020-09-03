@@ -40,8 +40,10 @@ namespace GridManagement.Api.Controllers
         }
 
 
-
-       [HttpPost]
+        [HttpPost]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(401)]
+        [ProducesResponseType(201)]
        [Route("AddUser")]
         public IActionResult AddUser(AddUser model)
         {
@@ -60,5 +62,80 @@ namespace GridManagement.Api.Controllers
             }
         }
 
+         [HttpPut]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(401)]
+        [ProducesResponseType(204)]
+        [Route("UpdateUser/{Id}")]
+        public IActionResult UpdateSubCont(UpdateUser model)
+        {
+            try
+            {
+                return Ok(null);
+            }
+            catch (Exception ex)
+            {
+                Log.Logger.Error(ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+
+      
+
+
+        [HttpGet]
+        [ProducesResponseType(401)]
+        [ProducesResponseType(200)]        
+        [Route("UsersList")]
+        public async Task<ActionResult<List<UserDetails>>> GetUserList(UserFilter userFilterModel)
+        {
+            dynamic response = null;
+           return Ok(await response);         
+        }
+       
+        
+        [HttpDelete]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(401)]
+        [Route("DeActivateUser/{id}")]
+        public async Task<IActionResult> DeActivateUser(int id)
+        {
+            dynamic response = null;
+           return Ok(await response);         
+        }   
+
+        [HttpPut]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(401)]
+        [Route("CahngePassword")]
+        public async Task<IActionResult> changePassword(ChangePassword chngePassword)
+        {
+            dynamic response = null;
+           return Ok(await response);         
+        }   
+
+         [HttpGet]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(401)]
+        [Route("ForgotPassword")]
+        public async Task<IActionResult> ForgotPassword(ForgotPassword forgotPw)
+        {
+            dynamic response = null;
+           return Ok(await response);         
+        }   
+        [HttpGet]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(401)]
+        [Route("CheckUsernameAndMailId")]
+         public async Task<ActionResult <Boolean>> CheckUsernameMailId(UsernameVerification userDetails)
+        {
+            dynamic response = null;
+           return Ok(await response);         
+        }
+       
     }
 }

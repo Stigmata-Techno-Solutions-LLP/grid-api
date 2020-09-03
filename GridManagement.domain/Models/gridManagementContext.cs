@@ -6,7 +6,6 @@ namespace GridManagement.domain.Models
 {
     public partial class gridManagementContext : DbContext
     {
-
         public gridManagementContext(DbContextOptions<gridManagementContext> options)
             : base(options)
         {
@@ -121,10 +120,6 @@ namespace GridManagement.domain.Models
                     .HasMaxLength(100)
                     .IsUnicode(false);
 
-                entity.Property(e => e.IsActive)
-                    .HasColumnName("is_active")
-                    .HasDefaultValueSql("((0))");
-
                 entity.Property(e => e.Mobile)
                     .HasColumnName("mobile")
                     .HasMaxLength(15)
@@ -164,7 +159,7 @@ namespace GridManagement.domain.Models
                 entity.ToTable("grids");
 
                 entity.HasIndex(e => e.Gridno)
-                    .HasName("UQ__grids__4FA6C35D6F34C4EE")
+                    .HasName("UQ__grids__4FA6C35D754EE88E")
                     .IsUnique();
 
                 entity.Property(e => e.Id).HasColumnName("id");
@@ -286,19 +281,11 @@ namespace GridManagement.domain.Models
 
                 entity.Property(e => e.GridId).HasColumnName("grid_id");
 
-                entity.Property(e => e.IsActive)
-                    .HasColumnName("is_active")
-                    .HasDefaultValueSql("((1))");
-
                 entity.Property(e => e.IsBillGenerated)
                     .HasColumnName("isBillGenerated")
                     .HasDefaultValueSql("((0))");
 
-                entity.Property(e => e.LayerId)
-                    .IsRequired()
-                    .HasColumnName("layer_id")
-                    .HasMaxLength(20)
-                    .IsUnicode(false);
+                entity.Property(e => e.LayerId).HasColumnName("layer_id");
 
                 entity.Property(e => e.LvApprovalDate)
                     .HasColumnName("LV_approval_date")
@@ -352,6 +339,12 @@ namespace GridManagement.domain.Models
                     .HasForeignKey(d => d.GridId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("layer__gridId__fkey");
+
+                entity.HasOne(d => d.Layer)
+                    .WithMany(p => p.LayerDetails)
+                    .HasForeignKey(d => d.LayerId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("layerDtls__layerId__fkey");
 
                 entity.HasOne(d => d.UpdatedByNavigation)
                     .WithMany(p => p.LayerDetailsUpdatedByNavigation)
@@ -415,7 +408,7 @@ namespace GridManagement.domain.Models
                 entity.ToTable("layers");
 
                 entity.HasIndex(e => e.Layerno)
-                    .HasName("UQ__layers__91C38FFCEEC7F641")
+                    .HasName("UQ__layers__91C38FFC9ECC9F50")
                     .IsUnique();
 
                 entity.Property(e => e.Id).HasColumnName("id");
@@ -500,10 +493,15 @@ namespace GridManagement.domain.Models
                 entity.ToTable("subcontractors");
 
                 entity.HasIndex(e => e.Code)
-                    .HasName("UQ__subcontr__357D4CF94101143A")
+                    .HasName("UQ__subcontr__357D4CF98D497620")
                     .IsUnique();
 
                 entity.Property(e => e.Id).HasColumnName("id");
+
+                entity.Property(e => e.Address)
+                    .HasColumnName("address")
+                    .HasMaxLength(2000)
+                    .IsUnicode(false);
 
                 entity.Property(e => e.Code)
                     .IsRequired()
@@ -527,10 +525,6 @@ namespace GridManagement.domain.Models
                     .HasColumnName("email")
                     .HasMaxLength(100)
                     .IsUnicode(false);
-
-                entity.Property(e => e.IsActive)
-                    .HasColumnName("is_active")
-                    .HasDefaultValueSql("((0))");
 
                 entity.Property(e => e.Mobile)
                     .HasColumnName("mobile")
@@ -576,7 +570,7 @@ namespace GridManagement.domain.Models
                 entity.ToTable("users");
 
                 entity.HasIndex(e => e.Email)
-                    .HasName("UQ__users__AB6E6164E0ED8F48")
+                    .HasName("UQ__users__AB6E61641B97A662")
                     .IsUnique();
 
                 entity.Property(e => e.Id).HasColumnName("id");
@@ -594,14 +588,29 @@ namespace GridManagement.domain.Models
                     .HasMaxLength(100)
                     .IsUnicode(false);
 
+                entity.Property(e => e.FirstName)
+                    .HasColumnName("first_name")
+                    .HasMaxLength(100)
+                    .IsUnicode(false);
+
                 entity.Property(e => e.IsActive)
                     .HasColumnName("is_active")
                     .HasDefaultValueSql("((0))");
 
+                entity.Property(e => e.LastName)
+                    .HasColumnName("last_name")
+                    .HasMaxLength(100)
+                    .IsUnicode(false);
+
                 entity.Property(e => e.Password)
                     .IsRequired()
                     .HasColumnName("password")
-                    .HasMaxLength(200)
+                    .HasMaxLength(500)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Phoneno)
+                    .HasColumnName("phoneno")
+                    .HasMaxLength(15)
                     .IsUnicode(false);
 
                 entity.Property(e => e.UpdatedAt)

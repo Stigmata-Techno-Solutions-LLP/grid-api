@@ -17,7 +17,7 @@ namespace GridManagement.domain.Models
         public string ContactName { get; set; }
         public string Email { get; set; }
         public string Mobile { get; set; }
-        public bool? IsActive { get; set; }
+        public string Address { get; set; }
         public DateTime? CreatedAt { get; set; }
         public int? CreatedBy { get; set; }
 

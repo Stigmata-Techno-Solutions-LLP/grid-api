@@ -15,7 +15,6 @@ namespace GridManagement.domain.Models
         public string CompanyName { get; set; }
         public string Email { get; set; }
         public string Mobile { get; set; }
-        public bool? IsActive { get; set; }
 
         public virtual ICollection<ClientBilling> ClientBilling { get; set; }
     }

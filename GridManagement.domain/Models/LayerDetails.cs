@@ -13,7 +13,7 @@ namespace GridManagement.domain.Models
 
         public int Id { get; set; }
         public int GridId { get; set; }
-        public string LayerId { get; set; }
+        public int LayerId { get; set; }
         public DateTime? FillingDate { get; set; }
         public string FillingMaterial { get; set; }
         public decimal? AreaLayer { get; set; }
@@ -31,7 +31,6 @@ namespace GridManagement.domain.Models
         public DateTime? LvApprovalDate { get; set; }
         public string LvRfiStatus { get; set; }
         public bool? IsBillGenerated { get; set; }
-        public bool? IsActive { get; set; }
         public DateTime? CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
         public int? CreatedBy { get; set; }
@@ -39,6 +38,7 @@ namespace GridManagement.domain.Models
 
         public virtual Users CreatedByNavigation { get; set; }
         public virtual Grids Grid { get; set; }
+        public virtual Layers Layer { get; set; }
         public virtual Users UpdatedByNavigation { get; set; }
         public virtual ICollection<LayerDocuments> LayerDocuments { get; set; }
         public virtual ICollection<LayerSubcontractors> LayerSubcontractors { get; set; }
