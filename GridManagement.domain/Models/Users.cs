@@ -27,6 +27,7 @@ namespace GridManagement.domain.Models
         public string Email { get; set; }
         public int? RoleId { get; set; }
         public bool? IsActive { get; set; }
+        public bool? IsDelete { get; set; }
         public DateTime? CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
         public int? CreatedBy { get; set; }
