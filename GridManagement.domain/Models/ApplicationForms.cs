@@ -17,7 +17,6 @@ namespace GridManagement.domain.Models
         public bool? IsUpdate { get; set; }
         public bool? IsDelete { get; set; }
         public bool? IsView { get; set; }
-        public bool? IsViewOnly { get; set; }
 
         public virtual ICollection<RolesApplicationforms> RolesApplicationforms { get; set; }
     }
