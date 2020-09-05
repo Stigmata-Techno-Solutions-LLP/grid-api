@@ -6,6 +6,7 @@ namespace GridManagement.domain.Models
 {
     public partial class gridManagementContext : DbContext
     {
+    
 
         public gridManagementContext(DbContextOptions<gridManagementContext> options)
             : base(options)
@@ -61,8 +62,6 @@ namespace GridManagement.domain.Models
                 entity.Property(e => e.IsUpdate).HasColumnName("isUpdate");
 
                 entity.Property(e => e.IsView).HasColumnName("isView");
-
-                entity.Property(e => e.IsViewOnly).HasColumnName("isViewOnly");
 
                 entity.Property(e => e.Name)
                     .IsRequired()
@@ -209,7 +208,7 @@ namespace GridManagement.domain.Models
                 entity.ToTable("grids");
 
                 entity.HasIndex(e => e.Gridno)
-                    .HasName("UQ__grids__4FA6C35DAF89CFE6")
+                    .HasName("UQ__grids__4FA6C35D0184446D")
                     .IsUnique();
 
                 entity.Property(e => e.Id).HasColumnName("id");
@@ -458,7 +457,7 @@ namespace GridManagement.domain.Models
                 entity.ToTable("layers");
 
                 entity.HasIndex(e => e.Layerno)
-                    .HasName("UQ__layers__91C38FFC8A4A6FF3")
+                    .HasName("UQ__layers__91C38FFC7438194F")
                     .IsUnique();
 
                 entity.Property(e => e.Id).HasColumnName("id");
@@ -514,6 +513,14 @@ namespace GridManagement.domain.Models
 
                 entity.Property(e => e.FormId).HasColumnName("form_id");
 
+                entity.Property(e => e.IsAdd).HasColumnName("isAdd");
+
+                entity.Property(e => e.IsDelete).HasColumnName("isDelete");
+
+                entity.Property(e => e.IsUpdate).HasColumnName("isUpdate");
+
+                entity.Property(e => e.IsView).HasColumnName("isView");
+
                 entity.Property(e => e.RoleId).HasColumnName("role_id");
 
                 entity.HasOne(d => d.Form)
@@ -534,7 +541,7 @@ namespace GridManagement.domain.Models
                 entity.ToTable("subcontractors");
 
                 entity.HasIndex(e => e.Code)
-                    .HasName("UQ__subcontr__357D4CF99504681F")
+                    .HasName("UQ__subcontr__357D4CF98B4C4C3F")
                     .IsUnique();
 
                 entity.Property(e => e.Id).HasColumnName("id");
@@ -600,11 +607,11 @@ namespace GridManagement.domain.Models
                 entity.ToTable("users");
 
                 entity.HasIndex(e => e.Email)
-                    .HasName("UQ__users__AB6E61649CEA3475")
+                    .HasName("UQ__users__AB6E6164E1914CAF")
                     .IsUnique();
 
                 entity.HasIndex(e => e.Username)
-                    .HasName("UQ__users__F3DBC572303A4EC8")
+                    .HasName("UQ__users__F3DBC5729B5CBF10")
                     .IsUnique();
 
                 entity.Property(e => e.Id).HasColumnName("id");
@@ -629,6 +636,10 @@ namespace GridManagement.domain.Models
 
                 entity.Property(e => e.IsActive)
                     .HasColumnName("is_active")
+                    .HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.IsDelete)
+                    .HasColumnName("is_delete")
                     .HasDefaultValueSql("((0))");
 
                 entity.Property(e => e.LastName)
