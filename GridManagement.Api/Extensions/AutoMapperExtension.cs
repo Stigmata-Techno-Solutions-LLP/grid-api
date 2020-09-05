@@ -51,7 +51,32 @@ namespace GridManagement.Api.Extensions
                         opt => opt.MapFrom(src => src.user_id))
                     .ReverseMap();
             
-
+  CreateMap<Grids, GridDetails>()
+                     .ForMember(dest =>
+                        dest.gridId,
+                        opt => opt.MapFrom(src => src.Id))
+                    .ForMember(dest =>
+                        dest.CG_RFIno,
+                        opt => opt.MapFrom(src => src.CgRfino))
+                    .ForMember(dest =>
+                        dest.CG_RFI_status,
+                        opt => opt.MapFrom(src => src.CgRfiStatus))
+                    .ForMember(dest =>
+                        dest.CG_inspection_date,
+                        opt => opt.MapFrom(src => src.CgInspectionDate))
+                    .ForMember(dest =>
+                        dest.CG_approval_date,
+                        opt => opt.MapFrom(src => src.CgApprovalDate))
+                    .ForMember(dest =>
+                        dest.grid_area,
+                        opt => opt.MapFrom(src => src.GridArea))
+                     .ForMember(dest =>
+                        dest.createdBy,
+                        opt => opt.MapFrom(src => src.CreatedByNavigation.CreatedBy))
+                        .ForMember(dest =>
+                        dest.updatedBy,
+                        opt => opt.MapFrom(src => src.UpdatedByNavigation.UpdatedBy));
+            
 
         CreateMap<AddLayer, LayerDetails>()
                     
@@ -155,10 +180,16 @@ namespace GridManagement.Api.Extensions
                         opt => opt.MapFrom(src => src.Mobile))
                         .ForMember(dest =>
                         dest.createdBy,
-                        opt => opt.MapFrom(src => src.CreatedBy)) 
+                        opt => opt.MapFrom(src => src.CreatedByNavigation.Username)) 
                         .ForMember(dest =>
                         dest.createdDate,
-                        opt => opt.MapFrom(src => src.CreatedAt));                   
+                        opt => opt.MapFrom(src => src.CreatedAt))
+                        .ForMember(dest =>
+                        dest.updatedBy,
+                        opt => opt.MapFrom(src => src.UpdatedByNavigation.Username)) 
+                        .ForMember(dest =>
+                        dest.updatedDate,
+                        opt => opt.MapFrom(src => src.UpdateAt));                       
         
     }
 }

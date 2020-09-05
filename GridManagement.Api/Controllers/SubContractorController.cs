@@ -55,7 +55,7 @@ private readonly ISubContService _subContService;
              try
             {
                 var response = _subContService.UpdateSubCont(model, Id);
-                if (response == false) return BadRequest(new { message = "SubContractor doesn't exists" });
+                if (response == false) return BadRequest(new { message = "SubContractorId doesn't exists or SubcontractorCode alredy exists" });
                 return  StatusCode(204);
             }
             catch (Exception ex)
@@ -93,6 +93,7 @@ private readonly ISubContService _subContService;
         {
             try {
            var response = _subContService.DeleteSubCont(id);
+            if (response == false) return BadRequest(new { message = "SubContractorId doesn't exists" });
            return  StatusCode(204);                  
              }
             catch (Exception ex)

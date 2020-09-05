@@ -48,14 +48,21 @@ namespace GridManagement.repository
         {
             try
             {
-                if (_context.Subcontractors.Where(x => x.Id == Id).Count() > 0)
-                {
-                    return false;
-                }
-                Subcontractors subCont = _mapper.Map<Subcontractors>(subContReq);
-                //will add updateby field
-                // subCont. = subContReq.user_id;
-               _context.Subcontractors.Update(subCont);
+                Subcontractors subCont = _context.Subcontractors.Where(x => x.Id == Id).FirstOrDefault();
+                if (subCont == null ) return false;
+                
+             if ( _context.Subcontractors.Where(x => x.Code == subContReq.code && x.Id != Id).Count() >0 ) return false;
+                if (subCont == null ) return false;
+                
+                // subCont = _mapper.Map<Subcontractors>(subContReq);
+                subCont.Email = subContReq.email;
+                subCont.Mobile = subContReq.phone;
+                subCont.Name = subContReq.name;
+            subCont.Code = subContReq.code;
+            subCont.ContactName = subContReq.contact_person;
+            subCont.Address = subContReq.contact_address;
+                subCont.UpdatedBy= subContReq.user_id;  
+                            //    _context.Entry(subCont).State = EntityState.Modified;            
                 _context.SaveChanges();             
                 return true;
             }
@@ -68,8 +75,12 @@ namespace GridManagement.repository
         public bool DeleteSubContractor(int Id)
         {
             try
-            {                     
-                _context.Remove(_context.Subcontractors.Where(x=>x.Id == Id));          
+            {                    
+               Subcontractors subCon =  _context.Subcontractors.Where(x=>x.Id == Id).FirstOrDefault(); 
+
+               if (subCon == null) return false;
+                _context.Remove(subCon);  
+                 _context.SaveChanges();        
                 return true;
             }
             catch (Exception ex)
@@ -82,9 +93,12 @@ namespace GridManagement.repository
         {
             try
             {     
-                List<Subcontractors> lstSubCont = new List<Subcontractors>();
-                lstSubCont  = _context.Subcontractors.ToList();             
-                List<SubContractorDetails> lstSubContDetails = _mapper.Map<List<SubContractorDetails>>(lstSubCont);
+
+                var res = _context.Subcontractors
+        .Include(c => c.CreatedByNavigation)
+        .ToList();
+          List<SubContractorDetails> lstSubContDetails = _mapper.Map<List<SubContractorDetails>>(res);
+
                 return lstSubContDetails;
             }
             catch (Exception ex)

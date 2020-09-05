@@ -67,10 +67,17 @@ namespace GridManagement.Api.Controllers
         [ProducesResponseType(401)]
         [ProducesResponseType(200)]        
         [Route("GridList")]
-        public async Task<ActionResult<List<AddGrid>>> GetGridList(gridFilter gridFilter)
+        public async Task<ActionResult<List<AddGrid>>> GetGridList()
         {
-            dynamic response = null;
-           return Ok(await response);         
+              try {
+           var response =  _gridService.GetGridList();
+           return Ok(response); 
+            }
+            catch (Exception ex)
+            {
+                Log.Logger.Error(ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }        
         }
 
 
@@ -82,8 +89,16 @@ namespace GridManagement.Api.Controllers
         [Route("DeleteGrid/{id}")]
         public async Task<IActionResult> DeleteGrid(int id)
         {
-            dynamic response = null;
-           return Ok(await response);         
+             try {
+           var response = _gridService.DeleteGrid(id);
+            if (response == false) return BadRequest(new { message = "GridId doesn't exists" });
+           return  StatusCode(204);                  
+             }
+            catch (Exception ex)
+            {
+                Log.Logger.Error(ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }       
         }
 
 
@@ -92,10 +107,19 @@ namespace GridManagement.Api.Controllers
         [ProducesResponseType(404)]
         [ProducesResponseType(401)]
         [Route("updateGrid/{id}")]
-        public async Task<IActionResult> EditGrid(AddGrid gridReq)
+        public async Task<IActionResult> EditGrid(AddGrid gridReq, int id)
         {
-            dynamic response = null;
-           return Ok(await response);         
+           try
+            {
+                var response = _gridService.UpdateGrid(gridReq, id);
+                if (response == false) return BadRequest(new { message = "GridId doesn't exists or new GridNo alredy exists" });
+                return  StatusCode(204);
+            }
+            catch (Exception ex)
+            {
+                Log.Logger.Error(ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }     
         }
 
 #endregion

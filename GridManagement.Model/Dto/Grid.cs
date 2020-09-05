@@ -95,6 +95,8 @@ namespace GridManagement.Model.Dto
         public List<GridGeoLocation> gridGeoLocation { get; set;}
         public DateTime createdAt {get;set;}
         public DateTime updatedAt {get;set;}
+          public string createdBy {get;set;}
+        public string updatedBy {get;set;}
 
     }
 
