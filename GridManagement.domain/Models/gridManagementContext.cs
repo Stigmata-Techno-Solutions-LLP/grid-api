@@ -6,9 +6,6 @@ namespace GridManagement.domain.Models
 {
     public partial class gridManagementContext : DbContext
     {
-        public gridManagementContext()
-        {
-        }
 
         public gridManagementContext(DbContextOptions<gridManagementContext> options)
             : base(options)
