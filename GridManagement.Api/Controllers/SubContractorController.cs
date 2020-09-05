@@ -36,7 +36,7 @@ private readonly ISubContService _subContService;
             {
                 var response = _subContService.AddSubCont(model);
                  if (response == false) return BadRequest(new { message = "SubContractor Codeno. already exists" });
-                return Ok();
+                return  StatusCode(201);
             }
             catch (Exception ex)
             {
@@ -56,7 +56,7 @@ private readonly ISubContService _subContService;
             {
                 var response = _subContService.UpdateSubCont(model, Id);
                 if (response == false) return BadRequest(new { message = "SubContractor doesn't exists" });
-                return Ok();
+                return  StatusCode(204);
             }
             catch (Exception ex)
             {
@@ -93,8 +93,7 @@ private readonly ISubContService _subContService;
         {
             try {
            var response = _subContService.DeleteSubCont(id);
-           return Ok();     
-             
+           return  StatusCode(204);                  
              }
             catch (Exception ex)
             {
