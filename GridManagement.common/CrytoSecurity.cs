@@ -91,7 +91,7 @@ namespace GridManagement.common
                 }
                 catch (Exception ex)
                 {
-                    return String.Empty;
+                    return ex.Message;
                 }
 
                 cipher.Clear();

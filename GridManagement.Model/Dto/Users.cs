@@ -130,8 +130,12 @@ namespace GridManagement.Model.Dto
         public int userId { get; set; }
         public string userName {get;set;}
 
+        public string password {get;set;}
+
         public string roleName { get; set; }    
         public int roleId {get;set;}
+
+        public bool isActive {get;set;}
 
      }
     
@@ -140,7 +144,6 @@ namespace GridManagement.Model.Dto
      public class UserFilter {
         public int userId { get; set; }
         public string userName {get;set;}
-
         public string roleName { get; set; }    
         public int roleId {get;set;}
 

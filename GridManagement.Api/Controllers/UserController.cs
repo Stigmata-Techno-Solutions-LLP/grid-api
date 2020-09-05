@@ -1,141 +1,95 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-
-using Microsoft.Extensions.Logging;
-
 using GridManagement.service;
 using GridManagement.Model.Dto;
 using Serilog;
-using System.Net;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authorization;
 
 // For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace GridManagement.Api.Controllers
 {
-
+    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class UserController : ControllerBase
     {
-        private readonly IAuthService _authService;
+        private readonly IUserService _userService;
 
-        public UserController (IAuthService authService)
+        public UserController(IUserService userService)
         {
-            _authService = authService;
-        }
-       
-        [HttpPost("authenticate")]
-        public IActionResult Authenticate(AuthenticateRequest model)
-        {
-            var response = _authService.Authenticate(model);
-
-            if (response == null)
-                return BadRequest(new { message = "Username or password is incorrect" });
-
-            return Ok(response);
+            _userService = userService;
         }
 
-
-        [HttpPost]
-        [ProducesResponseType(404)]
-        [ProducesResponseType(401)]
-        [ProducesResponseType(201)]
-       [Route("AddUser")]
-        public IActionResult AddUser(AddUser model)
+        [HttpGet("getuser")]
+        public IActionResult GetUser()
         {
             try
             {
-                var response = _authService.insertNewUser(model);
-                if (response == false) return BadRequest(new { message = "Email already exists" });
-
-                return Ok(response);
+                var response = _userService.getUser();
+                if (response == null)
+                    return BadRequest(new { message = "No records found", isAPIValid = false });
+                return Ok(new { response = response, isAPIVaid = true });
             }
             catch (Exception ex)
             {
                 Log.Logger.Error(ex.Message);
-               // return StatusCode InternalServerError(ex.Message);
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+                return BadRequest(new { message = "Something went wrong", isAPIValid = false });
             }
         }
 
-         [HttpPut]
-        [ProducesResponseType(404)]
-        [ProducesResponseType(401)]
-        [ProducesResponseType(204)]
-        [Route("UpdateUser/{Id}")]
-        public IActionResult UpdateSubCont(UpdateUser model)
+        [HttpPost("adduser")]
+        public IActionResult AddUser(UserDetails userDetails)
         {
             try
             {
-                return Ok(null);
+                var response = _userService.AddUser(userDetails);
+                if (response == null)
+                    return BadRequest(new { message = "Error in adding the user", isAPIValid = false });
+                return Ok(new { response = response, isAPIVaid = true });
             }
             catch (Exception ex)
             {
                 Log.Logger.Error(ex.Message);
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+                return BadRequest(new { message = "Something went wrong", isAPIValid = false });
             }
         }
 
-      
-
-
-        [HttpGet]
-        [ProducesResponseType(401)]
-        [ProducesResponseType(200)]        
-        [Route("UsersList")]
-        public async Task<ActionResult<List<UserDetails>>> GetUserList(UserFilter userFilterModel)
+        [HttpPut("updateuser")]
+        public IActionResult UpdateUser(UserDetails userDetails)
         {
-            dynamic response = null;
-           return Ok(await response);         
+            try
+            {
+                var response = _userService.UpdateUser(userDetails);
+                if (response == null)
+                    return BadRequest(new { message = "Error in updating the user", isAPIValid = false });
+                return Ok(new { response = response, isAPIVaid = true });
+            }
+            catch (Exception ex)
+            {
+                Log.Logger.Error(ex.Message);
+                return BadRequest(new { message = "Something went wrong", isAPIValid = false });
+            }
         }
-       
-        
-        [HttpDelete]
-        [ProducesResponseType(204)]
-        [ProducesResponseType(404)]
-        [ProducesResponseType(401)]
-        [Route("DeActivateUser/{id}")]
-        public async Task<IActionResult> DeActivateUser(int id)
-        {
-            dynamic response = null;
-           return Ok(await response);         
-        }   
 
-        [HttpPut]
-        [ProducesResponseType(204)]
-        [ProducesResponseType(404)]
-        [ProducesResponseType(401)]
-        [Route("CahngePassword")]
-        public async Task<IActionResult> changePassword(ChangePassword chngePassword)
-        {
-            dynamic response = null;
-           return Ok(await response);         
-        }   
-
-         [HttpGet]
-        [ProducesResponseType(204)]
-        [ProducesResponseType(404)]
-        [ProducesResponseType(401)]
-        [Route("ForgotPassword")]
-        public async Task<IActionResult> ForgotPassword(ForgotPassword forgotPw)
-        {
-            dynamic response = null;
-           return Ok(await response);         
-        }   
-        [HttpGet]
-        [ProducesResponseType(204)]
-        [ProducesResponseType(404)]
-        [ProducesResponseType(401)]
-        [Route("CheckUsernameAndMailId")]
-         public async Task<ActionResult <Boolean>> CheckUsernameMailId(UsernameVerification userDetails)
-        {
-            dynamic response = null;
-           return Ok(await response);         
-        }
-       
+        // [HttpDelete("deleteuser")]
+        // public IActionResult UpdateUser(UserDetails userDetails)
+        // {
+        //     try
+        //     {
+        //         var response = _userService.UpdateUser(userDetails);
+        //         if (response == null)
+        //             return BadRequest(new { message = "Error in updating the user", isAPIValid = false });
+        //         return Ok(new { response = response, isAPIVaid = true });
+        //     }
+        //     catch (Exception ex)
+        //     {
+        //         Log.Logger.Error(ex.Message);
+        //         return BadRequest(new { message = "Something went wrong", isAPIValid = false });
+        //     }
+        // }
     }
 }

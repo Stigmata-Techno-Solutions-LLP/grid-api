@@ -1,9 +1,10 @@
-﻿using System.Collections.Generic;
 using GridManagement.Model.Dto;
+using System;
+using System.Collections.Generic;
 
-namespace GridManagement.repository
+namespace GridManagement.service
 {
-    public interface IUserRepository
+    public interface IUserService
     {
         List<UserDetails> getUser();
         ResponseMessage AddUser(UserDetails userDetails);

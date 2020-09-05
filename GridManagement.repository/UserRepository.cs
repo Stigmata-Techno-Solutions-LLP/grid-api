@@ -1,64 +1,134 @@
 ﻿using System;
 using GridManagement.domain.Models;
+using System.Collections.Generic;
 using GridManagement.Model.Dto;
 using Microsoft.EntityFrameworkCore;
 using AutoMapper;
 using System.Linq;
 
-using System.Threading.Tasks;
-
 namespace GridManagement.repository
 {
 
-    public class UserRepository: IUserRepository
+    public class UserRepository : IUserRepository
     {
         private readonly gridManagementContext _context;
         private readonly IMapper _mapper;
 
-        public UserRepository(gridManagementContext context,IMapper mapper)
+        public UserRepository(gridManagementContext context, IMapper mapper)
         {
             _context = context;
             _mapper = mapper;
         }
 
-        public async Task<AuthenticateResponse> ValidateUser(AuthenticateRequest userReq)
+        public List<UserDetails> getUser()
         {
-           Users user  = await _context.Users.FirstOrDefaultAsync(x => x.Email == userReq.Username && x.Password == userReq.Password);
-           return _mapper.Map<AuthenticateResponse>(user);          
+            List<UserDetails> result = new List<UserDetails>();
+            var users = _context.Users.Where(x => x.IsActive == true).ToList();
+            result = _mapper.Map<List<UserDetails>>(users);
+            return result;
         }
 
-
-        public bool InsertNewUser(AddUser userReq)
+        public ResponseMessage AddUser(UserDetails userDetails)
         {
+            ResponseMessage responseMessage = new ResponseMessage();
             try
             {
-                var data = _context.Users.Where(x => x.Email == userReq.email).FirstOrDefault();
-
-                if (_context.Users.Where(x => x.Email == userReq.email).Count()>0)
+                if (_context.Users.Where(x => x.Email == userDetails.email).Count() > 0)
                 {
-                    return false;
+                    return responseMessage = new ResponseMessage()
+                    {
+                        Message = "Email Id already exist.",
+                        IsValid = false
+                    };
                 }
-
-                _context.Users.Add(_mapper.Map<Users>(userReq));
-                _context.SaveChanges();
-                return true;
-                
-                // .FirstOrDefaultAsync(x => x.email == userReq.Username && x.password == userReq.Password);
-             
+                else if (_context.Users.Where(x => x.Username == userDetails.userName).Count() > 0)
+                {
+                    return responseMessage = new ResponseMessage()
+                    {
+                        Message = "UserName already exist.",
+                        IsValid = false
+                    };
+                }
+                else
+                {
+                    _context.Users.Add(_mapper.Map<Users>(userDetails));
+                    _context.SaveChanges();
+                    return responseMessage = new ResponseMessage()
+                    {
+                        Message = "User added successfully.",
+                        IsValid = true
+                    };
+                }
             }
             catch (Exception ex)
             {
-                throw ex;
+                return responseMessage = new ResponseMessage()
+                {
+                    Message = "Error in adding the user. Please contact administrator. Error : " + ex.Message,
+                    IsValid = false
+                };
             }
         }
 
-
-        public bool chkUserId(int id)
+        public ResponseMessage UpdateUser(UserDetails userDetails)
         {
-            var data =   _context.Users.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
-            return data != null ? true : false;
+            ResponseMessage responseMessage = new ResponseMessage();
+            try
+            {
+                var userData = _context.Users.Where(x => x.Id == userDetails.userId).FirstOrDefault();
+                if (userData != null)
+                {
+                    if (_context.Users.Where(x => x.Email == userDetails.email && x.Id != userDetails.userId).Count() > 0)
+                    {
+                        return responseMessage = new ResponseMessage()
+                        {
+                            Message = "Email Id already exist.",
+                            IsValid = false
+                        };
+                    }
+                    else if (_context.Users.Where(x => x.Username == userDetails.userName && x.Id != userDetails.userId).Count() > 0)
+                    {
+                        return responseMessage = new ResponseMessage()
+                        {
+                            Message = "UserName already exist.",
+                            IsValid = false
+                        };
+                    }
+                    else
+                    {
+                        userData.FirstName = userDetails.firstName;
+                        userData.LastName = userDetails.lastName;
+                        userData.Email = userDetails.email;
+                        userData.Phoneno = userDetails.mobileNo;
+                        userData.IsActive = userDetails.isActive;
+                        userData.Username = userDetails.userName;
+                        userData.Password = userDetails.password;
+                        userData.RoleId = userDetails.roleId;
+                        _context.SaveChanges();
+                        return responseMessage = new ResponseMessage()
+                        {
+                            Message = "User updated successfully.",
+                            IsValid = true
+                        };
+                    }
+                }
+                else{
+                    return responseMessage = new ResponseMessage()
+                        {
+                            Message = "User not available.",
+                            IsValid = false
+                        };
+                }
+            }
+            catch (Exception ex)
+            {
+                return responseMessage = new ResponseMessage()
+                {
+                    Message = "Error in adding the user. Please contact administrator. Error : " + ex.Message,
+                    IsValid = false
+                };
+            }
         }
-
 
         public void Dispose()
         {
