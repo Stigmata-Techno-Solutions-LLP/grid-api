@@ -14,8 +14,9 @@ namespace GridManagement.domain.Models
             LayerDetailsCreatedByNavigation = new HashSet<LayerDetails>();
             LayerDetailsUpdatedByNavigation = new HashSet<LayerDetails>();
             LayerDocuments = new HashSet<LayerDocuments>();
-            SubcontractorUsers = new HashSet<SubcontractorUsers>();
-            Subcontractors = new HashSet<Subcontractors>();
+            Roles = new HashSet<Roles>();
+            SubcontractorsCreatedByNavigation = new HashSet<Subcontractors>();
+            SubcontractorsUpdatedByNavigation = new HashSet<Subcontractors>();
             Userroles = new HashSet<Userroles>();
         }
 
@@ -39,8 +40,9 @@ namespace GridManagement.domain.Models
         public virtual ICollection<LayerDetails> LayerDetailsCreatedByNavigation { get; set; }
         public virtual ICollection<LayerDetails> LayerDetailsUpdatedByNavigation { get; set; }
         public virtual ICollection<LayerDocuments> LayerDocuments { get; set; }
-        public virtual ICollection<SubcontractorUsers> SubcontractorUsers { get; set; }
-        public virtual ICollection<Subcontractors> Subcontractors { get; set; }
+        public virtual ICollection<Roles> Roles { get; set; }
+        public virtual ICollection<Subcontractors> SubcontractorsCreatedByNavigation { get; set; }
+        public virtual ICollection<Subcontractors> SubcontractorsUpdatedByNavigation { get; set; }
         public virtual ICollection<Userroles> Userroles { get; set; }
     }
 }

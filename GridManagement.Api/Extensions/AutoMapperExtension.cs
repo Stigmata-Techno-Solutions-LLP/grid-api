@@ -115,7 +115,51 @@ namespace GridManagement.Api.Extensions
                      //   opt => opt.MapFrom(src => src.layerSubContractor))
 
                     .ReverseMap();
-    }
 
+                    CreateMap< AddSubContractorModel, Subcontractors>()
+                    .ForMember(dest =>
+                        dest.Code,
+                        opt => opt.MapFrom(src => src.code))
+                       .ForMember(dest =>
+                        dest.ContactName,
+                        opt => opt.MapFrom(src => src.contact_person))
+                        .ForMember(dest =>
+                        dest.Email,
+                        opt => opt.MapFrom(src => src.email))
+                        .ForMember(dest =>
+                        dest.Name,
+                        opt => opt.MapFrom(src => src.name))                           
+                       .ForMember(dest =>
+                        dest.Mobile,
+                        opt => opt.MapFrom(src => src.phone));
+
+
+                        CreateMap<  Subcontractors,SubContractorDetails>()                                              
+                       .ForMember(dest =>
+                        dest.SubContrtactorId,
+                        opt => opt.MapFrom(src => src.Id))
+                        .ForMember(dest =>
+                        dest.code,
+                        opt => opt.MapFrom(src => src.Code))
+                       .ForMember(dest =>
+                        dest.contact_person,
+                        opt => opt.MapFrom(src => src.ContactName))
+                        .ForMember(dest =>
+                        dest.email,
+                        opt => opt.MapFrom(src => src.Email))
+                        .ForMember(dest =>
+                        dest.name,
+                        opt => opt.MapFrom(src => src.Name))                           
+                       .ForMember(dest =>
+                        dest.phone,
+                        opt => opt.MapFrom(src => src.Mobile))
+                        .ForMember(dest =>
+                        dest.createdBy,
+                        opt => opt.MapFrom(src => src.CreatedBy)) 
+                        .ForMember(dest =>
+                        dest.createdDate,
+                        opt => opt.MapFrom(src => src.CreatedAt));                   
+        
+    }
 }
 }

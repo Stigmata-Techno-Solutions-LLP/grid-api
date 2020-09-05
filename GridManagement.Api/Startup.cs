@@ -38,6 +38,9 @@ namespace GridManagement.Api
             services.AddScoped<IGridRepository, GridRepository>();
             services.AddScoped<IGridService, GridService>();
 
+            services.AddScoped<ISubContService, SubContService>();
+            services.AddScoped<ISubContractorRepository, SubContractorRepository>();
+
             services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));
 
             services.AddCors();

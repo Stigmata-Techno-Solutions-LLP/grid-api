@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace GridManagement.Model.Dto
 {
-    public class AddSubContractor
+    public class AddSubContractorModel
     {
         [Required]
         [StringLength(200)]
@@ -31,7 +31,7 @@ namespace GridManagement.Model.Dto
         [Display(Name = "SubContractor EmailId")]
         public string email {get;set;}
 
-        public int userId{get;set;}
+        public int user_id{get;set;}
 
     }
 
@@ -44,11 +44,9 @@ namespace GridManagement.Model.Dto
         public string contact_person {get;set;}
        
         public string contact_address {get;set;}
-       
-
+        
         public string phone {get;set;}
-        
-        
+                
         public string email {get;set;}
 
         public string createdBy{get;set;}

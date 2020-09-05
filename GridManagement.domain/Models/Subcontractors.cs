@@ -8,7 +8,6 @@ namespace GridManagement.domain.Models
         public Subcontractors()
         {
             LayerSubcontractors = new HashSet<LayerSubcontractors>();
-            SubcontractorUsers = new HashSet<SubcontractorUsers>();
         }
 
         public int Id { get; set; }
@@ -20,9 +19,11 @@ namespace GridManagement.domain.Models
         public string Address { get; set; }
         public DateTime? CreatedAt { get; set; }
         public int? CreatedBy { get; set; }
+        public DateTime? UpdateAt { get; set; }
+        public int? UpdatedBy { get; set; }
 
         public virtual Users CreatedByNavigation { get; set; }
+        public virtual Users UpdatedByNavigation { get; set; }
         public virtual ICollection<LayerSubcontractors> LayerSubcontractors { get; set; }
-        public virtual ICollection<SubcontractorUsers> SubcontractorUsers { get; set; }
     }
 }
