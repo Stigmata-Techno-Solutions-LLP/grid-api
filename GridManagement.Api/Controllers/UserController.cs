@@ -58,12 +58,12 @@ namespace GridManagement.Api.Controllers
             }
         }
 
-        [HttpPut("updateuser")]
-        public IActionResult UpdateUser(UserDetails userDetails)
+        [HttpPut("updateuser/{id}")]
+        public IActionResult UpdateUser(UserDetails userDetails, int id)
         {
             try
             {
-                var response = _userService.UpdateUser(userDetails);
+                var response = _userService.UpdateUser(userDetails, id);
                 if (response == null)
                     return BadRequest(new { message = "Error in updating the user", isAPIValid = false });
                 return Ok(new { response = response, isAPIVaid = true });
@@ -75,21 +75,21 @@ namespace GridManagement.Api.Controllers
             }
         }
 
-        // [HttpDelete("deleteuser")]
-        // public IActionResult UpdateUser(UserDetails userDetails)
-        // {
-        //     try
-        //     {
-        //         var response = _userService.UpdateUser(userDetails);
-        //         if (response == null)
-        //             return BadRequest(new { message = "Error in updating the user", isAPIValid = false });
-        //         return Ok(new { response = response, isAPIVaid = true });
-        //     }
-        //     catch (Exception ex)
-        //     {
-        //         Log.Logger.Error(ex.Message);
-        //         return BadRequest(new { message = "Something went wrong", isAPIValid = false });
-        //     }
-        // }
+        [HttpDelete("deleteuser/{id}")]
+        public IActionResult DeleteUser(int id)
+        {
+            try
+            {
+                var response = _userService.DeleteUser(id);
+                if (response == null)
+                    return BadRequest(new { message = "Error in deleting the user", isAPIValid = false });
+                return Ok(new { response = response, isAPIVaid = true });
+            }
+            catch (Exception ex)
+            {
+                Log.Logger.Error(ex.Message);
+                return BadRequest(new { message = "Something went wrong", isAPIValid = false });
+            }
+        }
     }
 }

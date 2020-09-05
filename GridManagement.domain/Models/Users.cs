@@ -14,9 +14,8 @@ namespace GridManagement.domain.Models
             LayerDetailsCreatedByNavigation = new HashSet<LayerDetails>();
             LayerDetailsUpdatedByNavigation = new HashSet<LayerDetails>();
             LayerDocuments = new HashSet<LayerDocuments>();
-            SubcontractorUsers = new HashSet<SubcontractorUsers>();
-            Subcontractors = new HashSet<Subcontractors>();
-            Userroles = new HashSet<Userroles>();
+            SubcontractorsCreatedByNavigation = new HashSet<Subcontractors>();
+            SubcontractorsUpdatedByNavigation = new HashSet<Subcontractors>();
         }
 
         public int Id { get; set; }
@@ -26,13 +25,14 @@ namespace GridManagement.domain.Models
         public string LastName { get; set; }
         public string Phoneno { get; set; }
         public string Email { get; set; }
+        public int? RoleId { get; set; }
         public bool? IsActive { get; set; }
-        public int RoleId {get;set;}
         public DateTime? CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
         public int? CreatedBy { get; set; }
         public int? UpdatedBy { get; set; }
 
+        public virtual Roles Role { get; set; }
         public virtual ICollection<AuditLogs> AuditLogs { get; set; }
         public virtual ICollection<ClientBilling> ClientBilling { get; set; }
         public virtual ICollection<Grids> GridsCreatedByNavigation { get; set; }
@@ -40,8 +40,7 @@ namespace GridManagement.domain.Models
         public virtual ICollection<LayerDetails> LayerDetailsCreatedByNavigation { get; set; }
         public virtual ICollection<LayerDetails> LayerDetailsUpdatedByNavigation { get; set; }
         public virtual ICollection<LayerDocuments> LayerDocuments { get; set; }
-        public virtual ICollection<SubcontractorUsers> SubcontractorUsers { get; set; }
-        public virtual ICollection<Subcontractors> Subcontractors { get; set; }
-        public virtual ICollection<Userroles> Userroles { get; set; }
+        public virtual ICollection<Subcontractors> SubcontractorsCreatedByNavigation { get; set; }
+        public virtual ICollection<Subcontractors> SubcontractorsUpdatedByNavigation { get; set; }
     }
 }

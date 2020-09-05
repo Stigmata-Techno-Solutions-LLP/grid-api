@@ -6,13 +6,16 @@ namespace GridManagement.domain.Models
 {
     public partial class gridManagementContext : DbContext
     {
+
         public gridManagementContext(DbContextOptions<gridManagementContext> options)
             : base(options)
         {
         }
 
+        public virtual DbSet<ApplicationForms> ApplicationForms { get; set; }
         public virtual DbSet<AuditLogs> AuditLogs { get; set; }
         public virtual DbSet<ClientBilling> ClientBilling { get; set; }
+        public virtual DbSet<ClientBillingLayerDetails> ClientBillingLayerDetails { get; set; }
         public virtual DbSet<Clients> Clients { get; set; }
         public virtual DbSet<GridGeolocations> GridGeolocations { get; set; }
         public virtual DbSet<Grids> Grids { get; set; }
@@ -21,9 +24,8 @@ namespace GridManagement.domain.Models
         public virtual DbSet<LayerSubcontractors> LayerSubcontractors { get; set; }
         public virtual DbSet<Layers> Layers { get; set; }
         public virtual DbSet<Roles> Roles { get; set; }
-        public virtual DbSet<SubcontractorUsers> SubcontractorUsers { get; set; }
+        public virtual DbSet<RolesApplicationforms> RolesApplicationforms { get; set; }
         public virtual DbSet<Subcontractors> Subcontractors { get; set; }
-        public virtual DbSet<Userroles> Userroles { get; set; }
         public virtual DbSet<Users> Users { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -36,6 +38,38 @@ namespace GridManagement.domain.Models
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<ApplicationForms>(entity =>
+            {
+                entity.ToTable("application_forms");
+
+                entity.HasIndex(e => e.Name)
+                    .HasName("application_forms_name_key")
+                    .IsUnique();
+
+                entity.Property(e => e.Id).HasColumnName("id");
+
+                entity.Property(e => e.Description)
+                    .HasColumnName("description")
+                    .HasMaxLength(300)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.IsAdd).HasColumnName("isAdd");
+
+                entity.Property(e => e.IsDelete).HasColumnName("isDelete");
+
+                entity.Property(e => e.IsUpdate).HasColumnName("isUpdate");
+
+                entity.Property(e => e.IsView).HasColumnName("isView");
+
+                entity.Property(e => e.IsViewOnly).HasColumnName("isViewOnly");
+
+                entity.Property(e => e.Name)
+                    .IsRequired()
+                    .HasColumnName("name")
+                    .HasMaxLength(30)
+                    .IsUnicode(false);
+            });
+
             modelBuilder.Entity<AuditLogs>(entity =>
             {
                 entity.ToTable("audit_logs");
@@ -103,6 +137,22 @@ namespace GridManagement.domain.Models
                     .HasConstraintName("client_billing_createdby_users__fkey");
             });
 
+            modelBuilder.Entity<ClientBillingLayerDetails>(entity =>
+            {
+                entity.ToTable("client_billing_layerDetails");
+
+                entity.Property(e => e.Id).HasColumnName("id");
+
+                entity.Property(e => e.ClientBillingId).HasColumnName("client_billing_id");
+
+                entity.Property(e => e.LayerDetailsId).HasColumnName("layer_details_id");
+
+                entity.HasOne(d => d.LayerDetails)
+                    .WithMany(p => p.ClientBillingLayerDetails)
+                    .HasForeignKey(d => d.LayerDetailsId)
+                    .HasConstraintName("client_billing_layerDtls_id__fkey");
+            });
+
             modelBuilder.Entity<Clients>(entity =>
             {
                 entity.ToTable("clients");
@@ -158,7 +208,7 @@ namespace GridManagement.domain.Models
                 entity.ToTable("grids");
 
                 entity.HasIndex(e => e.Gridno)
-                    .HasName("UQ__grids__4FA6C35D754EE88E")
+                    .HasName("UQ__grids__4FA6C35DAF89CFE6")
                     .IsUnique();
 
                 entity.Property(e => e.Id).HasColumnName("id");
@@ -407,7 +457,7 @@ namespace GridManagement.domain.Models
                 entity.ToTable("layers");
 
                 entity.HasIndex(e => e.Layerno)
-                    .HasName("UQ__layers__91C38FFC9ECC9F50")
+                    .HasName("UQ__layers__91C38FFC8A4A6FF3")
                     .IsUnique();
 
                 entity.Property(e => e.Id).HasColumnName("id");
@@ -434,15 +484,12 @@ namespace GridManagement.domain.Models
 
                 entity.Property(e => e.Id).HasColumnName("id");
 
-                entity.Property(e => e.CreatedAt)
-                    .HasColumnName("created_at")
-                    .HasColumnType("datetime")
-                    .HasDefaultValueSql("(getdate())");
-
                 entity.Property(e => e.Description)
                     .HasColumnName("description")
                     .HasMaxLength(300)
                     .IsUnicode(false);
+
+                entity.Property(e => e.Level).HasColumnName("level");
 
                 entity.Property(e => e.Name)
                     .IsRequired()
@@ -454,37 +501,31 @@ namespace GridManagement.domain.Models
                     .HasColumnName("updated_at")
                     .HasColumnType("datetime")
                     .HasDefaultValueSql("(getdate())");
+
+                entity.Property(e => e.UpdatedBy).HasColumnName("updated_by");
             });
 
-            modelBuilder.Entity<SubcontractorUsers>(entity =>
+            modelBuilder.Entity<RolesApplicationforms>(entity =>
             {
-                entity.ToTable("subcontractor_users");
+                entity.ToTable("roles_applicationforms");
 
                 entity.Property(e => e.Id).HasColumnName("id");
 
-                entity.Property(e => e.CreatedAt)
-                    .HasColumnName("created_at")
-                    .HasColumnType("datetime")
-                    .HasDefaultValueSql("(getdate())");
+                entity.Property(e => e.FormId).HasColumnName("form_id");
 
-                entity.Property(e => e.SubcontId).HasColumnName("subcont_id");
+                entity.Property(e => e.RoleId).HasColumnName("role_id");
 
-                entity.Property(e => e.UpdatedAt)
-                    .HasColumnName("updated_at")
-                    .HasColumnType("datetime")
-                    .HasDefaultValueSql("(getdate())");
+                entity.HasOne(d => d.Form)
+                    .WithMany(p => p.RolesApplicationforms)
+                    .HasForeignKey(d => d.FormId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("rolesforms_forms_id_fkey");
 
-                entity.Property(e => e.UserId).HasColumnName("user_id");
-
-                entity.HasOne(d => d.Subcont)
-                    .WithMany(p => p.SubcontractorUsers)
-                    .HasForeignKey(d => d.SubcontId)
-                    .HasConstraintName("subcontuser_subcont_id_fkey");
-
-                entity.HasOne(d => d.User)
-                    .WithMany(p => p.SubcontractorUsers)
-                    .HasForeignKey(d => d.UserId)
-                    .HasConstraintName("subcontuser_user_id_fkey");
+                entity.HasOne(d => d.Role)
+                    .WithMany(p => p.RolesApplicationforms)
+                    .HasForeignKey(d => d.RoleId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("rolesforms_roles_id_fkey");
             });
 
             modelBuilder.Entity<Subcontractors>(entity =>
@@ -492,7 +533,7 @@ namespace GridManagement.domain.Models
                 entity.ToTable("subcontractors");
 
                 entity.HasIndex(e => e.Code)
-                    .HasName("UQ__subcontr__357D4CF98D497620")
+                    .HasName("UQ__subcontr__357D4CF99504681F")
                     .IsUnique();
 
                 entity.Property(e => e.Id).HasColumnName("id");
@@ -505,7 +546,7 @@ namespace GridManagement.domain.Models
                 entity.Property(e => e.Code)
                     .IsRequired()
                     .HasColumnName("code")
-                    .HasMaxLength(50)
+                    .HasMaxLength(10)
                     .IsUnicode(false);
 
                 entity.Property(e => e.ContactName)
@@ -532,36 +573,25 @@ namespace GridManagement.domain.Models
 
                 entity.Property(e => e.Name)
                     .HasColumnName("name")
-                    .HasMaxLength(500)
+                    .HasMaxLength(200)
                     .IsUnicode(false);
 
+                entity.Property(e => e.UpdateAt)
+                    .HasColumnName("update_at")
+                    .HasColumnType("datetime")
+                    .HasDefaultValueSql("(getdate())");
+
+                entity.Property(e => e.UpdatedBy).HasColumnName("updated_by");
+
                 entity.HasOne(d => d.CreatedByNavigation)
-                    .WithMany(p => p.Subcontractors)
+                    .WithMany(p => p.SubcontractorsCreatedByNavigation)
                     .HasForeignKey(d => d.CreatedBy)
                     .HasConstraintName("subcont_user_id_fkey");
-            });
 
-            modelBuilder.Entity<Userroles>(entity =>
-            {
-                entity.ToTable("userroles");
-
-                entity.Property(e => e.Id).HasColumnName("id");
-
-                entity.Property(e => e.RoleId).HasColumnName("role_id");
-
-                entity.Property(e => e.UserId).HasColumnName("user_id");
-
-                entity.HasOne(d => d.Role)
-                    .WithMany(p => p.Userroles)
-                    .HasForeignKey(d => d.RoleId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("userroles_role_id_fkey");
-
-                entity.HasOne(d => d.User)
-                    .WithMany(p => p.Userroles)
-                    .HasForeignKey(d => d.UserId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("userroles_user_id_fkey");
+                entity.HasOne(d => d.UpdatedByNavigation)
+                    .WithMany(p => p.SubcontractorsUpdatedByNavigation)
+                    .HasForeignKey(d => d.UpdatedBy)
+                    .HasConstraintName("subcont_updatedby_users__fkey");
             });
 
             modelBuilder.Entity<Users>(entity =>
@@ -569,7 +599,11 @@ namespace GridManagement.domain.Models
                 entity.ToTable("users");
 
                 entity.HasIndex(e => e.Email)
-                    .HasName("UQ__users__AB6E61641B97A662")
+                    .HasName("UQ__users__AB6E61649CEA3475")
+                    .IsUnique();
+
+                entity.HasIndex(e => e.Username)
+                    .HasName("UQ__users__F3DBC572303A4EC8")
                     .IsUnique();
 
                 entity.Property(e => e.Id).HasColumnName("id");
@@ -612,6 +646,8 @@ namespace GridManagement.domain.Models
                     .HasMaxLength(15)
                     .IsUnicode(false);
 
+                entity.Property(e => e.RoleId).HasColumnName("role_id");
+
                 entity.Property(e => e.UpdatedAt)
                     .HasColumnName("updated_at")
                     .HasColumnType("datetime")
@@ -624,6 +660,11 @@ namespace GridManagement.domain.Models
                     .HasColumnName("username")
                     .HasMaxLength(100)
                     .IsUnicode(false);
+
+                entity.HasOne(d => d.Role)
+                    .WithMany(p => p.Users)
+                    .HasForeignKey(d => d.RoleId)
+                    .HasConstraintName("user_roles_id_fkey");
             });
 
             OnModelCreatingPartial(modelBuilder);

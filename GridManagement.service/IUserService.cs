@@ -8,6 +8,7 @@ namespace GridManagement.service
     {
         List<UserDetails> getUser();
         ResponseMessage AddUser(UserDetails userDetails);
-        ResponseMessage UpdateUser(UserDetails userDetails);
+        ResponseMessage UpdateUser(UserDetails userDetails, int id);
+        ResponseMessage DeleteUser(int id);
     }
 }

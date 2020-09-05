@@ -20,27 +20,20 @@ namespace GridManagement.repository
 
         public AuthenticateResponse ValidateUser(AuthenticateRequest userReq)
         {
-            AuthenticateResponse result =  new AuthenticateResponse();
+            AuthenticateResponse result = new AuthenticateResponse();
             Users user = _context.Users.Where(x => x.Username == userReq.Username && x.Password == userReq.Password).FirstOrDefault();
             if (user != null)
             {
-                Userroles userRoles = _context.Userroles.Where(x => x.UserId == user.Id).FirstOrDefault();
-                if (userRoles != null)
+                result = new AuthenticateResponse
                 {
-                    result = new AuthenticateResponse
-                    {
-                        FirstName = user.FirstName,
-                        Id = user.Id,
-                        LastName = user.LastName,
-                        Email = user.Email,
-                        IsActive = Convert.ToBoolean(user.IsActive),
-                        PhoneNumber = user.Phoneno,
-                        RoleId = userRoles.Id
-                    };
-                }
-            }
-            else{
-                result = null;
+                    FirstName = user.FirstName,
+                    Id = user.Id,
+                    LastName = user.LastName,
+                    Email = user.Email,
+                    IsActive = Convert.ToBoolean(user.IsActive),
+                    PhoneNumber = user.Phoneno,
+                    RoleId = Convert.ToInt32(user.RoleId)
+                };
             }
 
             return result;

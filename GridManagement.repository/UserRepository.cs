@@ -70,15 +70,15 @@ namespace GridManagement.repository
             }
         }
 
-        public ResponseMessage UpdateUser(UserDetails userDetails)
+        public ResponseMessage UpdateUser(UserDetails userDetails, int id)
         {
             ResponseMessage responseMessage = new ResponseMessage();
             try
             {
-                var userData = _context.Users.Where(x => x.Id == userDetails.userId).FirstOrDefault();
+                var userData = _context.Users.Where(x => x.Id == id).FirstOrDefault();
                 if (userData != null)
                 {
-                    if (_context.Users.Where(x => x.Email == userDetails.email && x.Id != userDetails.userId).Count() > 0)
+                    if (_context.Users.Where(x => x.Email == userDetails.email && x.Id != id).Count() > 0)
                     {
                         return responseMessage = new ResponseMessage()
                         {
@@ -86,7 +86,7 @@ namespace GridManagement.repository
                             IsValid = false
                         };
                     }
-                    else if (_context.Users.Where(x => x.Username == userDetails.userName && x.Id != userDetails.userId).Count() > 0)
+                    else if (_context.Users.Where(x => x.Username == userDetails.userName && x.Id != id).Count() > 0)
                     {
                         return responseMessage = new ResponseMessage()
                         {
@@ -104,6 +104,7 @@ namespace GridManagement.repository
                         userData.Username = userDetails.userName;
                         userData.Password = userDetails.password;
                         userData.RoleId = userDetails.roleId;
+                        userData.UpdatedBy = userDetails.updatedBy;
                         _context.SaveChanges();
                         return responseMessage = new ResponseMessage()
                         {
@@ -112,19 +113,44 @@ namespace GridManagement.repository
                         };
                     }
                 }
-                else{
+                else
+                {
                     return responseMessage = new ResponseMessage()
-                        {
-                            Message = "User not available.",
-                            IsValid = false
-                        };
+                    {
+                        Message = "User not available.",
+                        IsValid = false
+                    };
                 }
             }
             catch (Exception ex)
             {
                 return responseMessage = new ResponseMessage()
                 {
-                    Message = "Error in adding the user. Please contact administrator. Error : " + ex.Message,
+                    Message = "Error in updating the user. Please contact administrator. Error : " + ex.Message,
+                    IsValid = false
+                };
+            }
+        }
+
+        public ResponseMessage DeleteUser(int id)
+        {
+            ResponseMessage responseMessage = new ResponseMessage();
+            try
+            {
+                var user = new Users { Id = id };
+                _context.Entry(user).State = EntityState.Deleted;
+                _context.SaveChanges();
+                return responseMessage = new ResponseMessage()
+                {
+                    Message = "User deleted successfully.",
+                    IsValid = true
+                };
+            }
+            catch (Exception ex)
+            {
+                return responseMessage = new ResponseMessage()
+                {
+                    Message = "Error in deleting the user. Please contact administrator. Error : " + ex.Message,
                     IsValid = false
                 };
             }

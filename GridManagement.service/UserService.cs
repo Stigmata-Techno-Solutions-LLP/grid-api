@@ -39,10 +39,17 @@ namespace GridManagement.service
             return responseMessage;
         }
 
-        public ResponseMessage UpdateUser(UserDetails userDetails)
+        public ResponseMessage UpdateUser(UserDetails userDetails, int id)
         {
             ResponseMessage responseMessage = new ResponseMessage();
-            responseMessage = _userRepository.UpdateUser(userDetails);
+            responseMessage = _userRepository.UpdateUser(userDetails, id);
+            return responseMessage;
+        }
+
+        public ResponseMessage DeleteUser(int id)
+        {
+            ResponseMessage responseMessage = new ResponseMessage();
+            responseMessage = _userRepository.DeleteUser(id);
             return responseMessage;
         }
     }

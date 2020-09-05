@@ -16,12 +16,9 @@ namespace GridManagement.service
 
     public class GridService : IGridService
     {
-        IGridRepository _gridRepo;
-       
+        IGridRepository _gridRepo;       
 
-        private readonly AppSettings _appSettings;
-
-        public GridService(IOptions<AppSettings> appSettings, IGridRepository gridRepo )
+        public GridService(IGridRepository gridRepo )
         {
             _gridRepo = gridRepo;
         }

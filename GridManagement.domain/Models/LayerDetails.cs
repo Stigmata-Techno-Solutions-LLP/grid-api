@@ -7,6 +7,7 @@ namespace GridManagement.domain.Models
     {
         public LayerDetails()
         {
+            ClientBillingLayerDetails = new HashSet<ClientBillingLayerDetails>();
             LayerDocuments = new HashSet<LayerDocuments>();
             LayerSubcontractors = new HashSet<LayerSubcontractors>();
         }
@@ -40,6 +41,7 @@ namespace GridManagement.domain.Models
         public virtual Grids Grid { get; set; }
         public virtual Layers Layer { get; set; }
         public virtual Users UpdatedByNavigation { get; set; }
+        public virtual ICollection<ClientBillingLayerDetails> ClientBillingLayerDetails { get; set; }
         public virtual ICollection<LayerDocuments> LayerDocuments { get; set; }
         public virtual ICollection<LayerSubcontractors> LayerSubcontractors { get; set; }
     }

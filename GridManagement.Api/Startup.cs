@@ -46,6 +46,7 @@ namespace GridManagement.Api
 
             services.AddScoped<IGridRepository, GridRepository>();
             services.AddScoped<IGridService, GridService>();
+            
 
           // configure strongly typed settings objects
             var appSettingsSection = Configuration.GetSection("AppSettings");
@@ -73,6 +74,10 @@ namespace GridManagement.Api
                     ClockSkew = TimeSpan.Zero
                 };
             });
+            services.AddScoped<ISubContService, SubContService>();
+            services.AddScoped<ISubContractorRepository, SubContractorRepository>();
+
+            services.Configure<GridManagement.Model.Dto.AppSettings>(Configuration.GetSection("AppSettings"));
 
             services.AddCors();
             // WebApi Configuration

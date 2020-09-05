@@ -113,35 +113,85 @@ namespace GridManagement.Api.Extensions
                         //   opt => opt.MapFrom(src => src.layerSubContractor))
 
                         .ReverseMap();
-                 CreateMap<UserDetails, Users>()
-                    .ForMember(dest =>
-                        dest.FirstName,
-                        opt => opt.MapFrom(src => src.firstName))
-                    .ForMember(dest =>
-                        dest.LastName,
-                        opt => opt.MapFrom(src => src.lastName))
-                    .ForMember(dest =>
-                        dest.Id,
-                        opt => opt.MapFrom(src => src.userId))
-                    .ForMember(dest =>
-                        dest.Email,
-                        opt => opt.MapFrom(src => src.email))
-                    .ForMember(dest =>
-                        dest.Phoneno,
-                        opt => opt.MapFrom(src => src.mobileNo))
-                    .ForMember(dest =>
-                        dest.Username,
-                        opt => opt.MapFrom(src => src.userName))
-                    .ForMember(dest =>
-                        dest.Password,
-                        opt => opt.MapFrom(src => src.password))
-                    .ForMember(dest =>
-                        dest.RoleId,
-                        opt => opt.MapFrom(src => src.roleId))
-                    .ForMember(dest =>
-                        dest.IsActive,
-                        opt => opt.MapFrom(src => src.isActive))
-                    .ReverseMap();
+            CreateMap<UserDetails, Users>()
+               .ForMember(dest =>
+                   dest.FirstName,
+                   opt => opt.MapFrom(src => src.firstName))
+               .ForMember(dest =>
+                   dest.LastName,
+                   opt => opt.MapFrom(src => src.lastName))
+               .ForMember(dest =>
+                   dest.Id,
+                   opt => opt.MapFrom(src => src.userId))
+               .ForMember(dest =>
+                   dest.Email,
+                   opt => opt.MapFrom(src => src.email))
+               .ForMember(dest =>
+                   dest.Phoneno,
+                   opt => opt.MapFrom(src => src.mobileNo))
+               .ForMember(dest =>
+                   dest.Username,
+                   opt => opt.MapFrom(src => src.userName))
+               .ForMember(dest =>
+                   dest.Password,
+                   opt => opt.MapFrom(src => src.password))
+               .ForMember(dest =>
+                   dest.RoleId,
+                   opt => opt.MapFrom(src => src.roleId))
+               .ForMember(dest =>
+                   dest.IsActive,
+                   opt => opt.MapFrom(src => src.isActive))
+                .ForMember(dest =>
+                   dest.CreatedBy,
+                   opt => opt.MapFrom(src => src.createdBy))
+                .ForMember(dest =>
+                   dest.UpdatedBy,
+                   opt => opt.MapFrom(src => src.updatedBy))
+               .ReverseMap();
+
+            CreateMap<AddSubContractorModel, Subcontractors>()
+            .ForMember(dest =>
+                dest.Code,
+                opt => opt.MapFrom(src => src.code))
+               .ForMember(dest =>
+                dest.ContactName,
+                opt => opt.MapFrom(src => src.contact_person))
+                .ForMember(dest =>
+                dest.Email,
+                opt => opt.MapFrom(src => src.email))
+                .ForMember(dest =>
+                dest.Name,
+                opt => opt.MapFrom(src => src.name))
+               .ForMember(dest =>
+                dest.Mobile,
+                opt => opt.MapFrom(src => src.phone));
+
+            CreateMap<Subcontractors, SubContractorDetails>()
+           .ForMember(dest =>
+            dest.SubContrtactorId,
+            opt => opt.MapFrom(src => src.Id))
+            .ForMember(dest =>
+            dest.code,
+            opt => opt.MapFrom(src => src.Code))
+           .ForMember(dest =>
+            dest.contact_person,
+            opt => opt.MapFrom(src => src.ContactName))
+            .ForMember(dest =>
+            dest.email,
+            opt => opt.MapFrom(src => src.Email))
+            .ForMember(dest =>
+            dest.name,
+            opt => opt.MapFrom(src => src.Name))
+           .ForMember(dest =>
+            dest.phone,
+            opt => opt.MapFrom(src => src.Mobile))
+            .ForMember(dest =>
+            dest.createdBy,
+            opt => opt.MapFrom(src => src.CreatedBy))
+            .ForMember(dest =>
+            dest.createdDate,
+            opt => opt.MapFrom(src => src.CreatedAt));
         }
     }
+
 }

@@ -120,23 +120,17 @@ namespace GridManagement.Model.Dto
 
      public class UserDetails {
         public string firstName { get; set; }
-        
         public string lastName { get; set; }
-        
         public string email { get; set; }
-
         public string mobileNo {get;set;}
-
         public int userId { get; set; }
         public string userName {get;set;}
-
         public string password {get;set;}
-
         public string roleName { get; set; }    
         public int roleId {get;set;}
-
         public bool isActive {get;set;}
-
+        public int createdBy {get;set;}
+        public int updatedBy {get;set;}
      }
     
 
