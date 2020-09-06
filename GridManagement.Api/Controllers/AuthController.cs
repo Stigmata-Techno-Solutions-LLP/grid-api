@@ -45,15 +45,32 @@ namespace GridManagement.Api.Controllers
         {
             try
             {
-            var response = _authService.RefreshToken(refreshToken.token);
-            if (response == null)
-                return Unauthorized(new { message = "Invalid token" });
-            return Ok(new {response = response, IsAPIValid = true});
+                var response = _authService.RefreshToken(refreshToken.token);
+                if (response == null)
+                    return Unauthorized(new { message = "Invalid token" });
+                return Ok(new { response = response, IsAPIValid = true });
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Log.Logger.Error(ex.Message);
-                return BadRequest(new {message = "Something went wrong", isAPIValid = false});
+                return BadRequest(new { message = "Something went wrong", isAPIValid = false });
+            }
+        }
+
+        [HttpPost("forgotpassword")]
+        public IActionResult ForgotPassword(ForgotPasswordRequest forgotPassword)
+        {
+            try
+            {
+                var response = _authService.ForgotPassword(forgotPassword.emailId);
+                if (response == null)
+                    return BadRequest(new { message = "Error in sending the details", isAPIValid = false });
+                return Ok(new { response = response, IsAPIValid = true });
+            }
+            catch (Exception ex)
+            {
+                Log.Logger.Error(ex.Message);
+                return BadRequest(new { message = "Something went wrong", isAPIValid = false });
             }
         }
 
