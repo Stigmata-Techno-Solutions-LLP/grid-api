@@ -1,6 +1,6 @@
 using GridManagement.Api.Extensions;
-using GridManagement.Api.Helper;
 using GridManagement.repository;
+using GridManagement.Model.Dto;
 using GridManagement.service;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -8,6 +8,11 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System.Text.Json.Serialization;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using System;
+using GridManagement.Api.Helper;
 
 namespace GridManagement.Api
 {
@@ -28,20 +33,52 @@ namespace GridManagement.Api
         {
             //Extension method for less clutter in startup
             services.AddApplicationDbContext();
-
+            services.AddControllers().AddNewtonsoftJson(options =>
+               options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+            );
             //DI Services and Repos
             services.AddScoped<IHeroRepository, HeroRepository>();
             services.AddScoped<IHeroAppService, HeroAppService>();
+            services.AddScoped<IUserService, UserService>();
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IAuthService, AuthService>();
-
+            services.AddScoped<IAuthRepository, AuthRepository>();
+            services.AddScoped<IPageAccessService, PageAccessService>();
+            services.AddScoped<IPageAccessRepository, PageAccessRepository>();
             services.AddScoped<IGridRepository, GridRepository>();
             services.AddScoped<IGridService, GridService>();
+            
 
+          // configure strongly typed settings objects
+            var appSettingsSection = Configuration.GetSection("AppSettings");
+            services.Configure<GridManagement.Model.Dto.AppSettings>(appSettingsSection);
+
+            // configure jwt authentication
+            var appSettings = appSettingsSection.Get<GridManagement.Model.Dto.AppSettings>();
+            var key = Encoding.ASCII.GetBytes(appSettings.Secret);
+            services.AddAuthentication(x =>
+            {
+                x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddJwtBearer(x =>
+            {
+                x.RequireHttpsMetadata = false;
+                x.SaveToken = true;
+                x.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(key),
+                    ValidateIssuer = false,
+                    ValidateAudience = false,
+                    // set clockskew to zero so tokens expire exactly at token expiration time (instead of 5 minutes later)
+                    ClockSkew = TimeSpan.Zero
+                };
+            });
             services.AddScoped<ISubContService, SubContService>();
             services.AddScoped<ISubContractorRepository, SubContractorRepository>();
 
-            services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));
+            services.Configure<GridManagement.Model.Dto.AppSettings>(Configuration.GetSection("AppSettings"));
 
             services.AddCors();
             // WebApi Configuration
@@ -84,9 +121,11 @@ namespace GridManagement.Api
 
 
             app.UseHttpsRedirection();
-
+            app.UseMiddleware<JwtMiddleware>();
 
             app.UseResponseCompression();
+            app.UseAuthentication();
+            app.UseAuthorization();
 
         }
     }

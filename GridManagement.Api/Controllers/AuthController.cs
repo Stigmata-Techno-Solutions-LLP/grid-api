@@ -1,0 +1,43 @@
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using GridManagement.service;
+using GridManagement.Model.Dto;
+using Serilog;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authorization;
+
+// For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+
+namespace GridManagement.Api.Controllers
+{
+    [ApiController]
+    [Route("api/[controller]")]
+    public class AuthController : ControllerBase
+    {
+        private readonly IAuthService _authService;
+
+        public AuthController(IAuthService authService)
+        {
+            _authService = authService;
+        }
+
+        [HttpPost("authenticate")]
+        public IActionResult Authenticate(AuthenticateRequest model)
+        {
+            try
+            {
+                var response = _authService.Authenticate(model);
+                if (response == null)
+                    return BadRequest(new { message = "Username or password is incorrect", isAPIValid = false });
+                return Ok(new { response = response, isAPIVaid = true });
+            }
+            catch (Exception ex)
+            {
+                Log.Logger.Error(ex.Message);
+                return BadRequest(new { message = "Something went wrong", isAPIValid = false });
+            }
+        }
+    }
+}

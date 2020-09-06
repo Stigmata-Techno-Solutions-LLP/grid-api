@@ -51,8 +51,6 @@ namespace GridManagement.Api.Extensions
                         dest.CreatedBy,
                         opt => opt.MapFrom(src => src.user_id))
                     .ReverseMap();
-
-
         
                 CreateMap<AddCG_RFI, Grids>()                   
                     .ForMember(dest =>
@@ -66,15 +64,10 @@ namespace GridManagement.Api.Extensions
                         opt => opt.MapFrom(src => src.CG_inspection_date))
                     .ForMember(dest =>
                         dest.CgApprovalDate,
-                        opt => opt.MapFrom(src => src.CG_approval_date))
-                   
-                     .ForMember(dest =>
-                        dest.CreatedBy,
-                        opt => opt.MapFrom(src => src.user_id))
-                    .ReverseMap();
-            
+                        opt => opt.MapFrom(src => src.CG_approval_date));
+        
 
-  CreateMap<GridGeolocations, GridGeoLocation>()
+        CreateMap<GridGeolocations, GridGeoLocation>()
                      .ForMember(dest =>
                         dest.latitude,
                         opt => opt.MapFrom(src => src.Latitude))
@@ -114,121 +107,201 @@ namespace GridManagement.Api.Extensions
                     .ForMember(dest =>
                         dest.gridGeoLocation,
                         opt => opt.MapFrom(src =>  src.GridGeolocations));    
-            
-
-        CreateMap<AddLayer, LayerDetails>()
                     
-                    .ForMember(dest =>
-                        dest.GridId,
-                        opt => opt.MapFrom(src => src.gridId))
-                    .ForMember(dest =>
-                        dest.LayerId,
-                        opt => opt.MapFrom(src => src.layerId))
-                    .ForMember(dest =>
-                        dest.AreaLayer,
-                        opt => opt.MapFrom(src => src.area_layer))
-                    .ForMember(dest =>
-                        dest.CreatedBy,
-                        opt => opt.MapFrom(src => src.user_id))
-                    .ForMember(dest =>
-                        dest.CtApprovalDate,
-                        opt => opt.MapFrom(src => src.CT_approval_date))
-                     .ForMember(dest =>
-                        dest.CtInspectionDate,
-                        opt => opt.MapFrom(src => src.CT_inspection_date))
-
-                    .ForMember(dest =>
-                        dest.CtRfino,
-                        opt => opt.MapFrom(src => src.CT_RFIno))
-                    .ForMember(dest =>
-                        dest.CtRfiStatus,
-                        opt => opt.MapFrom(src => src.CT_RFI_status))
-                    .ForMember(dest =>
-                        dest.FillingDate,
-                        opt => opt.MapFrom(src => src.fillingDate))
-                    .ForMember(dest =>
-                        dest.FillingMaterial,
-                        opt => opt.MapFrom(src => src.fillingMaterial))
-                     .ForMember(dest =>
-                        dest.FillType,
-                        opt => opt.MapFrom(src => src.fillType))
 
 
-                    .ForMember(dest =>
-                        dest.LvApprovalDate,
-                        opt => opt.MapFrom(src => src.LV_approval_date))
-                    .ForMember(dest =>
-                        dest.LvInspectionDate,
-                        opt => opt.MapFrom(src => src.LV_inspection_date))
-                    .ForMember(dest =>
-                        dest.LvRfino,
-                        opt => opt.MapFrom(src => src.LV_RFIno))
-                    .ForMember(dest =>
-                        dest.LvRfiStatus,
-                        opt => opt.MapFrom(src => src.LV_RFI_status))
-                     .ForMember(dest =>
-                        dest.Remarks,
-                        opt => opt.MapFrom(src => src.remarks))
-                     .ForMember(dest =>
-                     dest.ToplevelFillmaterial,
-                     opt => opt.MapFrom(src=> src.topFillMaterial))
+            CreateMap<AddLayer, LayerDetails>()
 
-                     //.ForMember(dest =>
-                     //   dest.LayerSubcontractors,
-                     //   opt => opt.MapFrom(src => src.layerSubContractor))
-
-                    .ReverseMap();
-
-                    CreateMap< AddSubContractorModel, Subcontractors>()
-                    .ForMember(dest =>
-                        dest.Code,
-                        opt => opt.MapFrom(src => src.code))
-                       .ForMember(dest =>
-                        dest.ContactName,
-                        opt => opt.MapFrom(src => src.contact_person))
                         .ForMember(dest =>
-                        dest.Email,
-                        opt => opt.MapFrom(src => src.email))
+                            dest.GridId,
+                            opt => opt.MapFrom(src => src.gridId))
                         .ForMember(dest =>
-                        dest.Name,
-                        opt => opt.MapFrom(src => src.name))                           
-                       .ForMember(dest =>
-                        dest.Mobile,
-                        opt => opt.MapFrom(src => src.phone));
+                            dest.LayerId,
+                            opt => opt.MapFrom(src => src.layerId))
+                        .ForMember(dest =>
+                            dest.AreaLayer,
+                            opt => opt.MapFrom(src => src.area_layer))
+                        .ForMember(dest =>
+                            dest.CreatedBy,
+                            opt => opt.MapFrom(src => src.user_id))
+                        .ForMember(dest =>
+                            dest.CtApprovalDate,
+                            opt => opt.MapFrom(src => src.CT_approval_date))
+                         .ForMember(dest =>
+                            dest.CtInspectionDate,
+                            opt => opt.MapFrom(src => src.CT_inspection_date))
+
+                        .ForMember(dest =>
+                            dest.CtRfino,
+                            opt => opt.MapFrom(src => src.CT_RFIno))
+                        .ForMember(dest =>
+                            dest.CtRfiStatus,
+                            opt => opt.MapFrom(src => src.CT_RFI_status))
+                        .ForMember(dest =>
+                            dest.FillingDate,
+                            opt => opt.MapFrom(src => src.fillingDate))
+                        .ForMember(dest =>
+                            dest.FillingMaterial,
+                            opt => opt.MapFrom(src => src.fillingMaterial))
+                         .ForMember(dest =>
+                            dest.FillType,
+                            opt => opt.MapFrom(src => src.fillType))
 
 
-                        CreateMap<  Subcontractors,SubContractorDetails>()                                              
-                       .ForMember(dest =>
-                        dest.SubContrtactorId,
-                        opt => opt.MapFrom(src => src.Id))
                         .ForMember(dest =>
-                        dest.code,
-                        opt => opt.MapFrom(src => src.Code))
-                       .ForMember(dest =>
-                        dest.contact_person,
-                        opt => opt.MapFrom(src => src.ContactName))
+                            dest.LvApprovalDate,
+                            opt => opt.MapFrom(src => src.LV_approval_date))
                         .ForMember(dest =>
-                        dest.email,
-                        opt => opt.MapFrom(src => src.Email))
+                            dest.LvInspectionDate,
+                            opt => opt.MapFrom(src => src.LV_inspection_date))
                         .ForMember(dest =>
-                        dest.name,
-                        opt => opt.MapFrom(src => src.Name))                           
-                       .ForMember(dest =>
-                        dest.phone,
-                        opt => opt.MapFrom(src => src.Mobile))
-                        .ForMember(dest =>
-                        dest.createdBy,
-                        opt => opt.MapFrom(src => src.CreatedByNavigation.Username)) 
-                        .ForMember(dest =>
-                        dest.createdDate,
-                        opt => opt.MapFrom(src => src.CreatedAt))
-                        .ForMember(dest =>
-                        dest.updatedBy,
-                        opt => opt.MapFrom(src => src.UpdatedByNavigation.Username)) 
-                        .ForMember(dest =>
-                        dest.updatedDate,
-                        opt => opt.MapFrom(src => src.UpdateAt));                       
-        
+                            dest.LvRfino,
+                            opt => opt.MapFrom(src => src.LV_RFIno))
+                                               
+                        .ForMember(dest =>                                
+                            dest.LvRfiStatus,
+                            opt => opt.MapFrom(src => src.LV_RFI_status))
+                         .ForMember(dest =>
+                            dest.Remarks,
+                            opt => opt.MapFrom(src => src.remarks))
+                         .ForMember(dest =>
+                         dest.ToplevelFillmaterial,
+                         opt => opt.MapFrom(src => src.topFillMaterial))
+
+                        //.ForMember(dest =>
+                        //   dest.LayerSubcontractors,
+                        //   opt => opt.MapFrom(src => src.layerSubContractor))
+
+                        .ReverseMap();
+
+
+            CreateMap<UserDetails, Users>()
+               .ForMember(dest =>
+                   dest.FirstName,
+                   opt => opt.MapFrom(src => src.firstName))
+               .ForMember(dest =>
+                   dest.LastName,
+                   opt => opt.MapFrom(src => src.lastName))
+               .ForMember(dest =>
+                   dest.Id,
+                   opt => opt.MapFrom(src => src.userId))
+               .ForMember(dest =>
+                   dest.Email,
+                   opt => opt.MapFrom(src => src.email))
+               .ForMember(dest =>
+                   dest.Phoneno,
+                   opt => opt.MapFrom(src => src.mobileNo))
+               .ForMember(dest =>
+                   dest.Username,
+                   opt => opt.MapFrom(src => src.userName))
+               .ForMember(dest =>
+                   dest.Password,
+                   opt => opt.MapFrom(src => src.password))
+               .ForMember(dest =>
+                   dest.RoleId,
+                   opt => opt.MapFrom(src => src.roleId))
+               .ForMember(dest =>
+                   dest.IsActive,
+                   opt => opt.MapFrom(src => src.isActive))
+                .ForMember(dest =>
+                   dest.CreatedBy,
+                   opt => opt.MapFrom(src => src.createdBy))
+                .ForMember(dest =>
+                   dest.UpdatedBy,
+                   opt => opt.MapFrom(src => src.updatedBy))
+               .ReverseMap();
+
+            CreateMap<AddSubContractorModel, Subcontractors>()
+            .ForMember(dest =>
+                dest.Code,
+                opt => opt.MapFrom(src => src.code))
+               .ForMember(dest =>
+                dest.ContactName,
+                opt => opt.MapFrom(src => src.contact_person))
+                .ForMember(dest =>
+                dest.Email,
+                opt => opt.MapFrom(src => src.email))
+                .ForMember(dest =>
+                dest.Name,
+                opt => opt.MapFrom(src => src.name))
+               .ForMember(dest =>
+                dest.Mobile,
+                opt => opt.MapFrom(src => src.phone));
+
+            CreateMap<Subcontractors, SubContractorDetails>()
+           .ForMember(dest =>
+            dest.SubContrtactorId,
+            opt => opt.MapFrom(src => src.Id))
+            .ForMember(dest =>
+            dest.code,
+            opt => opt.MapFrom(src => src.Code))
+           .ForMember(dest =>
+            dest.contact_person,
+            opt => opt.MapFrom(src => src.ContactName))
+            .ForMember(dest =>
+            dest.email,
+            opt => opt.MapFrom(src => src.Email))
+            .ForMember(dest =>
+            dest.name,
+            opt => opt.MapFrom(src => src.Name))
+           .ForMember(dest =>
+            dest.phone,
+            opt => opt.MapFrom(src => src.Mobile))
+            .ForMember(dest =>
+            dest.createdBy,
+            opt => opt.MapFrom(src => src.CreatedBy))
+            .ForMember(dest =>
+            dest.createdDate,
+            opt => opt.MapFrom(src => src.CreatedAt));
+
+            CreateMap<PageAccess, RolesApplicationforms>()
+               .ForMember(dest =>
+                   dest.Id,
+                   opt => opt.MapFrom(src => src.Id))
+               .ForMember(dest =>
+                   dest.FormId,
+                   opt => opt.MapFrom(src => src.PageDetailId))
+               .ForMember(dest =>
+                   dest.RoleId,
+                   opt => opt.MapFrom(src => src.RoleId))
+               .ForMember(dest =>
+                   dest.IsAdd,
+                   opt => opt.MapFrom(src => src.IsAdd))
+               .ForMember(dest =>
+                   dest.IsUpdate,
+                   opt => opt.MapFrom(src => src.IsUpdate))
+               .ForMember(dest =>
+                   dest.IsDelete,
+                   opt => opt.MapFrom(src => src.IsDelete))
+               .ForMember(dest =>
+                   dest.IsView,
+                   opt => opt.MapFrom(src => src.IsView))
+               .ReverseMap();
+
+                CreateMap<PageDetails, ApplicationForms>()
+               .ForMember(dest =>
+                   dest.Id,
+                   opt => opt.MapFrom(src => src.Id))
+               .ForMember(dest =>
+                   dest.Name,
+                   opt => opt.MapFrom(src => src.Name))
+               .ForMember(dest =>
+                   dest.Description,
+                   opt => opt.MapFrom(src => src.Description))
+               .ForMember(dest =>
+                   dest.IsAdd,
+                   opt => opt.MapFrom(src => src.IsAdd))
+               .ForMember(dest =>
+                   dest.IsUpdate,
+                   opt => opt.MapFrom(src => src.IsUpdate))
+               .ForMember(dest =>
+                   dest.IsDelete,
+                   opt => opt.MapFrom(src => src.IsDelete))
+               .ForMember(dest =>
+                   dest.IsView,
+                   opt => opt.MapFrom(src => src.IsView))
+               .ReverseMap();
+        }
     }
-}
+
 }
