@@ -43,7 +43,8 @@ namespace GridManagement.Api
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IAuthRepository, AuthRepository>();
-
+            services.AddScoped<IPageAccessService, PageAccessService>();
+            services.AddScoped<IPageAccessRepository, PageAccessRepository>();
             services.AddScoped<IGridRepository, GridRepository>();
             services.AddScoped<IGridService, GridService>();
             

@@ -23,7 +23,7 @@ namespace GridManagement.repository
         public List<UserDetails> getUser()
         {
             List<UserDetails> result = new List<UserDetails>();
-            var users = _context.Users.Where(x => x.IsActive == true).ToList();
+            var users = _context.Users.Where(x => x.IsDelete == false).ToList();
             result = _mapper.Map<List<UserDetails>>(users);
             return result;
         }
@@ -137,8 +137,8 @@ namespace GridManagement.repository
             ResponseMessage responseMessage = new ResponseMessage();
             try
             {
-                var user = new Users { Id = id };
-                _context.Entry(user).State = EntityState.Deleted;
+                var userData = _context.Users.Where(x => x.Id == id).FirstOrDefault();
+                userData.IsDelete = true;
                 _context.SaveChanges();
                 return responseMessage = new ResponseMessage()
                 {

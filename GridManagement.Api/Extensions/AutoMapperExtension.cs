@@ -191,6 +191,54 @@ namespace GridManagement.Api.Extensions
             .ForMember(dest =>
             dest.createdDate,
             opt => opt.MapFrom(src => src.CreatedAt));
+
+            CreateMap<PageAccess, RolesApplicationforms>()
+               .ForMember(dest =>
+                   dest.Id,
+                   opt => opt.MapFrom(src => src.Id))
+               .ForMember(dest =>
+                   dest.FormId,
+                   opt => opt.MapFrom(src => src.PageDetailId))
+               .ForMember(dest =>
+                   dest.RoleId,
+                   opt => opt.MapFrom(src => src.RoleId))
+               .ForMember(dest =>
+                   dest.IsAdd,
+                   opt => opt.MapFrom(src => src.IsAdd))
+               .ForMember(dest =>
+                   dest.IsUpdate,
+                   opt => opt.MapFrom(src => src.IsUpdate))
+               .ForMember(dest =>
+                   dest.IsDelete,
+                   opt => opt.MapFrom(src => src.IsDelete))
+               .ForMember(dest =>
+                   dest.IsView,
+                   opt => opt.MapFrom(src => src.IsView))
+               .ReverseMap();
+
+                CreateMap<PageDetails, ApplicationForms>()
+               .ForMember(dest =>
+                   dest.Id,
+                   opt => opt.MapFrom(src => src.Id))
+               .ForMember(dest =>
+                   dest.Name,
+                   opt => opt.MapFrom(src => src.Name))
+               .ForMember(dest =>
+                   dest.Description,
+                   opt => opt.MapFrom(src => src.Description))
+               .ForMember(dest =>
+                   dest.IsAdd,
+                   opt => opt.MapFrom(src => src.IsAdd))
+               .ForMember(dest =>
+                   dest.IsUpdate,
+                   opt => opt.MapFrom(src => src.IsUpdate))
+               .ForMember(dest =>
+                   dest.IsDelete,
+                   opt => opt.MapFrom(src => src.IsDelete))
+               .ForMember(dest =>
+                   dest.IsView,
+                   opt => opt.MapFrom(src => src.IsView))
+               .ReverseMap();
         }
     }
 
