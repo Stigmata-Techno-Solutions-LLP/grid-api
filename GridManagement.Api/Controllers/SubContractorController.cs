@@ -9,7 +9,7 @@ using GridManagement.Model.Dto;
 using Serilog;
 using System.Net;
 using Microsoft.AspNetCore.Http;
-
+using GridManagement.common;
 namespace GridManagement.Api.Controllers
 {
     [ApiController]
@@ -35,9 +35,13 @@ private readonly ISubContService _subContService;
             try
             {
                 var response = _subContService.AddSubCont(model);
-                 if (response == false) return BadRequest(new { message = "SubContractor Codeno. already exists" });
+                
                 return  StatusCode(201);
             }
+            catch(ValueNotFoundException e) {
+                return StatusCode(StatusCodes.Status400BadRequest, new ErrorClass() { code= StatusCodes.Status400BadRequest.ToString(), message=e.Message});
+            }
+            
             catch (Exception ex)
             {
                 Log.Logger.Error(ex.Message);
@@ -55,9 +59,13 @@ private readonly ISubContService _subContService;
              try
             {
                 var response = _subContService.UpdateSubCont(model, Id);
-                if (response == false) return BadRequest(new { message = "SubContractor doesn't exists" });
+                if (response == false) return BadRequest(new { message = "SubContractorId doesn't exists or SubcontractorCode alredy exists" });
                 return  StatusCode(204);
             }
+           catch(ValueNotFoundException e) {
+                return StatusCode(StatusCodes.Status400BadRequest, new ErrorClass() { code= StatusCodes.Status400BadRequest.ToString(), message=e.Message});
+            }
+             
             catch (Exception ex)
             {
                 Log.Logger.Error(ex.Message);
@@ -93,8 +101,13 @@ private readonly ISubContService _subContService;
         {
             try {
            var response = _subContService.DeleteSubCont(id);
+            
            return  StatusCode(204);                  
              }
+             catch(ValueNotFoundException e) {
+                return StatusCode(StatusCodes.Status400BadRequest, new ErrorClass() { code= StatusCodes.Status400BadRequest.ToString(), message=e.Message});
+            }
+            
             catch (Exception ex)
             {
                 Log.Logger.Error(ex.Message);

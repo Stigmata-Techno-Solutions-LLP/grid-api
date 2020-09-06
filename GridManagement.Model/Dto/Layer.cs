@@ -66,7 +66,7 @@ namespace GridManagement.Model.Dto
 
 
         [Display(Name = "Comapct tesing RFI Status")]
-        [EnumDataType(typeof(commonEnum.CT_RFIStatus), ErrorMessage = "RFI SStatus value doesn't exist within enum")]
+        //[EnumDataType(typeof(commonEnum.CT_RFIStatus), ErrorMessage = "RFI SStatus value doesn't exist within enum")]
         public commonEnum.CG_RFIStatus CT_RFI_status { get; set;}
 
 
@@ -84,7 +84,7 @@ namespace GridManagement.Model.Dto
 
 
         [Display(Name = "Level Verification RFI Status")]
-        [EnumDataType(typeof(commonEnum.LV_RFIStatus), ErrorMessage = "RFI SStatus value doesn't exist within enum")]
+       // [EnumDataType(typeof(commonEnum.LV_RFIStatus), ErrorMessage = "RFI SStatus value doesn't exist within enum")]
         public commonEnum.CG_RFIStatus LV_RFI_status { get; set;}
 
 

@@ -21,27 +21,8 @@ namespace GridManagement.Model.Dto
         [Display(Name = "User Id")]
         public int user_id { get; set; }
 
-        [Display(Name = "RFI No")]
-        public string CG_RFIno { get; set; }
-
-        [Display(Name = "RFI Inspection Date")]
-        [DataType(DataType.Date)]
-        public string CG_inspection_date { get; set; }
-
-
-        [Display(Name = "RFI Approval Date")]
-        [DataType(DataType.Date)]
-        public string CG_approval_date { get; set; }
-
-
-
-        
-        [EnumDataType(typeof(commonEnum.CG_RFIStatus), ErrorMessage = "RFI SStatus value doesn't exist within enum")]
-        public commonEnum.CG_RFIStatus CG_RFI_status { get; set;}
-
         [Required]
         public List<GridGeoLocation> gridGeoLocation { get; set;}
-
     }
 
     public class GridGeoLocation
@@ -53,6 +34,8 @@ namespace GridManagement.Model.Dto
         [Required]
         [Display(Name = "Longitide Value")]
         public decimal longitude { get; set; }
+
+        public int grid_id { get; set; }
     }
 
     public class GridNo {
@@ -64,7 +47,7 @@ namespace GridManagement.Model.Dto
         public  string gridId {get;set;}
 
         public  string gridNo {get;set;}
-        public bool status { get; set; }
+        public string status { get; set; }
 
         [Display(Name = "RFI No")]
         public string CG_RFIno { get; set; }
@@ -95,7 +78,35 @@ namespace GridManagement.Model.Dto
         public List<GridGeoLocation> gridGeoLocation { get; set;}
         public DateTime createdAt {get;set;}
         public DateTime updatedAt {get;set;}
+          public string createdBy {get;set;}
+        public string updatedBy {get;set;}
 
     }
 
+
+public class AddCG_RFI {
+        [Required]
+        [Display(Name = "User Id")]
+        public int user_id { get; set; }
+
+        [Required]
+        [Display(Name = "Grid Id")]
+        public int grid_id { get; set; }
+        [Required]
+        [Display(Name = "RFI No")]
+        public string CG_RFIno { get; set; }
+
+        [Display(Name = "RFI Inspection Date")]
+        [DataType(DataType.Date)]
+        public DateTime CG_inspection_date { get; set; }
+
+
+        [Display(Name = "RFI Approval Date")]
+        [DataType(DataType.Date)]
+        public DateTime CG_approval_date { get; set; }
+
+        [EnumDataType(typeof(commonEnum.CG_RFIStatus), ErrorMessage = "RFI SStatus value doesn't exist within enum")]
+        public commonEnum.CG_RFIStatus CG_RFI_status { get; set;}
+
+}
 }

@@ -7,6 +7,7 @@
   <ItemGroup>
     <ProjectReference Include="..\GridManagement.domain\GridManagement.domain.csproj" />
     <ProjectReference Include="..\GridManagement.Model\GridManagement.Model.csproj" />
+        <ProjectReference Include="..\GridManagement.domain\GridManagement.common.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Microsoft.EntityFrameworkCore, Version=3.1.7.0, Culture=neutral, PublicKeyToken=adb9793829ddae60" />

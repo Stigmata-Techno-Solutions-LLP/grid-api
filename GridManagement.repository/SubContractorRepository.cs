@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using AutoMapper;
 using System.Linq;
 using System.Collections.Generic;
-
+using GridManagement.common;
 using System.Threading.Tasks;
 
 namespace GridManagement.repository
@@ -28,10 +28,7 @@ namespace GridManagement.repository
         {
             try
             {
-                if (_context.Subcontractors.Where(x => x.Code == subContReq.code).Count() > 0)
-                {
-                    return false;
-                }
+                if (_context.Subcontractors.Where(x => x.Code == subContReq.code).Count() > 0) throw new ValueNotFoundException("SubContractorId already exists");             
                 Subcontractors subCont = _mapper.Map<Subcontractors>(subContReq);
                 subCont.CreatedBy = subContReq.user_id;
                _context.Subcontractors.Add(subCont);
@@ -48,14 +45,19 @@ namespace GridManagement.repository
         {
             try
             {
-                if (_context.Subcontractors.Where(x => x.Id == Id).Count() > 0)
-                {
-                    return false;
-                }
-                Subcontractors subCont = _mapper.Map<Subcontractors>(subContReq);
-                //will add updateby field
-                // subCont. = subContReq.user_id;
-               _context.Subcontractors.Update(subCont);
+                Subcontractors subCont = _context.Subcontractors.Where(x => x.Id == Id).FirstOrDefault();
+                if (subCont == null ) throw new ValueNotFoundException("SubContrtactorId doesn't exists");
+                
+             if ( _context.Subcontractors.Where(x => x.Code == subContReq.code && x.Id != Id).Count() >0 ) throw new ValueNotFoundException("new value SubContractor Code already exists, give unique value");                           
+                // subCont = _mapper.Map<Subcontractors>(subContReq);
+                subCont.Email = subContReq.email;
+                subCont.Mobile = subContReq.phone;
+                subCont.Name = subContReq.name;
+            subCont.Code = subContReq.code;
+            subCont.ContactName = subContReq.contact_person;
+            subCont.Address = subContReq.contact_address;
+                subCont.UpdatedBy= subContReq.user_id;  
+                            //    _context.Entry(subCont).State = EntityState.Modified;            
                 _context.SaveChanges();             
                 return true;
             }
@@ -68,8 +70,11 @@ namespace GridManagement.repository
         public bool DeleteSubContractor(int Id)
         {
             try
-            {                     
-                _context.Remove(_context.Subcontractors.Where(x=>x.Id == Id));          
+            {                    
+               Subcontractors subCon =  _context.Subcontractors.Where(x=>x.Id == Id).FirstOrDefault(); 
+               if (subCon == null) throw new ValueNotFoundException("SubContrtactorId doesn't exists");
+                _context.Remove(subCon);  
+                 _context.SaveChanges();        
                 return true;
             }
             catch (Exception ex)
@@ -82,9 +87,12 @@ namespace GridManagement.repository
         {
             try
             {     
-                List<Subcontractors> lstSubCont = new List<Subcontractors>();
-                lstSubCont  = _context.Subcontractors.ToList();             
-                List<SubContractorDetails> lstSubContDetails = _mapper.Map<List<SubContractorDetails>>(lstSubCont);
+
+                var res = _context.Subcontractors
+        .Include(c => c.CreatedByNavigation)
+        .ToList();
+          List<SubContractorDetails> lstSubContDetails = _mapper.Map<List<SubContractorDetails>>(res);
+
                 return lstSubContDetails;
             }
             catch (Exception ex)

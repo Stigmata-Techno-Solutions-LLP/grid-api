@@ -48,6 +48,26 @@ namespace GridManagement.service
             }
         }
 
+
+        public bool UpdateGrid( AddGrid gridReq, int Id) {
+            return _gridRepo.UpdateGrid(gridReq, Id);
+        }
+
+         public bool CleaningGrubbingEntry( AddCG_RFI gridReq, int Id) {
+            return _gridRepo.CleaningGrubEntry(gridReq, Id);
+        }
+        public bool DeleteGrid( int Id) {
+            return _gridRepo.DeleteGrid( Id);
+        }
+
+         public List<GridDetails> GetGridList(gridFilter filterReq) {
+            return _gridRepo.GetGridList(filterReq);
+        }
+
+ public List<GridNo> GetGridNoList() {
+            return _gridRepo.GetGridNoList();
+        }
+
     }
 
 

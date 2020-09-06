@@ -41,19 +41,19 @@ namespace GridManagement.Model.Dto
         public string name {get;set;}           
         public string code {get;set;}
 
-        public string contact_person {get;set;}
+        public string? contact_person {get;set;}
        
-        public string contact_address {get;set;}
+        public string? contact_address {get;set;}
         
-        public string phone {get;set;}
+        public string? phone {get;set;}
                 
-        public string email {get;set;}
+        public string? email {get;set;}
 
-        public string createdBy{get;set;}
-        public string updatedBy{get;set;}
+        public string? createdBy{get;set;}
+        public string? updatedBy{get;set;}
 
-        public DateTime createdDate{get;set;}
-        public DateTime updatedDate{get;set;}
+        public DateTime? createdDate{get;set;}
+        public DateTime? updatedDate{get;set;}
 
     }
 
