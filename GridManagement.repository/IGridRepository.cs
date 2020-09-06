@@ -13,6 +13,13 @@ namespace GridManagement.repository
         List<GridDetails> GetGridList(gridFilter filterReq);
          bool CleaningGrubEntry(AddCG_RFI gridCGReq, int Id);
 
-               public List<GridNo> GetGridNoList();
+        public List<GridNo> GetGridNoList();
+
+
+        public List<LayerNo> GetLayerNoList();
+
+        public List<layerDtls> GetLayerList(layerFilter filterReq);
+        public bool CreateClientBilling(AddClientBilling billingReq);
+        
     }
 }

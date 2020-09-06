@@ -9,6 +9,7 @@ namespace GridManagement.domain.Models
         public int? ClientBillingId { get; set; }
         public int? LayerDetailsId { get; set; }
 
+        public virtual ClientBilling ClientBilling { get; set; }
         public virtual LayerDetails LayerDetails { get; set; }
     }
 }

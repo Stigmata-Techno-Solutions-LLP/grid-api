@@ -8,6 +8,7 @@ using System.Linq;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using GridManagement.common;
+using System.Reflection;
 namespace GridManagement.repository
 {
 
@@ -143,6 +144,68 @@ namespace GridManagement.repository
         }
     
 
+
+
+        public List<layerDtls> GetLayerList(layerFilter filterReq)
+        {
+            try
+            {     
+bool isFilterReqEmpty = true;
+dynamic res =null;
+        // foreach(PropertyInfo pi in filterReq.GetType().GetProperties())
+        // {
+        //         string value = (object)pi.GetValue(filterReq);
+        //         if(!string.IsNullOrEmpty(value))
+        //         {
+        //             isFilterReqEmpty = false;
+        //         }
+            
+        // }
+        if (string.IsNullOrEmpty(filterReq.gridNo) && string.IsNullOrEmpty(filterReq.layerNo) && string.IsNullOrEmpty(filterReq.CT_RFIno) && string.IsNullOrEmpty(filterReq.CT_RFI_status.ToString()) 
+        && string.IsNullOrEmpty(filterReq.isBillGenerated.ToString()) && string.IsNullOrEmpty(filterReq.layerStatus) && string.IsNullOrEmpty(filterReq.subContractorId.ToString()) 
+        ){
+    res = _context.LayerDetails
+    .Include(c=>c.Layer)
+        .Include(c => c.LayerSubcontractors)
+        .Include(c =>c.LayerDocuments)
+       .ToList();
+
+
+        }
+
+        else 
+        {
+
+            Layers layer = _context.Layers.Where(x=>x.Layerno == filterReq.layerNo).FirstOrDefault();
+            Grids grid = _context.Grids.Where(x=>x.Gridno == filterReq.gridNo).FirstOrDefault();
+
+res = _context.LayerDetails
+        .Include(c => c.LayerSubcontractors)
+        .Include(c =>c.LayerDocuments)
+       .ToList().Where(x=> (!string.IsNullOrEmpty( filterReq.gridNo) ? x.GridId == (grid ==null ? 0 : grid.Id): 
+       !string.IsNullOrEmpty(filterReq.layerNo) ? x.LayerId == (grid == null ? 0: grid.Id) : 
+       !string.IsNullOrEmpty(filterReq.CT_RFIno) ? x.CtRfino == filterReq.CT_RFIno:
+        !string.IsNullOrEmpty(filterReq.CT_RFI_status.ToString()) ? x.CtRfiStatus == filterReq.CT_RFI_status.ToString() : 
+      !string.IsNullOrEmpty(filterReq.LV_RFIno) ? x.LvRfino == filterReq.LV_RFIno:
+        !string.IsNullOrEmpty(filterReq.LV_RFI_status.ToString()) ? x.LvRfiStatus == filterReq.LV_RFI_status.ToString() : 
+       !string.IsNullOrEmpty(filterReq.isBillGenerated.ToString()) ? x.IsBillGenerated == filterReq.isBillGenerated:
+       !string.IsNullOrEmpty(filterReq.layerStatus) ? x.Status == filterReq.layerStatus:
+       !string.IsNullOrEmpty(filterReq.subContractorId.ToString()) ? x.LayerSubcontractors == x.LayerSubcontractors.Where(x=>x.SubcontractorId ==  filterReq.subContractorId):
+       true));
+          
+        }
+      
+          List<layerDtls> lstGridDetails = _mapper.Map<List<layerDtls>>(res);
+
+                return lstGridDetails;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+    
+
       public List<GridNo> GetGridNoList()
         {
             try
@@ -163,15 +226,40 @@ namespace GridManagement.repository
         public bool InsertNewLayer(AddLayer layerReq)
         {
             try
-            {               
+            {             
+
+                LayerDetails layerDtls = _context.LayerDetails.Where(x=>x.GridId == layerReq.gridId && x.LayerId == layerReq.layerId).FirstOrDefault();
+                int layerId;
+                if (layerDtls != null) {
+                    layerId = layerDtls.Id;
+                layerDtls.AreaLayer = layerReq.area_layer;
+                layerDtls.UpdatedBy = layerReq.user_id;
+                layerDtls.CtApprovalDate = layerReq.CT_approval_date;
+                layerDtls.CtInspectionDate = layerReq.CT_inspection_date;
+                layerDtls.CtRfino = layerReq.CT_RFIno;
+                layerDtls.CtRfiStatus = layerReq.CT_RFI_status.ToString();
+                layerDtls.FillingDate = layerReq.fillingDate;
+                layerDtls.FillingMaterial = layerReq.fillingMaterial;
+                layerDtls.FillType = layerReq.fillType;
+                layerDtls.LvApprovalDate = layerReq.LV_approval_date;
+                layerDtls.LvInspectionDate = layerReq.LV_inspection_date;
+                layerDtls.LvRfino = layerReq.LV_RFIno;
+                layerDtls.LvRfiStatus = layerReq.LV_RFI_status.ToString();
+                layerDtls.Remarks = layerReq.remarks;
+                layerDtls.ToplevelFillmaterial = layerReq.topFillMaterial;
+                layerDtls.TotalQuantity = layerReq.totalQuantity;   
+                
+                }  
+                else {
                 LayerDetails layer = _mapper.Map<LayerDetails>(layerReq);
                 _context.LayerDetails.Add(layer);
                 _context.SaveChanges();
-
+                layerId= layer.Id;
+                }
                 foreach (LayerSubcontractor ls in layerReq.layerSubContractor)
                 {
                     LayerSubcontractors layerSub = new LayerSubcontractors();
-                    layerSub.LayerdetailsId = layer.Id;
+                    layerSub.LayerdetailsId = layerId;
                     layerSub.SubcontractorId = ls.subContractorId;
                     layerSub.Quantity = ls.quantity;
                     _context.LayerSubcontractors.Add(layerSub);
@@ -185,6 +273,72 @@ namespace GridManagement.repository
             }
         }
 
+
+
+
+        public bool CreateClientBilling(AddClientBilling billingReq)
+        {
+            try
+            {        
+
+                
+if (_context.ClientBilling.Where(x=>x.Ipcno == billingReq.IPCNo).Count()>0 ) throw new ValueNotFoundException("IPC No already exists"); 
+
+using (var transaction = _context.Database.BeginTransaction())
+    {
+        try
+        {
+
+ClientBilling clBill = new ClientBilling();
+clBill.ClientId = _context.Clients.FirstOrDefault().Id;
+clBill.CreatedBy = billingReq.userId;
+clBill.Ipcno = billingReq.IPCNo;
+clBill.BillMonth = billingReq.billingMonth;
+
+                _context.ClientBilling.Add(clBill);
+                              _context.SaveChanges();
+
+  foreach (BillingLayerGrid  blGrid in billingReq.billingLayerGrid)
+                {
+                    ClientBillingLayerDetails clBillingLayerDtls = new ClientBillingLayerDetails();
+                     foreach(int lyId in blGrid.layerDtlsId) {
+                        clBillingLayerDtls.ClientBillingId =clBill.Id;
+                       clBillingLayerDtls.LayerDetailsId = lyId;
+                    _context.ClientBillingLayerDetails.Add(clBillingLayerDtls);
+                     }                  
+                }
+               _context.SaveChanges();
+              
+
+            transaction.Commit();
+        } catch(Exception ex) {
+transaction.Rollback();
+throw ex;
+        }
+    }
+                return true;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+      public List<LayerNo> GetLayerNoList()
+        {
+            try
+            {     
+          
+          List<LayerNo> lstLayers = _mapper.Map<List<LayerNo>>(_context.Layers.ToList());
+
+                return lstLayers;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+    
 
         public void Dispose()
         {
@@ -202,16 +356,7 @@ namespace GridManagement.repository
     }
    
 
-    public class GridDataNotFoundException : Exception
-{
-     public GridDataNotFoundException()
-    {
-    }
 
-    public GridDataNotFoundException(string message)
-        : base(message)
-    {
-    }
 
-}
+
 }
