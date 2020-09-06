@@ -48,7 +48,6 @@ namespace GridManagement.service
             }
         }
 
-
         public bool UpdateGrid( AddGrid gridReq, int Id) {
             return _gridRepo.UpdateGrid(gridReq, Id);
         }
@@ -64,8 +63,19 @@ namespace GridManagement.service
             return _gridRepo.GetGridList(filterReq);
         }
 
- public List<GridNo> GetGridNoList() {
+        public List<GridNo> GetGridNoList() {
             return _gridRepo.GetGridNoList();
+        }
+
+         public List<LayerNo> GetLayerNoList() {
+            return _gridRepo.GetLayerNoList();
+        }
+         public List<layerDtls> GetLayerList(layerFilter filterReq) {
+            return _gridRepo.GetLayerList(filterReq);
+        }
+
+         public bool CreateClientBilling(AddClientBilling billingReq) {
+            return _gridRepo.CreateClientBilling(billingReq);
         }
 
     }

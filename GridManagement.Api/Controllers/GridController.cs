@@ -156,8 +156,6 @@ namespace GridManagement.Api.Controllers
             }     
         }
 
-
-
     }
 
 
@@ -188,6 +186,9 @@ private readonly IGridService _gridService;
                
                 return Ok(response);
             }
+            catch(ValueNotFoundException e) {
+                return StatusCode(StatusCodes.Status400BadRequest, new ErrorClass() { code= StatusCodes.Status400BadRequest.ToString(), message=e.Message});
+            }
             catch (Exception ex)
             {
                 Log.Logger.Error(ex.Message);
@@ -199,26 +200,83 @@ private readonly IGridService _gridService;
         [HttpGet]
         [ProducesResponseType(401)]
         [ProducesResponseType(200)]        
-        [Route("GetLayerNoList")]
-        public async Task<ActionResult<List<LayerNo>>> GetLayerNoList()
+        [Route("LayerList")]
+        public async Task<ActionResult<List<layerDtls>>> GetLayerList([FromQuery]layerFilter layerFilter)
         {
-            dynamic response = null;
-           return Ok(await response);         
+              try {
+           var response =  _gridService.GetLayerList(layerFilter);
+           return Ok(response); 
+            }
+            
+            catch (Exception ex)
+            {
+                Log.Logger.Error(ex.StackTrace);
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }          
         }
+
 
 
         [HttpGet]
         [ProducesResponseType(401)]
         [ProducesResponseType(200)]        
-        [Route("LayerList")]
-        public async Task<ActionResult<List<AddLayer>>> GetLayerList(layerFilter gridFilter)
+        [Route("LayerNoList")]
+        public async Task<ActionResult<List<GridNo>>> GetGridNoList()
         {
-            dynamic response = null;
-           return Ok(await response);         
+              try {
+           var response =  _gridService.GetLayerNoList();
+           return Ok(response); 
+            }
+            catch (Exception ex)
+            {
+                Log.Logger.Error(ex.StackTrace);
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }        
         }
-       
+ 
+
 
     #endregion
+    }
+
+
+
+    [ApiController]
+    [Route("api/[controller]")]
+    public class ClientController : ControllerBase
+    {
+
+
+        private readonly IGridService _gridService;
+
+        public ClientController(IGridService gridService)
+        {
+            _gridService = gridService;
+        }
+
+        [HttpPost]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(401)]
+        [ProducesResponseType(201)]
+        [Route("CreateClientBilling")]
+        public IActionResult CLientBilling(AddClientBilling model)
+        {
+            try
+            {
+                var response = _gridService.CreateClientBilling(model);
+               
+                return Ok(response);
+            }
+            catch(ValueNotFoundException e) {
+                return StatusCode(StatusCodes.Status400BadRequest, new ErrorClass() { code= StatusCodes.Status400BadRequest.ToString(), message=e.Message});
+            }
+            catch (Exception ex)
+            {
+                Log.Logger.Error(ex.Message);
+                // return StatusCode InternalServerError(ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
     }
 
 

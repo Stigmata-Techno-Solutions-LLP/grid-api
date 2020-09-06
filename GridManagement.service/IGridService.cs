@@ -16,9 +16,10 @@ namespace GridManagement.service
         public List<GridDetails> GetGridList(gridFilter filterReq); 
         public bool DeleteGrid( int Id);
         public bool CleaningGrubbingEntry( AddCG_RFI gridReq, int Id);
-                public List<GridNo> GetGridNoList(); 
+        public List<GridNo> GetGridNoList(); 
+
+        public List<LayerNo> GetLayerNoList();
+        public List<layerDtls> GetLayerList(layerFilter filterReq);
+        public bool CreateClientBilling(AddClientBilling billingReq);
         }
-
-
-
 }

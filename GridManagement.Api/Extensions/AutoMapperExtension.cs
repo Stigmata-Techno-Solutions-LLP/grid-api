@@ -109,6 +109,15 @@ namespace GridManagement.Api.Extensions
                         opt => opt.MapFrom(src =>  src.GridGeolocations));    
                     
 
+ CreateMap<Layers,LayerNo>()                   
+                    .ForMember(dest =>
+                        dest.layerNo,
+                        opt => opt.MapFrom(src => src.Layerno))
+
+                    .ForMember(dest =>
+                        dest.Id,
+                        opt => opt.MapFrom(src => src.Id));   
+        
 
             CreateMap<AddLayer, LayerDetails>()
 
@@ -146,8 +155,6 @@ namespace GridManagement.Api.Extensions
                          .ForMember(dest =>
                             dest.FillType,
                             opt => opt.MapFrom(src => src.fillType))
-
-
                         .ForMember(dest =>
                             dest.LvApprovalDate,
                             opt => opt.MapFrom(src => src.LV_approval_date))
@@ -166,13 +173,90 @@ namespace GridManagement.Api.Extensions
                             opt => opt.MapFrom(src => src.remarks))
                          .ForMember(dest =>
                          dest.ToplevelFillmaterial,
-                         opt => opt.MapFrom(src => src.topFillMaterial))
+                         opt => opt.MapFrom(src => src.topFillMaterial));
 
                         //.ForMember(dest =>
                         //   dest.LayerSubcontractors,
                         //   opt => opt.MapFrom(src => src.layerSubContractor))
 
-                        .ReverseMap();
+        CreateMap< LayerSubcontractors,LayerSubcontractor>()
+            .ForMember(dest =>
+                dest.layerDtlsId,
+                opt => opt.MapFrom(src => src.LayerdetailsId))
+               .ForMember(dest =>
+                dest.quantity,
+                opt => opt.MapFrom(src => src.Quantity))
+                .ForMember(dest =>
+                dest.subContractorId,
+                opt => opt.MapFrom(src => src.SubcontractorId));
+
+
+  CreateMap<LayerDetails, layerDtls>()
+
+                        .ForMember(dest =>
+                            dest.layerId,
+                            opt => opt.MapFrom(src => src.LayerId))
+                        .ForMember(dest =>
+                            dest.layerDtlsId,
+                            opt => opt.MapFrom(src => src.Id))
+                        .ForMember(dest =>
+                            dest.gridId,
+                            opt => opt.MapFrom(src => src.GridId))
+                        .ForMember(dest =>
+                            dest.area_layer,
+                            opt => opt.MapFrom(src => src.AreaLayer))
+                        .ForMember(dest =>
+                            dest.createdAt,
+                            opt => opt.MapFrom(src => src.CreatedAt))
+                        .ForMember(dest =>
+                            dest.CT_inspection_date,
+                            opt => opt.MapFrom(src => src.CtInspectionDate))
+                         .ForMember(dest =>
+                            dest.CT_approval_date,
+                            opt => opt.MapFrom(src => src.CtApprovalDate))
+
+                        .ForMember(dest =>
+                            dest.CT_RFIno,
+                            opt => opt.MapFrom(src => src.CtRfino))
+                        .ForMember(dest =>
+                            dest.CT_RFI_status,
+                            opt => opt.MapFrom(src => src.CtRfiStatus))
+                        .ForMember(dest =>
+                            dest.fillingDate,
+                            opt => opt.MapFrom(src => src.FillingDate))
+                        .ForMember(dest =>
+                            dest.fillingMaterial,
+                            opt => opt.MapFrom(src => src.FillingMaterial))
+                         .ForMember(dest =>
+                            dest.fillType,
+                            opt => opt.MapFrom(src => src.FillType))
+                        .ForMember(dest =>
+                            dest.LV_approval_date,
+                            opt => opt.MapFrom(src => src.LvApprovalDate))
+                        .ForMember(dest =>
+                            dest.LV_inspection_date ,
+                            opt => opt.MapFrom(src => src.LvInspectionDate))
+                        .ForMember(dest =>
+                            dest.LV_RFIno ,
+                            opt => opt.MapFrom(src => src.LvRfino))
+                                               
+                        .ForMember(dest =>                                
+                            dest.LV_RFI_status,
+                            opt => opt.MapFrom(src => src.LvRfiStatus))
+                         .ForMember(dest =>
+                            dest.remarks,
+                            opt => opt.MapFrom(src => src.Remarks))
+                         .ForMember(dest =>
+                         dest.topFillMaterial,
+                         opt => opt.MapFrom(src => src.ToplevelFillmaterial))
+                         .ForMember(dest =>
+                         dest.layerSubContractor,
+                         opt => opt.MapFrom(src => src.LayerSubcontractors))
+                         .ForMember(dest =>
+                         dest.layerNo,
+                         opt => opt.MapFrom(src => src.Layer.Layerno));
+
+
 
 
             CreateMap<UserDetails, Users>()

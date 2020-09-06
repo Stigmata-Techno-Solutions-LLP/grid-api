@@ -53,7 +53,7 @@ namespace GridManagement.Model.Dto
         public string CG_RFIno { get; set; }
                 
         [EnumDataType(typeof(commonEnum.CG_RFIStatus), ErrorMessage = "RFI SStatus value doesn't exist within enum")]
-        public commonEnum.CG_RFIStatus CG_RFI_status { get; set;}
+        public commonEnum.CG_RFIStatus? CG_RFI_status { get; set;} = null;
     }
 
 
@@ -73,7 +73,7 @@ namespace GridManagement.Model.Dto
         public string CG_approval_date { get; set; }
 
         [EnumDataType(typeof(commonEnum.CG_RFIStatus), ErrorMessage = "RFI SStatus value doesn't exist within enum")]
-        public commonEnum.CG_RFIStatus CG_RFI_status { get; set;}
+        public commonEnum.CG_RFIStatus? CG_RFI_status { get; set;} =null;
 
         public List<GridGeoLocation> gridGeoLocation { get; set;}
         public DateTime createdAt {get;set;}

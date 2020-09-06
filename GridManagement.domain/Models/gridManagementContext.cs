@@ -6,7 +6,6 @@ namespace GridManagement.domain.Models
 {
     public partial class gridManagementContext : DbContext
     {
-    
 
         public gridManagementContext(DbContextOptions<gridManagementContext> options)
             : base(options)
@@ -33,6 +32,7 @@ namespace GridManagement.domain.Models
         {
             if (!optionsBuilder.IsConfigured)
             {
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
                 optionsBuilder.UseSqlServer("Server=landt.ctxkj3vcelr3.ap-southeast-1.rds.amazonaws.com;Database=gridManagement;User Id=admin;Password=PlH34cwug3tqupePJcAp;");
             }
         }
@@ -102,6 +102,10 @@ namespace GridManagement.domain.Models
             {
                 entity.ToTable("client_billing");
 
+                entity.HasIndex(e => e.Ipcno)
+                    .HasName("UQ__client_b__650AE673936289D9")
+                    .IsUnique();
+
                 entity.Property(e => e.Id).HasColumnName("id");
 
                 entity.Property(e => e.BillMonth)
@@ -116,8 +120,6 @@ namespace GridManagement.domain.Models
                     .HasDefaultValueSql("(getdate())");
 
                 entity.Property(e => e.CreatedBy).HasColumnName("created_by");
-
-                entity.Property(e => e.GridLayerDetails).HasColumnName("grid_layer_details");
 
                 entity.Property(e => e.Ipcno)
                     .IsRequired()
@@ -146,10 +148,15 @@ namespace GridManagement.domain.Models
 
                 entity.Property(e => e.LayerDetailsId).HasColumnName("layer_details_id");
 
+                entity.HasOne(d => d.ClientBilling)
+                    .WithMany(p => p.ClientBillingLayerDetails)
+                    .HasForeignKey(d => d.ClientBillingId)
+                    .HasConstraintName("client_billinglayerDtls_clientBilling_id__fkey");
+
                 entity.HasOne(d => d.LayerDetails)
                     .WithMany(p => p.ClientBillingLayerDetails)
                     .HasForeignKey(d => d.LayerDetailsId)
-                    .HasConstraintName("client_billing_layerDtls_id__fkey");
+                    .HasConstraintName("client_billinglayerDtls_LayerDetks_id__fkey");
             });
 
             modelBuilder.Entity<Clients>(entity =>
@@ -207,7 +214,7 @@ namespace GridManagement.domain.Models
                 entity.ToTable("grids");
 
                 entity.HasIndex(e => e.Gridno)
-                    .HasName("UQ__grids__4FA6C35D0184446D")
+                    .HasName("UQ__grids__4FA6C35D75D33D35")
                     .IsUnique();
 
                 entity.Property(e => e.Id).HasColumnName("id");
@@ -456,7 +463,7 @@ namespace GridManagement.domain.Models
                 entity.ToTable("layers");
 
                 entity.HasIndex(e => e.Layerno)
-                    .HasName("UQ__layers__91C38FFC7438194F")
+                    .HasName("UQ__layers__91C38FFCDC1B966D")
                     .IsUnique();
 
                 entity.Property(e => e.Id).HasColumnName("id");
@@ -540,7 +547,7 @@ namespace GridManagement.domain.Models
                 entity.ToTable("subcontractors");
 
                 entity.HasIndex(e => e.Code)
-                    .HasName("UQ__subcontr__357D4CF98B4C4C3F")
+                    .HasName("UQ__subcontr__357D4CF929B5CA35")
                     .IsUnique();
 
                 entity.Property(e => e.Id).HasColumnName("id");
@@ -606,11 +613,11 @@ namespace GridManagement.domain.Models
                 entity.ToTable("users");
 
                 entity.HasIndex(e => e.Email)
-                    .HasName("UQ__users__AB6E6164E1914CAF")
+                    .HasName("UQ__users__AB6E6164BB1CE797")
                     .IsUnique();
 
                 entity.HasIndex(e => e.Username)
-                    .HasName("UQ__users__F3DBC5729B5CBF10")
+                    .HasName("UQ__users__F3DBC57258407A12")
                     .IsUnique();
 
                 entity.Property(e => e.Id).HasColumnName("id");
