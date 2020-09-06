@@ -3,7 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using System;
 using GridManagement.Model.Dto;
 using GridManagement.domain.Models;
-
+using System.Collections.Generic;
 namespace GridManagement.Api.Extensions
 {
     public static class AutoMapperExtension
@@ -23,14 +23,38 @@ namespace GridManagement.Api.Extensions
         {
             /// Hero Map
             
-            CreateMap<AddUser, Users>()
+        CreateMap<AddUser, Users>()
                     .ForMember(dest =>
                         dest.CreatedBy,
                         opt => opt.MapFrom(src => src.user_id))                   
                     .ReverseMap();
+
+              CreateMap<Grids,GridNo>()                   
+                    .ForMember(dest =>
+                        dest.gridNo,
+                        opt => opt.MapFrom(src => src.Gridno))
+
+                    .ForMember(dest =>
+                        dest.Id,
+                        opt => opt.MapFrom(src => src.Id));   
         
-                CreateMap<AddGrid, Grids>()
-                   
+
+                CreateMap<AddGrid, Grids>()                   
+                    .ForMember(dest =>
+                        dest.GridArea,
+                        opt => opt.MapFrom(src => src.grid_area))
+
+                    .ForMember(dest =>
+                        dest.Gridno,
+                        opt => opt.MapFrom(src => src.gridno))   
+                     .ForMember(dest =>
+                        dest.CreatedBy,
+                        opt => opt.MapFrom(src => src.user_id))
+                    .ReverseMap();
+
+
+        
+                CreateMap<AddCG_RFI, Grids>()                   
                     .ForMember(dest =>
                         dest.CgRfino,
                         opt => opt.MapFrom(src => src.CG_RFIno))
@@ -43,14 +67,25 @@ namespace GridManagement.Api.Extensions
                     .ForMember(dest =>
                         dest.CgApprovalDate,
                         opt => opt.MapFrom(src => src.CG_approval_date))
-                    .ForMember(dest =>
-                        dest.GridArea,
-                        opt => opt.MapFrom(src => src.grid_area))
+                   
                      .ForMember(dest =>
                         dest.CreatedBy,
                         opt => opt.MapFrom(src => src.user_id))
                     .ReverseMap();
             
+
+  CreateMap<GridGeolocations, GridGeoLocation>()
+                     .ForMember(dest =>
+                        dest.latitude,
+                        opt => opt.MapFrom(src => src.Latitude))
+                    .ForMember(dest =>
+                        dest.longitude,
+                        opt => opt.MapFrom(src => src.Longitude))
+                         .ForMember(dest =>
+                        dest.grid_id,
+                        opt => opt.MapFrom(src => src.GridId));
+
+                        
   CreateMap<Grids, GridDetails>()
                      .ForMember(dest =>
                         dest.gridId,
@@ -73,9 +108,12 @@ namespace GridManagement.Api.Extensions
                      .ForMember(dest =>
                         dest.createdBy,
                         opt => opt.MapFrom(src => src.CreatedByNavigation.CreatedBy))
-                        .ForMember(dest =>
+                    .ForMember(dest =>
                         dest.updatedBy,
-                        opt => opt.MapFrom(src => src.UpdatedByNavigation.UpdatedBy));
+                        opt => opt.MapFrom(src => src.UpdatedByNavigation.UpdatedBy))
+                    .ForMember(dest =>
+                        dest.gridGeoLocation,
+                        opt => opt.MapFrom(src =>  src.GridGeolocations));    
             
 
         CreateMap<AddLayer, LayerDetails>()

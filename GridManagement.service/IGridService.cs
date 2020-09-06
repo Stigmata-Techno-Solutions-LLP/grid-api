@@ -13,8 +13,10 @@ namespace GridManagement.service
 
         public bool UpdateGrid(AddGrid gridReq, int Id);
 
-        public List<GridDetails> GetGridList(); 
+        public List<GridDetails> GetGridList(gridFilter filterReq); 
         public bool DeleteGrid( int Id);
+        public bool CleaningGrubbingEntry( AddCG_RFI gridReq, int Id);
+                public List<GridNo> GetGridNoList(); 
         }
 
 

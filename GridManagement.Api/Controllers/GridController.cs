@@ -9,7 +9,7 @@ using GridManagement.Model.Dto;
 using Serilog;
 using System.Net;
 using Microsoft.AspNetCore.Http;
-
+using GridManagement.common;
 // For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace GridManagement.Api.Controllers
@@ -27,8 +27,6 @@ namespace GridManagement.Api.Controllers
         }
 
 
-#region Grid API endpoints 
-
         [HttpPost]
         [ProducesResponseType(401)]
         [ProducesResponseType(201)]        
@@ -37,10 +35,36 @@ namespace GridManagement.Api.Controllers
         {
             try
             {
-                var response = _gridService.AddGrid(model);
-                if (response == false) return BadRequest(new { message = "Grid no. already exists" });
-
+                var response = _gridService.AddGrid(model);               
                 return Ok(response);
+            }
+            catch(ValueNotFoundException e) {
+                return StatusCode(StatusCodes.Status400BadRequest, new ErrorClass() { code= StatusCodes.Status400BadRequest.ToString(), message=e.Message});
+            }
+            catch (Exception ex)
+            {
+                Log.Logger.Error(ex.StackTrace);
+                // return StatusCode InternalServerError(ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+
+
+
+        [HttpPost]
+        [ProducesResponseType(401)]
+        [ProducesResponseType(201)]        
+        [Route("CreateCG/{id}")]
+        public IActionResult CreateCleaningGrubing(AddCG_RFI model, int id)
+        {
+            try
+            {
+                var response = _gridService.CleaningGrubbingEntry(model, id);
+
+           return  StatusCode(201);   
+            }
+             catch(ValueNotFoundException e) {
+                return StatusCode(StatusCodes.Status400BadRequest, new ErrorClass() { code= StatusCodes.Status400BadRequest.ToString(), message=e.Message});
             }
             catch (Exception ex)
             {
@@ -49,38 +73,41 @@ namespace GridManagement.Api.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
-
-
-      
-
-        [ProducesResponseType(401)]
-        [ProducesResponseType(200)]
-        [HttpGet]
-        [Route("GridNoList")]
-        public async Task<ActionResult<List<GridNo>>> GetGridNoList()
-        {
-            dynamic response = null;
-           return Ok(await response);         
-        }
+             
 
         [HttpGet]
         [ProducesResponseType(401)]
         [ProducesResponseType(200)]        
         [Route("GridList")]
-        public async Task<ActionResult<List<AddGrid>>> GetGridList()
+        public async Task<ActionResult<List<AddGrid>>> GetGridList([FromQuery]  gridFilter filterReq)
         {
               try {
-           var response =  _gridService.GetGridList();
+           var response =  _gridService.GetGridList(filterReq);
            return Ok(response); 
             }
             catch (Exception ex)
             {
-                Log.Logger.Error(ex.Message);
+                Log.Logger.Error(ex.StackTrace);
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }        
         }
 
-
+        [HttpGet]
+        [ProducesResponseType(401)]
+        [ProducesResponseType(200)]        
+        [Route("GridNoList")]
+        public async Task<ActionResult<List<GridNo>>> GetGridNoList()
+        {
+              try {
+           var response =  _gridService.GetGridNoList();
+           return Ok(response); 
+            }
+            catch (Exception ex)
+            {
+                Log.Logger.Error(ex.StackTrace);
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }        
+        }
 
         [HttpDelete]
         [ProducesResponseType(204)]
@@ -91,18 +118,22 @@ namespace GridManagement.Api.Controllers
         {
              try {
            var response = _gridService.DeleteGrid(id);
-            if (response == false) return BadRequest(new { message = "GridId doesn't exists" });
+           
            return  StatusCode(204);                  
              }
+
+            catch(ValueNotFoundException e) {
+                return StatusCode(StatusCodes.Status400BadRequest, new ErrorClass() { code= StatusCodes.Status400BadRequest.ToString(), message=e.Message});
+            }
             catch (Exception ex)
             {
-                Log.Logger.Error(ex.Message);
+                Log.Logger.Error(ex.StackTrace);
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }       
         }
 
 
-         [HttpPut]
+        [HttpPut]
         [ProducesResponseType(204)]
         [ProducesResponseType(404)]
         [ProducesResponseType(401)]
@@ -112,17 +143,19 @@ namespace GridManagement.Api.Controllers
            try
             {
                 var response = _gridService.UpdateGrid(gridReq, id);
-                if (response == false) return BadRequest(new { message = "GridId doesn't exists or new GridNo alredy exists" });
                 return  StatusCode(204);
+            }
+            catch(ValueNotFoundException e) {
+                return StatusCode(StatusCodes.Status400BadRequest, new ErrorClass() { code= StatusCodes.Status400BadRequest.ToString(), message=e.Message});
             }
             catch (Exception ex)
             {
-                Log.Logger.Error(ex.Message);
+    
+                Log.Logger.Error(ex.StackTrace);
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }     
         }
 
-#endregion
 
 
     }

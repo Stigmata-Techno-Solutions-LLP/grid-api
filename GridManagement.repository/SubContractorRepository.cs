@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using AutoMapper;
 using System.Linq;
 using System.Collections.Generic;
-
+using GridManagement.common;
 using System.Threading.Tasks;
 
 namespace GridManagement.repository
@@ -28,10 +28,7 @@ namespace GridManagement.repository
         {
             try
             {
-                if (_context.Subcontractors.Where(x => x.Code == subContReq.code).Count() > 0)
-                {
-                    return false;
-                }
+                if (_context.Subcontractors.Where(x => x.Code == subContReq.code).Count() > 0) throw new ValueNotFoundException("SubContractorId already exists");             
                 Subcontractors subCont = _mapper.Map<Subcontractors>(subContReq);
                 subCont.CreatedBy = subContReq.user_id;
                _context.Subcontractors.Add(subCont);
@@ -49,11 +46,9 @@ namespace GridManagement.repository
             try
             {
                 Subcontractors subCont = _context.Subcontractors.Where(x => x.Id == Id).FirstOrDefault();
-                if (subCont == null ) return false;
+                if (subCont == null ) throw new ValueNotFoundException("SubContrtactorId doesn't exists");
                 
-             if ( _context.Subcontractors.Where(x => x.Code == subContReq.code && x.Id != Id).Count() >0 ) return false;
-                if (subCont == null ) return false;
-                
+             if ( _context.Subcontractors.Where(x => x.Code == subContReq.code && x.Id != Id).Count() >0 ) throw new ValueNotFoundException("new value SubContractor Code already exists, give unique value");                           
                 // subCont = _mapper.Map<Subcontractors>(subContReq);
                 subCont.Email = subContReq.email;
                 subCont.Mobile = subContReq.phone;
@@ -77,8 +72,7 @@ namespace GridManagement.repository
             try
             {                    
                Subcontractors subCon =  _context.Subcontractors.Where(x=>x.Id == Id).FirstOrDefault(); 
-
-               if (subCon == null) return false;
+               if (subCon == null) throw new ValueNotFoundException("SubContrtactorId doesn't exists");
                 _context.Remove(subCon);  
                  _context.SaveChanges();        
                 return true;

@@ -10,6 +10,9 @@ namespace GridManagement.repository
         bool InsertNewLayer(AddLayer layerReq);
          bool UpdateGrid(AddGrid gridReq, int Id);
         bool DeleteGrid (int Id);
-        List<GridDetails> GetGridList();
+        List<GridDetails> GetGridList(gridFilter filterReq);
+         bool CleaningGrubEntry(AddCG_RFI gridCGReq, int Id);
+
+               public List<GridNo> GetGridNoList();
     }
 }

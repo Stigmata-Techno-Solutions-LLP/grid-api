@@ -46,6 +46,9 @@
     <ProjectReference Include="..\GridManagement.domain\GridManagement.domain.csproj">
       <GlobalPropertiesToRemove></GlobalPropertiesToRemove>
     </ProjectReference>
+     <ProjectReference Include="..\GridManagement.domain\GridManagement.common.csproj">
+      <GlobalPropertiesToRemove></GlobalPropertiesToRemove>
+    </ProjectReference>
   </ItemGroup>
 
 

@@ -24,8 +24,7 @@ namespace GridManagement.Api
             finally
             {
                 Log.CloseAndFlush();
-            }
-            
+            }            
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>

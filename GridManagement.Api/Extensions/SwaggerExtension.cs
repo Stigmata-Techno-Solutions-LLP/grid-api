@@ -17,7 +17,7 @@ namespace GridManagement.Api.Extensions
                     {
                         Title = "GridManagement.Api",
                         Version = "v1",
-                        Description = "GridManagement de API",
+                        Description = "GridManagement API",
                      
                     });
                 c.DescribeAllParametersInCamelCase();
