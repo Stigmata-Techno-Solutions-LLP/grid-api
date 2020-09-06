@@ -35,7 +35,7 @@ namespace GridManagement.Model.Dto
         [Display(Name = "Longitide Value")]
         public decimal longitude { get; set; }
 
-        public decimal grid_id { get; set; }
+        public int grid_id { get; set; }
     }
 
     public class GridNo {
