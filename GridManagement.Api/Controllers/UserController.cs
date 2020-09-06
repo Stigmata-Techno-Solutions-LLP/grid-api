@@ -91,5 +91,22 @@ namespace GridManagement.Api.Controllers
                 return BadRequest(new { message = "Something went wrong", isAPIValid = false });
             }
         }
+
+        [HttpPost("changepassword")]
+        public IActionResult ChangePassword(ChangePassword changePassword)
+        {
+            try
+            {
+                var response = _userService.ChangePassword(changePassword);
+                if (response == null)
+                    return BadRequest(new { message = "Error in changing the password.", isAPIValid = false });
+                return Ok(new { response = response, isAPIValid = true });
+            }
+            catch (Exception ex)
+            {
+                Log.Logger.Error(ex.Message);
+                return BadRequest(new { message = "Something went wrong", isAPIValid = false });
+            }
+        }
     }
 }

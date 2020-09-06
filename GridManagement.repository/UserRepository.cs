@@ -156,6 +156,52 @@ namespace GridManagement.repository
             }
         }
 
+        public ResponseMessage ChangePassword(ChangePassword changePassword)
+        {
+            ResponseMessage responseMessage = new ResponseMessage();
+            try
+            {
+                var userData = _context.Users.Where(x => x.Id == changePassword.userId).FirstOrDefault();
+                if (userData != null)
+                {
+                    if (_context.Users.Where(x => x.Password == changePassword.currentPassword && x.Id == changePassword.userId).Count() == 0)
+                    {
+                        return responseMessage = new ResponseMessage()
+                        {
+                            Message = "Current Password does not map with our details.",
+                            IsValid = false
+                        };
+                    }
+                    else
+                    {
+                        userData.Password = changePassword.newPassword;
+                        _context.SaveChanges();
+                        return responseMessage = new ResponseMessage()
+                        {
+                            Message = "Password changed successfully.",
+                            IsValid = true
+                        };
+                    }
+                }
+                else
+                {
+                    return responseMessage = new ResponseMessage()
+                    {
+                        Message = "User not available.",
+                        IsValid = false
+                    };
+                }
+            }
+            catch (Exception ex)
+            {
+                return responseMessage = new ResponseMessage()
+                {
+                    Message = "Error in updating the change password. Please contact administrator. Error : " + ex.Message,
+                    IsValid = false
+                };
+            }
+        }
+
         public void Dispose()
         {
             Dispose(true);
