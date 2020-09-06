@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using System.Text;
 using System.Security.Cryptography;
 using System.IO;
+using System.Linq;
 using GridManagement.common;
 namespace GridManagement.service
 {
@@ -71,23 +72,38 @@ namespace GridManagement.service
             }
         }
 
-        public bool insertNewUser(AddUser model)
+        public RefreshResponse RefreshToken(string token)
         {
+            RefreshResponse refreshResponse = new RefreshResponse();
             try
             {
-                string encrypted = Cryptography.Encrypt("admin@123", "testpass");
-                model.password = encrypted;
-                return _authRepository.InsertNewUser(model);
+                var tokenHandler = new JwtSecurityTokenHandler();
+                var key = Encoding.ASCII.GetBytes(_appSettings.Secret);
+                tokenHandler.ValidateToken(token, new TokenValidationParameters
+                {
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(key),
+                    ValidateIssuer = false,
+                    ValidateAudience = false,
+                    // set clockskew to zero so tokens expire exactly at token expiration time (instead of 5 minutes later)
+                    ClockSkew = TimeSpan.Zero
+                }, out SecurityToken validatedToken);
+
+                var jwtToken = (JwtSecurityToken)validatedToken;
+                var userId = int.Parse(jwtToken.Claims.First(x => x.Type == "unique_name").Value);
+                refreshResponse.Token = generateJwtToken(userId.ToString());
+                refreshResponse.RefreshToken = generateRefreshToken(userId.ToString());
+                refreshResponse.Message = "Refresh token regenerated.";
+                refreshResponse.IsAPIValid = true;
+                return refreshResponse;
             }
             catch (Exception ex)
             {
-                throw ex;
+                return refreshResponse = new RefreshResponse(){
+                    Message = "Token expired. Error : " + ex.Message,
+                    IsAPIValid = false
+                };
             }
-        }
-
-        public bool chkUserId(int id)
-        {
-            return _authRepository.chkUserId(id);
         }
     }
 }

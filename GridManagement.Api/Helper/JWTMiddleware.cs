@@ -50,10 +50,7 @@ namespace GridManagement.Api.Helper
                 var userId = int.Parse(jwtToken.Claims.First(x => x.Type == "id").Value);
 
                 // attach user to context on successful jwt validation
-                if (authService.chkUserId(userId))
-                {
-                    context.Items["User"] = userId;
-                } }
+            }
             catch
             {
                 // do nothing if jwt validation fails

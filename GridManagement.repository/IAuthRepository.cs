@@ -7,7 +7,5 @@ namespace GridManagement.repository
     public interface IAuthRepository
     {
         AuthenticateResponse ValidateUser(AuthenticateRequest userReq);
-        bool InsertNewUser(AddUser userReq);
-        public bool chkUserId(int id);
     }
 }
