@@ -39,5 +39,23 @@ namespace GridManagement.Api.Controllers
                 return BadRequest(new { message = "Something went wrong", isAPIValid = false });
             }
         }
+
+        [HttpPost("refreshtoken")]
+        public IActionResult RefreshToken(RefreshTokenRequest refreshToken)
+        {
+            try
+            {
+            var response = _authService.RefreshToken(refreshToken.token);
+            if (response == null)
+                return Unauthorized(new { message = "Invalid token" });
+            return Ok(new {response = response, IsAPIValid = true});
+            }
+            catch(Exception ex)
+            {
+                Log.Logger.Error(ex.Message);
+                return BadRequest(new {message = "Something went wrong", isAPIValid = false});
+            }
+        }
+
     }
 }

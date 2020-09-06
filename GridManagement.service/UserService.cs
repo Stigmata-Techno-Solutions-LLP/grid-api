@@ -52,5 +52,12 @@ namespace GridManagement.service
             responseMessage = _userRepository.DeleteUser(id);
             return responseMessage;
         }
+
+        public ResponseMessage ChangePassword(ChangePassword changePassword)
+        {
+            ResponseMessage responseMessage = new ResponseMessage();
+            responseMessage = _userRepository.ChangePassword(changePassword);
+            return responseMessage;
+        }
     }
 }

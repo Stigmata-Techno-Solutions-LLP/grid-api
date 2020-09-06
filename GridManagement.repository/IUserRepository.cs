@@ -9,5 +9,6 @@ namespace GridManagement.repository
         ResponseMessage AddUser(UserDetails userDetails);
         ResponseMessage UpdateUser(UserDetails userDetails, int id);
         ResponseMessage DeleteUser(int id);
+        ResponseMessage ChangePassword(ChangePassword changePassword);
     }
 }

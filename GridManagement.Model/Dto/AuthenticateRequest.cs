@@ -10,4 +10,9 @@ namespace GridManagement.Model.Dto
         [Required]
         public string Password { get; set; }
     }
+
+    public class RefreshTokenRequest
+    {
+        public string token {get;set;}
+    }
 }

@@ -31,14 +31,15 @@ public class AuthorizeAttribute : Attribute, IAuthorizationFilter
 
             var jwtToken = (JwtSecurityToken)validatedToken;
             var userId = int.Parse(jwtToken.Claims.First(x => x.Type == "unique_name").Value);
-            if(userId <= 0){
-                context.Result = new JsonResult(new { message = "Unauthorized", isAPIValid= false }) { StatusCode = StatusCodes.Status401Unauthorized };
+            if (userId <= 0)
+            {
+                context.Result = new JsonResult(new { message = "Unauthorized", isAPIValid = false }) { StatusCode = StatusCodes.Status401Unauthorized };
             }
         }
-        catch(Exception ex)
+        catch (Exception ex)
         {
             Log.Logger.Error("Error in validation : " + ex.Message);
-                context.Result = new JsonResult(new { message = "Something went wrong", isAPIValid = false }) { StatusCode = StatusCodes.Status401Unauthorized };
+            context.Result = new JsonResult(new { message = "Something went wrong" + ex.Message, isAPIValid = false }) { StatusCode = StatusCodes.Status401Unauthorized };
         }
     }
 }

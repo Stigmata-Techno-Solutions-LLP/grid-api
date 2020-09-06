@@ -83,16 +83,8 @@ namespace GridManagement.Model.Dto
     }
 
     public class ChangePassword{
-        [Required]
-        [Display(Name = "createdBy")]       
         public int userId{get;set;}
-        [Required]
-        [StringLength(100)]
-        [Display(Name = "current Pasword")]
-        public  string currentPasswod{get;set;}
-         [Required]
-        [StringLength(100)]
-        [Display(Name = "New Password")]
+        public  string currentPassword{get;set;}
         public string newPassword{get;set;}
 
     }
@@ -133,6 +125,7 @@ namespace GridManagement.Model.Dto
         public int updatedBy {get;set;}
      }
     
+     
 
 
      public class UserFilter {
