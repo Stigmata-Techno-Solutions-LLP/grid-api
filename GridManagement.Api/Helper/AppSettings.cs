@@ -3,6 +3,9 @@ namespace GridManagement.Api.Helper
 {
     public class AppSettings
     {
-        public string Secret { get; set; }
+        public string Secret
+        {
+            get; set;
+        }
     }
 }
