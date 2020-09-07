@@ -12,6 +12,11 @@ using System.Security.Cryptography;
 using System.IO;
 using System.Linq;
 using GridManagement.common;
+using MailKit.Net.Smtp;
+using MailKit.Security;
+using MimeKit;
+using MimeKit.Text;
+
 namespace GridManagement.service
 {
     public class AuthService : IAuthService
@@ -99,10 +104,62 @@ namespace GridManagement.service
             }
             catch (Exception ex)
             {
-                return refreshResponse = new RefreshResponse(){
+                return refreshResponse = new RefreshResponse()
+                {
                     Message = "Token expired. Error : " + ex.Message,
                     IsAPIValid = false
                 };
+            }
+        }
+
+        public ResponseMessage ForgotPassword(string emailId)
+        {
+            ResponseMessage responseMessage = new ResponseMessage();
+            try
+            {
+                ResponseMessageForgotPassword responseMessageForgotPassword = new ResponseMessageForgotPassword();
+                responseMessageForgotPassword = _authRepository.ForgotPassword(emailId);
+                if (!string.IsNullOrEmpty(responseMessageForgotPassword.Password))
+                {
+                    SendMail("Reset Password for L & T project", "<h1>Password for the user : " + responseMessageForgotPassword.FirstName + " " + responseMessageForgotPassword.LastName + " </h1><br /><p>Your Password is " + responseMessageForgotPassword.Password + "</p>", responseMessageForgotPassword.EmailId);
+                }
+                responseMessage = new ResponseMessage()
+                {
+                    Message = "Password sent to the corresponding emailId",
+                    IsValid = true
+                };
+            }
+            catch (Exception ex)
+            {
+                return responseMessage = new ResponseMessage()
+                {
+                    Message = "Error in reset the Password. Kindly contact Administrator. Error : " + ex.Message,
+                    IsValid = false
+                };
+            }
+            return responseMessage;
+        }
+
+        public void SendMail(string subject, string bodyHtml, string toEmail)
+        {
+            try
+            {
+                var email = new MimeMessage();
+                email.Sender = MailboxAddress.Parse(_appSettings.FromEmail);
+                email.To.Add(MailboxAddress.Parse(toEmail));
+                email.Subject = subject;
+                email.Body = new TextPart(TextFormat.Html) { Text = bodyHtml };
+
+                // send email
+                using var smtp = new SmtpClient();
+                smtp.Connect(_appSettings.Server, Convert.ToInt32(_appSettings.Port), SecureSocketOptions.StartTls);
+                smtp.Authenticate(_appSettings.Username, _appSettings.Password);
+                smtp.Send(email);
+                smtp.Disconnect(true);
+            }
+            catch (Exception ex)
+            {
+                string error = ex.Message;
             }
         }
     }

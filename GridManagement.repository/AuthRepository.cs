@@ -39,6 +39,52 @@ namespace GridManagement.repository
             return result;
         }
 
+        public ResponseMessageForgotPassword ForgotPassword(string emailId)
+        {
+            ResponseMessageForgotPassword responseMessage = new ResponseMessageForgotPassword();
+            try
+            {
+                Users user = _context.Users.Where(x => x.Email.ToLower() == emailId.ToLower()).FirstOrDefault();
+                if (user != null)
+                {
+                    return responseMessage = new ResponseMessageForgotPassword()
+                    {
+                        Message = "Password sent via the email. Kindly check email.",
+                        IsValid = true,
+                        Password = user.Password,
+                        EmailId = user.Email,
+                        FirstName = user.FirstName,
+                        LastName = user.LastName
+                    };
+                }
+                else
+                {
+                    return responseMessage = new ResponseMessageForgotPassword()
+                    {
+                        Message = "No User found for this Email",
+                        IsValid = false,
+                        Password = string.Empty,
+                        EmailId = string.Empty,
+                        FirstName = string.Empty,
+                        LastName = string.Empty
+                    };
+                }
+            }
+            catch (Exception ex)
+            {
+                return responseMessage = new ResponseMessageForgotPassword()
+                {
+                    Message = "Error in reseting the Password. Kindly contact Administrator. Error : " + ex.Message,
+                    IsValid = false,
+                    Password = string.Empty,
+                    EmailId = string.Empty,
+                    FirstName = string.Empty,
+                    LastName = string.Empty
+                };
+            }
+
+        }
+
         public void Dispose()
         {
             Dispose(true);
