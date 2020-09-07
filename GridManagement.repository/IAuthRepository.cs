@@ -7,5 +7,7 @@ namespace GridManagement.repository
     public interface IAuthRepository
     {
         AuthenticateResponse ValidateUser(AuthenticateRequest userReq);
+
+        ResponseMessageForgotPassword ForgotPassword(string emailId);
     }
 }

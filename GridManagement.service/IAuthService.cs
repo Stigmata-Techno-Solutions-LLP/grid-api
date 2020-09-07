@@ -7,6 +7,7 @@ namespace GridManagement.service
         AuthenticateResponse Authenticate(AuthenticateRequest model);
         
         RefreshResponse RefreshToken(string token);
+        ResponseMessage ForgotPassword(string email);
 
     }
 }

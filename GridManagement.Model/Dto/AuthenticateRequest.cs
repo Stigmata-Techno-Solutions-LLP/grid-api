@@ -15,4 +15,9 @@ namespace GridManagement.Model.Dto
     {
         public string token {get;set;}
     }
+
+    public class ForgotPasswordRequest
+    {
+        public string emailId {get;set;}
+    }
 }

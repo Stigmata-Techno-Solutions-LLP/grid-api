@@ -9,4 +9,8 @@
     <ProjectReference Include="..\GridManagement.repository\GridManagement.repository.csproj" />
     <ProjectReference Include="..\GridManagement.common\GridManagement.common.csproj" />
   </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MailKit" Version="2.8.0" />
+  </ItemGroup>
 </Project>
