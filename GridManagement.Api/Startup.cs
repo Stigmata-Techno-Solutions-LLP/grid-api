@@ -25,6 +25,7 @@ namespace GridManagement.Api
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
+            
         }
 
 
@@ -80,7 +81,12 @@ namespace GridManagement.Api
 
             services.Configure<GridManagement.Model.Dto.AppSettings>(Configuration.GetSection("AppSettings"));
 
-            services.AddCors();
+           // services.AddCors();
+            //app.UseCors(options => options.AllowAnyOrigin());  
+services.AddCors(c =>  
+{  
+    c.AddPolicy("AllowOrigin", options => options.AllowAnyOrigin());  
+});  
             // WebApi Configuration
             services.AddControllers().AddJsonOptions(options =>
             {
@@ -126,6 +132,7 @@ namespace GridManagement.Api
             app.UseResponseCompression();
             app.UseAuthentication();
             app.UseAuthorization();
+            app.UseCors(options => options.AllowAnyOrigin());  
 
         }
     }
