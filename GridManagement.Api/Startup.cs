@@ -83,10 +83,25 @@ namespace GridManagement.Api
 
            // services.AddCors();
             //app.UseCors(options => options.AllowAnyOrigin());  
-services.AddCors(c =>  
-{  
-    c.AddPolicy("AllowOrigin", options => options.AllowAnyOrigin());  
-});  
+
+        services.AddCors(  
+            options => options.AddPolicy("AllowCors",  
+                builder => {  
+                    builder  
+                    //.WithOrigins("http://localhost:4456") //AllowSpecificOrigins;  
+                    //.WithOrigins("http://localhost:4456", "http://localhost:4457") //AllowMultipleOrigins;  
+                        .AllowAnyOrigin() //AllowAllOrigins;  
+  
+                    //.WithMethods("GET") //AllowSpecificMethods;  
+                    //.WithMethods("GET", "PUT") //AllowSpecificMethods;  
+                    //.WithMethods("GET", "PUT", "POST") //AllowSpecificMethods;  
+                    .WithMethods("GET", "PUT", "POST", "DELETE") //AllowSpecificMethods;  
+                        //.AllowAnyMethod() //AllowAllMethods;  
+  
+                    //.WithHeaders("Accept", "Content-type", "Origin", "X-Custom-Header"); //AllowSpecificHeaders;  
+                    .AllowAnyHeader(); //AllowAllHeaders;  
+                })  
+        );  
             // WebApi Configuration
             services.AddControllers().AddJsonOptions(options =>
             {
@@ -132,7 +147,8 @@ services.AddCors(c =>
             app.UseResponseCompression();
             app.UseAuthentication();
             app.UseAuthorization();
-            app.UseCors(options => options.AllowAnyOrigin());  
+           // app.UseCors(options => options.AllowAnyOrigin());  
+app.UseCors("AllowCors");  
 
         }
     }

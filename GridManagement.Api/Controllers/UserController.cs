@@ -7,6 +7,7 @@ using GridManagement.Model.Dto;
 using Serilog;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 
 // For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -14,6 +15,7 @@ namespace GridManagement.Api.Controllers
 {
     [Authorize]
     [ApiController]
+        [EnableCors("AllowCors")]
     [Route("api/[controller]")]
     public class UserController : ControllerBase
     {

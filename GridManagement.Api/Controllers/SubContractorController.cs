@@ -10,10 +10,12 @@ using Serilog;
 using System.Net;
 using Microsoft.AspNetCore.Http;
 using GridManagement.common;
+using Microsoft.AspNetCore.Cors;
 namespace GridManagement.Api.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+        [EnableCors("AllowCors")]
     public class SubContController : ControllerBase
     {
 
