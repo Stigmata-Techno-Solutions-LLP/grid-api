@@ -84,24 +84,28 @@ namespace GridManagement.Api
            // services.AddCors();
             //app.UseCors(options => options.AllowAnyOrigin());  
 
-        services.AddCors(  
-            options => options.AddPolicy("AllowCors",  
-                builder => {  
-                    builder  
-                    //.WithOrigins("http://localhost:4456") //AllowSpecificOrigins;  
-                    //.WithOrigins("http://localhost:4456", "http://localhost:4457") //AllowMultipleOrigins;  
-                        .AllowAnyOrigin() //AllowAllOrigins;  
+        // services.AddCors(  
+        //     options => options.AddPolicy("AllowCors",  
+        //         builder => {  
+        //             builder  
+        //             //.WithOrigins("http://localhost:4456") //AllowSpecificOrigins;  
+        //             //.WithOrigins("http://localhost:4456", "http://localhost:4457") //AllowMultipleOrigins;  
+        //                 .AllowAnyOrigin() //AllowAllOrigins;  
   
-                    //.WithMethods("GET") //AllowSpecificMethods;  
-                    //.WithMethods("GET", "PUT") //AllowSpecificMethods;  
-                    //.WithMethods("GET", "PUT", "POST") //AllowSpecificMethods;  
-                    .WithMethods("GET", "PUT", "POST", "DELETE") //AllowSpecificMethods;  
-                        //.AllowAnyMethod() //AllowAllMethods;  
+        //             //.WithMethods("GET") //AllowSpecificMethods;  
+        //             //.WithMethods("GET", "PUT") //AllowSpecificMethods;  
+        //             //.WithMethods("GET", "PUT", "POST") //AllowSpecificMethods;  
+        //             .WithMethods("GET", "PUT", "POST", "DELETE") //AllowSpecificMethods;  
+        //                 //.AllowAnyMethod() //AllowAllMethods;  
   
-                    //.WithHeaders("Accept", "Content-type", "Origin", "X-Custom-Header"); //AllowSpecificHeaders;  
-                    .AllowAnyHeader(); //AllowAllHeaders;  
-                })  
-        );  
+        //             //.WithHeaders("Accept", "Content-type", "Origin", "X-Custom-Header"); //AllowSpecificHeaders;  
+        //             .AllowAnyHeader(); //AllowAllHeaders;  
+        //         })  
+        // );  
+
+        services.AddCors(options => {
+            options.AddPolicy("AllowAll", builder => builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+        });
             // WebApi Configuration
             services.AddControllers().AddJsonOptions(options =>
             {
@@ -130,8 +134,13 @@ namespace GridManagement.Api
             {
                 app.UseDeveloperExceptionPage();
             }
+            //app.UseCors("AllowCors");  
+           // app.UseCors(x => x.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+    
             app.UseCustomSerilogRequestLogging();
             app.UseRouting();
+            app.UseCors("AllowAll");
+
             app.UseApiDoc();
             app.UseEndpoints(endpoints =>
             {
@@ -147,8 +156,11 @@ namespace GridManagement.Api
             app.UseResponseCompression();
             app.UseAuthentication();
             app.UseAuthorization();
+            app.UseEndpoints(endpoints => {
+            endpoints.MapControllers();
+        });
            // app.UseCors(options => options.AllowAnyOrigin());  
-app.UseCors("AllowCors");  
+
 
         }
     }

@@ -13,9 +13,9 @@ using Microsoft.AspNetCore.Cors;
 
 namespace GridManagement.Api.Controllers
 {
+    [EnableCors("AllowAll")]
     [Authorize]
     [ApiController]
-        [EnableCors("AllowCors")]
     [Route("api/[controller]")]
     public class UserController : ControllerBase
     {

@@ -248,6 +248,8 @@ res = _context.LayerDetails
                 layerDtls.Remarks = layerReq.remarks;
                 layerDtls.ToplevelFillmaterial = layerReq.topFillMaterial;
                 layerDtls.TotalQuantity = layerReq.totalQuantity;   
+
+                 layerDtls.Status = layerReq.status.ToString();   
                 
                 }  
                 else {

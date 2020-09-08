@@ -18,11 +18,13 @@ Completed
 
               public enum GridStatus{
 New ,
+InProgress,
 Completed
         }
 
               public enum LayerStatus{
-New ,
+New,
+InProgress ,
 Completed
         }
     }

@@ -57,4 +57,10 @@ namespace GridManagement.Model.Dto
 
     }
 
+    public class SubContractorName {
+        public int Id{get;set;}
+        public string SubContName{get;set;}
+        public string SubContCode{get;set;}
+    }
+
 }

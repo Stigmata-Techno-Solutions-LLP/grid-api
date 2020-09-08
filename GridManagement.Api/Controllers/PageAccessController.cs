@@ -9,9 +9,10 @@ using Microsoft.AspNetCore.Cors;
 
 namespace GridManagement.Api.Controllers
 {
+        [EnableCors("AllowAll")]
     [Authorize]
-    [EnableCors("AllowCors")]
     [ApiController]
+
     [Route("api/[controller]")]
     public class PageAccessController : ControllerBase
     {

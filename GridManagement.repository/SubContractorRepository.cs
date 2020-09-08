@@ -100,6 +100,20 @@ namespace GridManagement.repository
                 throw ex;
             }
         }
-    
+
+
+      public List<SubContractorName> GetSubContNoList()
+        {
+            try
+            {               
+          List<SubContractorName> lstGridDetails = _mapper.Map<List<SubContractorName>>(_context.Subcontractors.ToList());
+                return lstGridDetails;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+        
     }
 }

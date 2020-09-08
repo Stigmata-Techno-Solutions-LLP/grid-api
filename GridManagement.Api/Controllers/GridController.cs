@@ -17,7 +17,7 @@ namespace GridManagement.Api.Controllers
 {
 
     [ApiController]
-    [EnableCors("AllowCors")]
+    [EnableCors("AllowAll")]
     [Route("api/[controller]")]
     public class GridController : ControllerBase
     {
@@ -81,7 +81,7 @@ namespace GridManagement.Api.Controllers
         [ProducesResponseType(401)]
         [ProducesResponseType(200)]        
         [Route("GridList")]
-        public async Task<ActionResult<List<AddGrid>>> GetGridList([FromQuery]  gridFilter filterReq)
+        public async Task<ActionResult<List<GridDetails>>> GetGridList([FromQuery]  gridFilter filterReq)
         {
               try {
            var response =  _gridService.GetGridList(filterReq);
@@ -162,7 +162,7 @@ namespace GridManagement.Api.Controllers
 
 
     [ApiController]
-    [EnableCors("AllowCors")]
+    [EnableCors("AllowAll")]
     [Route("api/[controller]")]
     public class LayerController : ControllerBase
     {
@@ -245,8 +245,8 @@ private readonly IGridService _gridService;
 
 
     [ApiController]
+    [EnableCors("AllowAll")]
     [Route("api/[controller]")]
-        [EnableCors("AllowCors")]
     public class ClientController : ControllerBase
     {
 
@@ -282,7 +282,5 @@ private readonly IGridService _gridService;
             }
         }
     }
-
-
 
 }
