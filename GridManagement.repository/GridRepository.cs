@@ -162,14 +162,13 @@ dynamic res =null;
             
         // }
         if (string.IsNullOrEmpty(filterReq.gridNo) && string.IsNullOrEmpty(filterReq.layerNo) && string.IsNullOrEmpty(filterReq.CT_RFIno) && string.IsNullOrEmpty(filterReq.CT_RFI_status.ToString()) 
-        && string.IsNullOrEmpty(filterReq.isBillGenerated.ToString()) && string.IsNullOrEmpty(filterReq.layerStatus) && string.IsNullOrEmpty(filterReq.subContractorId.ToString()) 
+        && string.IsNullOrEmpty(filterReq.isBillGenerated.ToString()) && string.IsNullOrEmpty(filterReq.layerStatus) && string.IsNullOrEmpty(filterReq.subContractorId.ToString()) && string.IsNullOrEmpty(filterReq.layerDtlsId.ToString())
         ){
     res = _context.LayerDetails
     .Include(c=>c.Layer)
         .Include(c => c.LayerSubcontractors)
         .Include(c =>c.LayerDocuments)
        .ToList();
-
 
         }
 
@@ -183,6 +182,7 @@ res = _context.LayerDetails
         .Include(c => c.LayerSubcontractors)
         .Include(c =>c.LayerDocuments)
        .ToList().Where(x=> (!string.IsNullOrEmpty( filterReq.gridNo) ? x.GridId == (grid ==null ? 0 : grid.Id): 
+       !string.IsNullOrEmpty(filterReq.layerDtlsId.ToString()) ? x.Id == filterReq.layerDtlsId : 
        !string.IsNullOrEmpty(filterReq.layerNo) ? x.LayerId == (grid == null ? 0: grid.Id) : 
        !string.IsNullOrEmpty(filterReq.CT_RFIno) ? x.CtRfino == filterReq.CT_RFIno:
         !string.IsNullOrEmpty(filterReq.CT_RFI_status.ToString()) ? x.CtRfiStatus == filterReq.CT_RFI_status.ToString() : 

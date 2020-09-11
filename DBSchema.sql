@@ -235,7 +235,7 @@ CREATE TABLE layer_details(
 	CONSTRAINT uq_layerid_gridid UNIQUE(grid_id, layer_id)
 
 )
-
+	
 
 
 
