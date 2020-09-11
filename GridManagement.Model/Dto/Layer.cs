@@ -121,6 +121,13 @@ namespace GridManagement.Model.Dto
         public string layerName{get;set;}
     }
 
+
+public class layerNoFilter{
+        [Required]
+    
+        [Display(Name = "Grid Id")]
+        public int? gridId { get; set; }= null;
+}
     public class layerFilter {
          public int? layerDtlsId { get; set; } = null;
     
@@ -143,7 +150,6 @@ namespace GridManagement.Model.Dto
         public string LV_RFIno { get; set; }
 
         public commonEnum.CG_RFIStatus? LV_RFI_status { get; set;} = null;
-
 
         [Display(Name = "Client Billing Generated Status")]
         public bool? isBillGenerated {get;set;} = null;

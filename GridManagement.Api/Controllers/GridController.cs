@@ -224,9 +224,9 @@ private readonly IGridService _gridService;
         [ProducesResponseType(401)]
         [ProducesResponseType(200)]        
         [Route("LayerNoList")]
-        public async Task<ActionResult<List<GridNo>>> GetGridNoList()
+        public async Task<ActionResult<List<LayerNo>>> GetLayerNoList( )
         {
-              try {
+        try {
            var response =  _gridService.GetLayerNoList();
            return Ok(response); 
             }
@@ -280,6 +280,24 @@ private readonly IGridService _gridService;
                 // return StatusCode InternalServerError(ex.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
+        }
+
+
+         [HttpGet]
+        [ProducesResponseType(401)]
+        [ProducesResponseType(200)]        
+        [Route("LayerNoforBilling")]
+        public async Task<ActionResult<List<LayerNo>>> GetLayerNoforBilling([FromQuery]  layerNoFilter layerNoFilter )
+        {
+        try {
+           var response =  _gridService.ClientBillingLayersNo(layerNoFilter);
+           return Ok(response); 
+            }
+            catch (Exception ex)
+            {
+                Log.Logger.Error(ex.StackTrace);
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }        
         }
     }
 

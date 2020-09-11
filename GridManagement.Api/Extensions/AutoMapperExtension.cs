@@ -119,6 +119,16 @@ namespace GridManagement.Api.Extensions
                         opt => opt.MapFrom(src => src.Id));   
         
 
+
+ CreateMap<LayerDetails,LayerNo>()                   
+                    .ForMember(dest =>
+                        dest.layerName,
+                        opt => opt.MapFrom(src => src.Layer.Layerno))
+
+                    .ForMember(dest =>
+                        dest.Id,
+                        opt => opt.MapFrom(src => src.Id));   
+        
             CreateMap<AddLayer, LayerDetails>()
 
                         .ForMember(dest =>

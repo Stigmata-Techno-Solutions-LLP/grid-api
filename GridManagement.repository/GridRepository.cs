@@ -276,8 +276,6 @@ res = _context.LayerDetails
         }
 
 
-
-
         public bool CreateClientBilling(AddClientBilling billingReq)
         {
             try
@@ -329,11 +327,28 @@ throw ex;
       public List<LayerNo> GetLayerNoList()
         {
             try
-            {     
-          
-          List<LayerNo> lstLayers = _mapper.Map<List<LayerNo>>(_context.Layers.ToList());
+            {        
+           List<LayerNo> lstLayer = new List<LayerNo>();
+             lstLayer = _mapper.Map<List<LayerNo>>(_context.Layers.ToList());
+         
+            return lstLayer;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
 
-                return lstLayers;
+         public List<LayerNo> clientBillingLayerByGridId(layerNoFilter filterReq)
+        {
+            try
+            {        
+           List<LayerNo> lstLayer = new List<LayerNo>();
+    
+          lstLayer =_mapper.Map<List<LayerNo>>(_context.LayerDetails.Include(x=>x.Layer )
+           .Where(x=> x.GridId == filterReq.gridId && x.IsBillGenerated == false && x.Status == commonEnum.LayerStatus.Completed.ToString())
+          ).ToList();
+                return lstLayer;
             }
             catch (Exception ex)
             {
