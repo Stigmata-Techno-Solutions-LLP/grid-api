@@ -24,10 +24,18 @@ insert into subcontractors(name,code,created_by) values('contractor1','CONTR1',1
 select * from subcontractors s 
 
 
+select * from users u 
+
 select * from layer_details ld 
 
+
+
+select * from subcontractors s2 
 select * from clients c 
 
+select * from client_billing cb 
+
+select * from client_billing_layerdetails
 select * from grids g2 
 -- select * from layers
 -- select * from layer_details 

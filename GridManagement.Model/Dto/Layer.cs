@@ -33,7 +33,6 @@ namespace GridManagement.Model.Dto
         public int totalQuantity { get; set; }
 
 
-
         [Display(Name = "Fill Type")]
         public string fillType { get; set; }
 
@@ -47,8 +46,6 @@ namespace GridManagement.Model.Dto
         [Required]
         [Display(Name = "User Id")]
         public int user_id { get; set; }
-
-        public bool isCompleted {get;set;}
 
         public bool isApproved {get;set;}
 
@@ -87,6 +84,10 @@ namespace GridManagement.Model.Dto
        // [EnumDataType(typeof(commonEnum.LV_RFIStatus), ErrorMessage = "RFI SStatus value doesn't exist within enum")]
         public commonEnum.CG_RFIStatus LV_RFI_status { get; set;}
 
+        [Required]
+         [Display(Name = "Layer Status")]
+        public commonEnum.LayerStatus status { get; set;}
+
 
         public ICollection<LayerSubcontractor> layerSubContractor { get; set; }  
                public List<LayerDocuments> layeDocument { get; set; }
@@ -117,9 +118,16 @@ namespace GridManagement.Model.Dto
 
     public class LayerNo {
         public int Id{get;set;}
-        public string layerNo{get;set;}
+        public string layerName{get;set;}
     }
 
+
+public class layerNoFilter{
+        [Required]
+    
+        [Display(Name = "Grid Id")]
+        public int? gridId { get; set; }= null;
+}
     public class layerFilter {
          public int? layerDtlsId { get; set; } = null;
     
@@ -143,7 +151,6 @@ namespace GridManagement.Model.Dto
 
         public commonEnum.CG_RFIStatus? LV_RFI_status { get; set;} = null;
 
-
         [Display(Name = "Client Billing Generated Status")]
         public bool? isBillGenerated {get;set;} = null;
 
@@ -152,7 +159,7 @@ namespace GridManagement.Model.Dto
 
 
         [Display(Name = "Layer Status")]
-        public string layerStatus { get;set; }
+        public string layerStatus { get; set;}
 
     }
 
@@ -168,7 +175,6 @@ namespace GridManagement.Model.Dto
         public DateTime fillingDate { get; set; }
 
         public string fillingMaterial { get; set; }
-
 
         public decimal area_layer { get; set; }
 
@@ -203,7 +209,9 @@ namespace GridManagement.Model.Dto
 
         public DateTime LV_approval_date { get; set; }
 
-
+      
+        public  string status { get; set;}
+       
         public string LV_RFI_status { get; set;}
         public bool IsBillGenerated {get;set;}
         public DateTime createdAt {get;set;}

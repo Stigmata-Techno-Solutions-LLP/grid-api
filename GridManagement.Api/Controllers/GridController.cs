@@ -10,12 +10,14 @@ using Serilog;
 using System.Net;
 using Microsoft.AspNetCore.Http;
 using GridManagement.common;
+using Microsoft.AspNetCore.Cors;
 // For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace GridManagement.Api.Controllers
 {
 
     [ApiController]
+    [EnableCors("AllowAll")]
     [Route("api/[controller]")]
     public class GridController : ControllerBase
     {
@@ -79,7 +81,7 @@ namespace GridManagement.Api.Controllers
         [ProducesResponseType(401)]
         [ProducesResponseType(200)]        
         [Route("GridList")]
-        public async Task<ActionResult<List<AddGrid>>> GetGridList([FromQuery]  gridFilter filterReq)
+        public async Task<ActionResult<List<GridDetails>>> GetGridList([FromQuery]  gridFilter filterReq)
         {
               try {
            var response =  _gridService.GetGridList(filterReq);
@@ -160,6 +162,7 @@ namespace GridManagement.Api.Controllers
 
 
     [ApiController]
+    [EnableCors("AllowAll")]
     [Route("api/[controller]")]
     public class LayerController : ControllerBase
     {
@@ -221,9 +224,9 @@ private readonly IGridService _gridService;
         [ProducesResponseType(401)]
         [ProducesResponseType(200)]        
         [Route("LayerNoList")]
-        public async Task<ActionResult<List<GridNo>>> GetGridNoList()
+        public async Task<ActionResult<List<LayerNo>>> GetLayerNoList( )
         {
-              try {
+        try {
            var response =  _gridService.GetLayerNoList();
            return Ok(response); 
             }
@@ -242,6 +245,7 @@ private readonly IGridService _gridService;
 
 
     [ApiController]
+    [EnableCors("AllowAll")]
     [Route("api/[controller]")]
     public class ClientController : ControllerBase
     {
@@ -277,8 +281,24 @@ private readonly IGridService _gridService;
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
+
+
+         [HttpGet]
+        [ProducesResponseType(401)]
+        [ProducesResponseType(200)]        
+        [Route("LayerNoforBilling")]
+        public async Task<ActionResult<List<LayerNo>>> GetLayerNoforBilling([FromQuery]  layerNoFilter layerNoFilter )
+        {
+        try {
+           var response =  _gridService.ClientBillingLayersNo(layerNoFilter);
+           return Ok(response); 
+            }
+            catch (Exception ex)
+            {
+                Log.Logger.Error(ex.StackTrace);
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }        
+        }
     }
-
-
 
 }

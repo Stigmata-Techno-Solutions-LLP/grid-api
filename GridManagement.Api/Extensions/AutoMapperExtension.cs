@@ -31,7 +31,7 @@ namespace GridManagement.Api.Extensions
 
               CreateMap<Grids,GridNo>()                   
                     .ForMember(dest =>
-                        dest.gridNo,
+                        dest.gridName,
                         opt => opt.MapFrom(src => src.Gridno))
 
                     .ForMember(dest =>
@@ -111,7 +111,7 @@ namespace GridManagement.Api.Extensions
 
  CreateMap<Layers,LayerNo>()                   
                     .ForMember(dest =>
-                        dest.layerNo,
+                        dest.layerName,
                         opt => opt.MapFrom(src => src.Layerno))
 
                     .ForMember(dest =>
@@ -119,6 +119,16 @@ namespace GridManagement.Api.Extensions
                         opt => opt.MapFrom(src => src.Id));   
         
 
+
+ CreateMap<LayerDetails,LayerNo>()                   
+                    .ForMember(dest =>
+                        dest.layerName,
+                        opt => opt.MapFrom(src => src.Layer.Layerno))
+
+                    .ForMember(dest =>
+                        dest.Id,
+                        opt => opt.MapFrom(src => src.Id));   
+        
             CreateMap<AddLayer, LayerDetails>()
 
                         .ForMember(dest =>
@@ -338,6 +348,18 @@ namespace GridManagement.Api.Extensions
             dest.createdDate,
             opt => opt.MapFrom(src => src.CreatedAt));
 
+
+ CreateMap<Subcontractors ,SubContractorName>()                   
+                    .ForMember(dest =>
+                        dest.SubContName,
+                        opt => opt.MapFrom(src => src.Name))
+                    .ForMember(dest =>
+                        dest.SubContCode,
+                        opt => opt.MapFrom(src => src.Code))
+                    .ForMember(dest =>
+                        dest.Id,
+                        opt => opt.MapFrom(src => src.Id));   
+        
             CreateMap<PageAccess, RolesApplicationforms>()
                .ForMember(dest =>
                    dest.Id,

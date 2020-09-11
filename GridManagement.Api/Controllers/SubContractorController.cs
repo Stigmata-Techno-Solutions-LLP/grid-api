@@ -10,10 +10,14 @@ using Serilog;
 using System.Net;
 using Microsoft.AspNetCore.Http;
 using GridManagement.common;
+using Microsoft.AspNetCore.Cors;
 namespace GridManagement.Api.Controllers
 {
+
     [ApiController]
+    [EnableCors("AllowAll")]
     [Route("api/[controller]")]
+   
     public class SubContController : ControllerBase
     {
 
@@ -113,7 +117,25 @@ private readonly ISubContService _subContService;
                 Log.Logger.Error(ex.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             } 
-        }       
+        }     
+
+
+        [HttpGet]
+        [ProducesResponseType(401)]
+        [ProducesResponseType(200)]        
+        [Route("SubContractorNoList")]
+        public async Task<ActionResult<List<SubContractorName>>> GetGridNoList()
+        {
+        try {
+           var response =  _subContService.GetSubContNoList();
+           return Ok(response); 
+            }
+            catch (Exception ex)
+            {
+                Log.Logger.Error(ex.StackTrace);
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }        
+        }  
 
     }
 

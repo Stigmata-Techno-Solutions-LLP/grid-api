@@ -40,7 +40,7 @@ namespace GridManagement.Model.Dto
 
     public class GridNo {
         public int Id{get;set;}
-        public string gridNo{get;set;}
+        public string gridName{get;set;}
     }
 
     public class gridFilter {

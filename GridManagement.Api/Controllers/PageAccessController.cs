@@ -4,13 +4,15 @@ using GridManagement.service;
 using GridManagement.Model.Dto;
 using Serilog;
 using System.Collections.Generic;
-
+using Microsoft.AspNetCore.Cors;
 // For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace GridManagement.Api.Controllers
 {
-    [Authorize]
+        [EnableCors("AllowAll")]
+   // [Authorize]
     [ApiController]
+
     [Route("api/[controller]")]
     public class PageAccessController : ControllerBase
     {

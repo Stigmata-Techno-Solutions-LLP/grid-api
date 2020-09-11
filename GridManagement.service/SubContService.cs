@@ -38,8 +38,8 @@ namespace GridManagement.service
             return _subContRepo.GetSubContractorsList();
         }
 
-
-
-
+        public List<SubContractorName> GetSubContNoList() {
+            return _subContRepo.GetSubContNoList();
+        }
     }
 }

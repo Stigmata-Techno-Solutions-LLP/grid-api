@@ -16,5 +16,7 @@ namespace GridManagement.repository
         bool UpdateSubContractor(AddSubContractorModel subContReq, int Id);
         bool DeleteSubContractor (int Id);
         List<SubContractorDetails> GetSubContractorsList();
+
+      public List<SubContractorName> GetSubContNoList();
     }
 }
