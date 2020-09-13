@@ -7,8 +7,8 @@ namespace GridManagement.domain.Models
     {
         public int Id { get; set; }
         public int GridId { get; set; }
-        public decimal Latitude { get; set; }
-        public decimal Longitude { get; set; }
+        public string Latitude { get; set; }
+        public string Longitude { get; set; }
 
         public virtual Grids Grid { get; set; }
     }

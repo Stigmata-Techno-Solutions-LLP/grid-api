@@ -108,6 +108,7 @@ CREATE TABLE gridManagement.dbo.users (
 	updated_by int NULL,
 	CONSTRAINT users_pkey PRIMARY KEY (id),
 	CONSTRAINT user_roles_id_fkey FOREIGN KEY (role_id) REFERENCES roles(id),
+    CONSTRAINT uq_Users_username_email_isdelete UNIQUE(username,email, is_delete)
 
 );
 
@@ -133,19 +134,21 @@ CONSTRAINT rolesforms_roles_id_fkey FOREIGN KEY (role_id) REFERENCES roles(id),
 CREATE TABLE gridManagement.dbo.subcontractors(
 id int not null identity(1,1),
 name varchar(200) null,	
-code varchar(10) not null unique,
+code varchar(10) not null,
 contact_name varchar(200) null,
 email varchar(100) null,
 mobile varchar(15) null,
+
 address varchar(2000) null, 
+is_delete bit null default 0,
 created_at DATETIME default CURRENT_TIMESTAMP,
 created_by int null,
 update_at DATETIME default CURRENT_TIMESTAMP,
 updated_by int null,
 CONSTRAINT subcont_pkey PRIMARY KEY (id),
 CONSTRAINT subcont_user_id_fkey FOREIGN KEY (created_by) REFERENCES users(id),
-CONSTRAINT subcont_updatedby_users__fkey FOREIGN KEY (updated_by) REFERENCES users(id)
-
+CONSTRAINT subcont_updatedby_users__fkey FOREIGN KEY (updated_by) REFERENCES users(id),
+CONSTRAINT uq_subCont_code_isdelete UNIQUE(code, is_delete)
 
 )
 
@@ -163,19 +166,23 @@ CONSTRAINT client_pkey PRIMARY KEY (id),
 
 CREATE TABLE grids(
     id int not null identity(1,1),
-    gridno varchar(10) not null UNIQUE,
+    gridno varchar(10) not null,
     grid_area  decimal(18,2) null,
     status varchar(20),
-    is_active bit NULL DEFAULT 0,
+    is_delete bit NULL DEFAULT 0,
     CG_RFIno varchar(20) null,
     CG_inspection_date date null,
     CG_approval_date date null,
     CG_RFI_status varchar(50),
+    marker_latitide varchar(50),
+    marker_longitude varchar(50),
     created_at DATETIME NULL DEFAULT CURRENT_TIMESTAMP,
 	updated_at DATETIME NULL DEFAULT CURRENT_TIMESTAMP,
 	created_by int NULL,
 	updated_by int NULL,
 	CONSTRAINT grids_pkey PRIMARY KEY (id),
+	CONSTRAINT uq_Grids_gridno_isdelete UNIQUE(gridno, is_delete),
+
 	CONSTRAINT grids_createdby_users__fkey FOREIGN KEY (created_by) REFERENCES users(id),
 	CONSTRAINT grids_updatedby_users__fkey FOREIGN KEY (updated_by) REFERENCES users(id)
 ) 
@@ -185,8 +192,8 @@ CREATE TABLE grids(
 CREATE TABLE grid_geolocations(
     id int not null identity(1,1),
     grid_id int not null,
-    latitude decimal(10,6) not null,
-    longitude decimal(10,6) not null,
+    latitude varchar(50) not null,
+    longitude varchar(50) not null,
     CONSTRAINT gridGeoLocation_pkey PRIMARY KEY (id),
 	CONSTRAINT geoloccation__gridId__fkey FOREIGN KEY (grid_id) REFERENCES grids(id)	
 )

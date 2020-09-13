@@ -6,7 +6,6 @@ namespace GridManagement.Model.Dto
     public class AddSubContractorModel
     {
         [Required]
-        [StringLength(200)]
         [Display(Name = "SubContractor Name")]        
         public string name {get;set;}   
 

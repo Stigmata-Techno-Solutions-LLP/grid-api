@@ -82,8 +82,7 @@ namespace GridManagement.service
             }
             catch (Exception ex)
             {
-                string error = ex.Message;
-                return string.Empty;
+             throw ex;
             }
         }
 
@@ -106,7 +105,7 @@ namespace GridManagement.service
             }
             catch (Exception ex)
             {
-                string error = ex.Message;
+                throw ex;
             }
         }
     }

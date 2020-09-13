@@ -8,24 +8,23 @@ namespace GridManagement.Model.Dto
 {
     public class AddLayer
     {
-        [Required]
-        public int gridId { get; set; }
+        [Required, Range(0, 10)]
+        public int? gridId { get; set; }
 
 
-        [Required]
-        public int layerId { get; set; }
+        [Required, Range(0, 10)]
+        public int? layerId { get; set; }   
 
         [Display(Name = "Filling Date")]
-        public DateTime fillingDate { get; set; }
+        public DateTime? fillingDate { get; set; } =null;
 
 
         [Display(Name = "Filling Material")]
         public string fillingMaterial { get; set; }
 
 
-        [Required]
         [Display(Name = "Area of layer")]
-        public decimal area_layer { get; set; }
+        public decimal? area_layer { get; set; }
 
 
         [Required]
@@ -45,7 +44,7 @@ namespace GridManagement.Model.Dto
 
         [Required]
         [Display(Name = "User Id")]
-        public int user_id { get; set; }
+        public int? user_id { get; set; }
 
         public bool isApproved {get;set;}
 
@@ -54,12 +53,12 @@ namespace GridManagement.Model.Dto
 
         [Display(Name = "Comapct testing RFI Inspection Date")]
         [DataType(DataType.Date)]
-        public DateTime CT_inspection_date { get; set; }
+        public DateTime? CT_inspection_date { get; set; } = null;
 
 
         [Display(Name = "Compact testing RFI Approval Date")]
         [DataType(DataType.Date)]
-        public DateTime CT_approval_date { get; set; }
+        public DateTime? CT_approval_date { get; set; } = null;
 
 
         [Display(Name = "Comapct tesing RFI Status")]
@@ -72,12 +71,12 @@ namespace GridManagement.Model.Dto
 
         [Display(Name = "Level Verification RFI Inspection Date")]
         [DataType(DataType.Date)]
-        public DateTime LV_inspection_date { get; set; }
+        public DateTime? LV_inspection_date { get; set; } = null;
 
 
         [Display(Name = "Level Verification RFI Approval Date")]
         [DataType(DataType.Date)]
-        public DateTime LV_approval_date { get; set; }
+        public DateTime? LV_approval_date { get; set; } = null;
 
 
         [Display(Name = "Level Verification RFI Status")]
@@ -172,7 +171,7 @@ public class layerNoFilter{
 
         public int layerId { get; set; }
 
-        public DateTime fillingDate { get; set; }
+                public string fillingDate { get; set; }
 
         public string fillingMaterial { get; set; }
 
@@ -191,27 +190,13 @@ public class layerNoFilter{
 
         public string CT_RFIno { get; set; }
 
-        [DataType(DataType.Date)]
-        public DateTime CT_inspection_date { get; set; }
-
-
-        [DataType(DataType.Date)]
-        public DateTime CT_approval_date { get; set; }
-
-
+        public string CT_inspection_date { get; set; }
+        public string CT_approval_date { get; set; }
         public string CT_RFI_status { get; set;}
-
-
         public string LV_RFIno { get; set; }
-
-        public DateTime LV_inspection_date { get; set; }
-
-
-        public DateTime LV_approval_date { get; set; }
-
-      
-        public  string status { get; set;}
-       
+        public string LV_inspection_date { get; set; }
+        public string LV_approval_date { get; set; }
+        public  string status { get; set;}       
         public string LV_RFI_status { get; set;}
         public bool IsBillGenerated {get;set;}
         public DateTime createdAt {get;set;}

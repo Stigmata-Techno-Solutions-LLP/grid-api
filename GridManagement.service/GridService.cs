@@ -81,6 +81,10 @@ namespace GridManagement.service
             return _gridRepo.CreateClientBilling(billingReq);
         }
 
+        public GridDetails GetGridDetails(int Id) {
+            return _gridRepo.GetGridDetails(Id);
+        }
+
     }
 
 

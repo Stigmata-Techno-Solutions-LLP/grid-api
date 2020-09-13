@@ -50,6 +50,13 @@ namespace GridManagement.Api.Extensions
                      .ForMember(dest =>
                         dest.CreatedBy,
                         opt => opt.MapFrom(src => src.user_id))
+                    .ForMember(dest =>
+                        dest.MarkerLongitude,
+                        opt => opt.MapFrom(src => src.marker_longitude.ToString()))
+                    .ForMember(dest =>
+                        dest.MarkerLatitide,
+                        opt => opt.MapFrom(src => src.marker_latitide.ToString()))
+
                     .ReverseMap();
         
                 CreateMap<AddCG_RFI, Grids>()                   
@@ -70,10 +77,10 @@ namespace GridManagement.Api.Extensions
         CreateMap<GridGeolocations, GridGeoLocation>()
                      .ForMember(dest =>
                         dest.latitude,
-                        opt => opt.MapFrom(src => src.Latitude))
+                        opt => opt.MapFrom(src => double.Parse( src.Latitude)))
                     .ForMember(dest =>
                         dest.longitude,
-                        opt => opt.MapFrom(src => src.Longitude))
+                        opt => opt.MapFrom(src => double.Parse(src.Longitude)))
                          .ForMember(dest =>
                         dest.grid_id,
                         opt => opt.MapFrom(src => src.GridId));
@@ -91,10 +98,10 @@ namespace GridManagement.Api.Extensions
                         opt => opt.MapFrom(src => src.CgRfiStatus))
                     .ForMember(dest =>
                         dest.CG_inspection_date,
-                        opt => opt.MapFrom(src => src.CgInspectionDate))
+                        opt => opt.MapFrom(src => src.CgInspectionDate != null ? src.CgInspectionDate.Value.ToString("yyyy-MM-dd"):""))
                     .ForMember(dest =>
                         dest.CG_approval_date,
-                        opt => opt.MapFrom(src => src.CgApprovalDate))
+                        opt => opt.MapFrom(src => src.CgApprovalDate != null ? src.CgApprovalDate.Value.ToString("yyyy-MM-dd"):"" ))
                     .ForMember(dest =>
                         dest.grid_area,
                         opt => opt.MapFrom(src => src.GridArea))
@@ -106,10 +113,13 @@ namespace GridManagement.Api.Extensions
                         opt => opt.MapFrom(src => src.UpdatedByNavigation.UpdatedBy))
                     .ForMember(dest =>
                         dest.gridGeoLocation,
-                        opt => opt.MapFrom(src =>  src.GridGeolocations));    
-                    
+                        opt => opt.MapFrom(src =>  src.GridGeolocations))
+                    .ForMember(dest =>
+                        dest.lyrDtls,
+                        opt => opt.MapFrom(src =>  src.LayerDetails));  
+                  
 
- CreateMap<Layers,LayerNo>()                   
+                    CreateMap<Layers,LayerNo>()                   
                     .ForMember(dest =>
                         dest.layerName,
                         opt => opt.MapFrom(src => src.Layerno))
@@ -120,7 +130,7 @@ namespace GridManagement.Api.Extensions
         
 
 
- CreateMap<LayerDetails,LayerNo>()                   
+                    CreateMap<LayerDetails,LayerNo>()                   
                     .ForMember(dest =>
                         dest.layerName,
                         opt => opt.MapFrom(src => src.Layer.Layerno))
@@ -204,6 +214,10 @@ namespace GridManagement.Api.Extensions
   CreateMap<LayerDetails, layerDtls>()
 
                         .ForMember(dest =>
+                            dest.layerNo,
+                            opt => opt.MapFrom(src => src.Layer.Layerno))
+
+                        .ForMember(dest =>
                             dest.layerId,
                             opt => opt.MapFrom(src => src.LayerId))
                         .ForMember(dest =>
@@ -220,10 +234,10 @@ namespace GridManagement.Api.Extensions
                             opt => opt.MapFrom(src => src.CreatedAt))
                         .ForMember(dest =>
                             dest.CT_inspection_date,
-                            opt => opt.MapFrom(src => src.CtInspectionDate))
+                            opt => opt.MapFrom(src => src.CtInspectionDate != null ? src.CtInspectionDate.Value.ToString("yyyy-MM-dd"):""))
                          .ForMember(dest =>
                             dest.CT_approval_date,
-                            opt => opt.MapFrom(src => src.CtApprovalDate))
+                            opt => opt.MapFrom(src => src.CtApprovalDate != null ? src.CtApprovalDate.Value.ToString("yyyy-MM-dd"):""))
 
                         .ForMember(dest =>
                             dest.CT_RFIno,
@@ -233,7 +247,7 @@ namespace GridManagement.Api.Extensions
                             opt => opt.MapFrom(src => src.CtRfiStatus))
                         .ForMember(dest =>
                             dest.fillingDate,
-                            opt => opt.MapFrom(src => src.FillingDate))
+                            opt => opt.MapFrom(src =>  src.FillingDate != null ? src.FillingDate.Value.ToString("yyyy-MM-dd"):"")  )
                         .ForMember(dest =>
                             dest.fillingMaterial,
                             opt => opt.MapFrom(src => src.FillingMaterial))
@@ -242,10 +256,10 @@ namespace GridManagement.Api.Extensions
                             opt => opt.MapFrom(src => src.FillType))
                         .ForMember(dest =>
                             dest.LV_approval_date,
-                            opt => opt.MapFrom(src => src.LvApprovalDate))
+                            opt => opt.MapFrom(src =>   src.LvApprovalDate != null ? src.LvApprovalDate.Value.ToString("yyyy-MM-dd"):""))
                         .ForMember(dest =>
                             dest.LV_inspection_date ,
-                            opt => opt.MapFrom(src => src.LvInspectionDate))
+                            opt => opt.MapFrom(src =>  src.LvInspectionDate != null ? src.LvInspectionDate.Value.ToString("yyyy-MM-dd"):""))
                         .ForMember(dest =>
                             dest.LV_RFIno ,
                             opt => opt.MapFrom(src => src.LvRfino))

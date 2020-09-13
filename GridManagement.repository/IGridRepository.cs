@@ -21,6 +21,8 @@ namespace GridManagement.repository
         public List<layerDtls> GetLayerList(layerFilter filterReq);
         public bool CreateClientBilling(AddClientBilling billingReq);
         public List<LayerNo> clientBillingLayerByGridId(layerNoFilter filterReq);
+
+        public GridDetails GetGridDetails(int Id);
         
     }
 }
