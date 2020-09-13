@@ -15,11 +15,13 @@ namespace GridManagement.domain.Models
         public string Gridno { get; set; }
         public decimal? GridArea { get; set; }
         public string Status { get; set; }
-        public bool? IsActive { get; set; }
+        public bool? IsDelete { get; set; }
         public string CgRfino { get; set; }
         public DateTime? CgInspectionDate { get; set; }
         public DateTime? CgApprovalDate { get; set; }
         public string CgRfiStatus { get; set; }
+        public string MarkerLatitide { get; set; }
+        public string MarkerLongitude { get; set; }
         public DateTime? CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
         public int? CreatedBy { get; set; }

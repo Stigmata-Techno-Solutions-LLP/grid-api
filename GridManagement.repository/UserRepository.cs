@@ -5,6 +5,7 @@ using GridManagement.Model.Dto;
 using Microsoft.EntityFrameworkCore;
 using AutoMapper;
 using System.Linq;
+using GridManagement.common;
 
 namespace GridManagement.repository
 {
@@ -35,19 +36,11 @@ namespace GridManagement.repository
             {
                 if (_context.Users.Where(x => x.Email == userDetails.email).Count() > 0)
                 {
-                    return responseMessage = new ResponseMessage()
-                    {
-                        Message = "Email Id already exist.",
-                        IsValid = false
-                    };
+                    throw new ValueNotFoundException("Email Id already exist.");                      
                 }
                 else if (_context.Users.Where(x => x.Username == userDetails.userName).Count() > 0)
                 {
-                    return responseMessage = new ResponseMessage()
-                    {
-                        Message = "UserName already exist.",
-                        IsValid = false
-                    };
+                  throw new ValueNotFoundException("UserName already exist.");                 
                 }
                 else
                 {
@@ -55,18 +48,13 @@ namespace GridManagement.repository
                     _context.SaveChanges();
                     return responseMessage = new ResponseMessage()
                     {
-                        Message = "User added successfully.",
-                        IsValid = true
+                        Message = "User added successfully."
                     };
                 }
             }
             catch (Exception ex)
             {
-                return responseMessage = new ResponseMessage()
-                {
-                    Message = "Error in adding the user. Please contact administrator. Error : " + ex.Message,
-                    IsValid = false
-                };
+                throw ex;
             }
         }
 
@@ -80,19 +68,12 @@ namespace GridManagement.repository
                 {
                     if (_context.Users.Where(x => x.Email == userDetails.email && x.Id != id).Count() > 0)
                     {
-                        return responseMessage = new ResponseMessage()
-                        {
-                            Message = "Email Id already exist.",
-                            IsValid = false
-                        };
+                         throw new ValueNotFoundException("Email Id already exist.");    
+                       
                     }
                     else if (_context.Users.Where(x => x.Username == userDetails.userName && x.Id != id).Count() > 0)
                     {
-                        return responseMessage = new ResponseMessage()
-                        {
-                            Message = "UserName already exist.",
-                            IsValid = false
-                        };
+                         throw new ValueNotFoundException("UserName already exist.");                        
                     }
                     else
                     {
@@ -109,26 +90,18 @@ namespace GridManagement.repository
                         return responseMessage = new ResponseMessage()
                         {
                             Message = "User updated successfully.",
-                            IsValid = true
+                           
                         };
                     }
                 }
                 else
                 {
-                    return responseMessage = new ResponseMessage()
-                    {
-                        Message = "User not available.",
-                        IsValid = false
-                    };
+                    throw new ValueNotFoundException("User not available.");  
                 }
             }
             catch (Exception ex)
             {
-                return responseMessage = new ResponseMessage()
-                {
-                    Message = "Error in updating the user. Please contact administrator. Error : " + ex.Message,
-                    IsValid = false
-                };
+             throw ex;
             }
         }
 
@@ -137,22 +110,20 @@ namespace GridManagement.repository
             ResponseMessage responseMessage = new ResponseMessage();
             try
             {
+                
                 var userData = _context.Users.Where(x => x.Id == id).FirstOrDefault();
+                if (userData == null) throw new ValueNotFoundException("User Id doesnt exist."); 
                 userData.IsDelete = true;
+
                 _context.SaveChanges();
                 return responseMessage = new ResponseMessage()
                 {
-                    Message = "User deleted successfully.",
-                    IsValid = true
+                    Message = "User deleted successfully."                  
                 };
             }
             catch (Exception ex)
             {
-                return responseMessage = new ResponseMessage()
-                {
-                    Message = "Error in deleting the user. Please contact administrator. Error : " + ex.Message,
-                    IsValid = false
-                };
+              throw ex;
             }
         }
 
@@ -166,11 +137,8 @@ namespace GridManagement.repository
                 {
                     if (_context.Users.Where(x => x.Password == changePassword.currentPassword && x.Id == changePassword.userId).Count() == 0)
                     {
-                        return responseMessage = new ResponseMessage()
-                        {
-                            Message = "Current Password does not map with our details.",
-                            IsValid = false
-                        };
+
+                        throw new ValueNotFoundException("Current Password does not match.");    
                     }
                     else
                     {
@@ -178,26 +146,20 @@ namespace GridManagement.repository
                         _context.SaveChanges();
                         return responseMessage = new ResponseMessage()
                         {
-                            Message = "Password changed successfully.",
-                            IsValid = true
+                            Message = "Password changed successfully."
                         };
                     }
                 }
                 else
                 {
-                    return responseMessage = new ResponseMessage()
-                    {
-                        Message = "User not available.",
-                        IsValid = false
-                    };
+                     throw new ValueNotFoundException("User not available.");    
                 }
             }
             catch (Exception ex)
             {
                 return responseMessage = new ResponseMessage()
                 {
-                    Message = "Error in updating the change password. Please contact administrator. Error : " + ex.Message,
-                    IsValid = false
+                    Message = "Error in updating the change password. Please contact administrator. Error : " + ex.Message
                 };
             }
         }

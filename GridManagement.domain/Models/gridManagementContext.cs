@@ -6,7 +6,7 @@ namespace GridManagement.domain.Models
 {
     public partial class gridManagementContext : DbContext
     {
-
+    
         public gridManagementContext(DbContextOptions<gridManagementContext> options)
             : base(options)
         {
@@ -26,6 +26,7 @@ namespace GridManagement.domain.Models
         public virtual DbSet<Roles> Roles { get; set; }
         public virtual DbSet<RolesApplicationforms> RolesApplicationforms { get; set; }
         public virtual DbSet<Subcontractors> Subcontractors { get; set; }
+        public virtual DbSet<Tempppp> Tempppp { get; set; }
         public virtual DbSet<Users> Users { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -103,7 +104,7 @@ namespace GridManagement.domain.Models
                 entity.ToTable("client_billing");
 
                 entity.HasIndex(e => e.Ipcno)
-                    .HasName("UQ__client_b__650AE673936289D9")
+                    .HasName("UQ__client_b__650AE6731AB5624B")
                     .IsUnique();
 
                 entity.Property(e => e.Id).HasColumnName("id");
@@ -195,12 +196,16 @@ namespace GridManagement.domain.Models
                 entity.Property(e => e.GridId).HasColumnName("grid_id");
 
                 entity.Property(e => e.Latitude)
+                    .IsRequired()
                     .HasColumnName("latitude")
-                    .HasColumnType("decimal(10, 6)");
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
 
                 entity.Property(e => e.Longitude)
+                    .IsRequired()
                     .HasColumnName("longitude")
-                    .HasColumnType("decimal(10, 6)");
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
 
                 entity.HasOne(d => d.Grid)
                     .WithMany(p => p.GridGeolocations)
@@ -213,8 +218,8 @@ namespace GridManagement.domain.Models
             {
                 entity.ToTable("grids");
 
-                entity.HasIndex(e => e.Gridno)
-                    .HasName("UQ__grids__4FA6C35D75D33D35")
+                entity.HasIndex(e => new { e.Gridno, e.IsDelete })
+                    .HasName("uq_Grids_gridno_isdelete")
                     .IsUnique();
 
                 entity.Property(e => e.Id).HasColumnName("id");
@@ -254,9 +259,19 @@ namespace GridManagement.domain.Models
                     .HasMaxLength(10)
                     .IsUnicode(false);
 
-                entity.Property(e => e.IsActive)
-                    .HasColumnName("is_active")
+                entity.Property(e => e.IsDelete)
+                    .HasColumnName("is_delete")
                     .HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.MarkerLatitide)
+                    .HasColumnName("marker_latitide")
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.MarkerLongitude)
+                    .HasColumnName("marker_longitude")
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
 
                 entity.Property(e => e.Status)
                     .HasColumnName("status")
@@ -463,7 +478,7 @@ namespace GridManagement.domain.Models
                 entity.ToTable("layers");
 
                 entity.HasIndex(e => e.Layerno)
-                    .HasName("UQ__layers__91C38FFCDC1B966D")
+                    .HasName("UQ__layers__91C38FFC7F57C736")
                     .IsUnique();
 
                 entity.Property(e => e.Id).HasColumnName("id");
@@ -546,8 +561,8 @@ namespace GridManagement.domain.Models
             {
                 entity.ToTable("subcontractors");
 
-                entity.HasIndex(e => e.Code)
-                    .HasName("UQ__subcontr__357D4CF929B5CA35")
+                entity.HasIndex(e => new { e.Code, e.IsDelete })
+                    .HasName("uq_subCont_code_isdelete")
                     .IsUnique();
 
                 entity.Property(e => e.Id).HasColumnName("id");
@@ -580,6 +595,10 @@ namespace GridManagement.domain.Models
                     .HasMaxLength(100)
                     .IsUnicode(false);
 
+                entity.Property(e => e.IsDelete)
+                    .HasColumnName("is_delete")
+                    .HasDefaultValueSql("((0))");
+
                 entity.Property(e => e.Mobile)
                     .HasColumnName("mobile")
                     .HasMaxLength(15)
@@ -608,16 +627,31 @@ namespace GridManagement.domain.Models
                     .HasConstraintName("subcont_updatedby_users__fkey");
             });
 
+            modelBuilder.Entity<Tempppp>(entity =>
+            {
+                entity.HasNoKey();
+
+                entity.ToTable("tempppp");
+
+                entity.Property(e => e.Latitude)
+                    .HasColumnName("latitude")
+                    .HasColumnType("decimal(18, 8)");
+            });
+
             modelBuilder.Entity<Users>(entity =>
             {
                 entity.ToTable("users");
 
                 entity.HasIndex(e => e.Email)
-                    .HasName("UQ__users__AB6E6164BB1CE797")
+                    .HasName("UQ__users__AB6E6164A453B744")
                     .IsUnique();
 
                 entity.HasIndex(e => e.Username)
-                    .HasName("UQ__users__F3DBC57258407A12")
+                    .HasName("UQ__users__F3DBC57243B45A03")
+                    .IsUnique();
+
+                entity.HasIndex(e => new { e.Username, e.Email, e.IsDelete })
+                    .HasName("uq_Users_username_email_isdelete")
                     .IsUnique();
 
                 entity.Property(e => e.Id).HasColumnName("id");

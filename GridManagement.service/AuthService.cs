@@ -125,17 +125,12 @@ namespace GridManagement.service
                 }
                 responseMessage = new ResponseMessage()
                 {
-                    Message = "Password sent to the corresponding emailId",
-                    IsValid = true
+                    Message = "Password sent to the corresponding emailId"
                 };
             }
             catch (Exception ex)
             {
-                return responseMessage = new ResponseMessage()
-                {
-                    Message = "Error in reset the Password. Kindly contact Administrator. Error : " + ex.Message,
-                    IsValid = false
-                };
+                throw ex;
             }
             return responseMessage;
         }

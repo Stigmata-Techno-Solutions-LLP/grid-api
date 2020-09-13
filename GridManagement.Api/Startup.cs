@@ -38,8 +38,6 @@ namespace GridManagement.Api
                options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
             );
             //DI Services and Repos
-            services.AddScoped<IHeroRepository, HeroRepository>();
-            services.AddScoped<IHeroAppService, HeroAppService>();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IAuthService, AuthService>();
@@ -123,6 +121,8 @@ namespace GridManagement.Api
             services.AddApiDoc();
             // GZip compression
             services.AddCompression();
+
+            
 
 
         }

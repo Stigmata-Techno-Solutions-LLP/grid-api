@@ -15,7 +15,7 @@ namespace GridManagement.Model.Dto
         [Display(Name = "Grid Area")]
         public decimal grid_area { get; set; }
 
-        public bool isCompleted { get; set; }
+        public bool status { get; set; }
 
         [Required]
         [Display(Name = "User Id")]
@@ -23,17 +23,36 @@ namespace GridManagement.Model.Dto
 
         [Required]
         public List<GridGeoLocation> gridGeoLocation { get; set;}
-    }
 
+        [Required]
+        [Range(-180,180)]
+        [Display(Name = "Marker Latitude Value")]
+        public double? marker_latitide { get; set; } = null;
+
+        [Required]
+        [Range(-180,180)]
+        [Display(Name = "Marker Longitide Value")]
+        public double? marker_longitude { get; set; } = null;
+
+    }
     public class GridGeoLocation
     {
-        [Required]
-        [Display(Name = "Latitide Value")]
-        public decimal latitude { get; set; }
 
         [Required]
+        [Range(-90,90)]
         [Display(Name = "Longitide Value")]
-        public decimal longitude { get; set; }
+public double? latitude {get;set;} = null;
+
+        [Required]
+        [Range(-180,180)]
+        [Display(Name = "Longitide Value")]
+    public double? longitude {get;set;} = null;
+    
+
+        //[RegularExpression( @"^(-?\d+(\.\d+)?),\s*(-?\d+(\.\d+)?)$",ErrorMessage="")]
+       // [RegularExpression(@"^[-+]?([1-8]?\d(\.\d+)?|90(\.0+)?),\s*[-+]?(180(\.0+)?|((1[0-7]\d)|([1-9]?\d))(\.\d+)?)$", ErrorMessage="Longitude value not valid")]
+       
+   //     public string longitude { get; set; }
 
         public int grid_id { get; set; }
     }
@@ -44,7 +63,7 @@ namespace GridManagement.Model.Dto
     }
 
     public class gridFilter {
-        public  string gridId {get;set;}
+        public  int? gridId {get;set;} = null;
 
         public  string gridNo {get;set;}
         public string status { get; set; }
@@ -64,7 +83,7 @@ namespace GridManagement.Model.Dto
 
         public decimal grid_area { get; set; }
 
-        public bool isCompleted { get; set; }
+        public string status { get; set; }
 
         public string CG_RFIno { get; set; }
 
@@ -72,10 +91,14 @@ namespace GridManagement.Model.Dto
 
         public string CG_approval_date { get; set; }
 
-        [EnumDataType(typeof(commonEnum.CG_RFIStatus), ErrorMessage = "RFI SStatus value doesn't exist within enum")]
+        public double marker_latitide { get; set; }
+        public double marker_longitude { get; set; }
+
+        [EnumDataType(typeof(commonEnum.CG_RFIStatus), ErrorMessage = "RFI Status value doesn't exist within enum")]
         public commonEnum.CG_RFIStatus? CG_RFI_status { get; set;} =null;
 
         public List<GridGeoLocation> gridGeoLocation { get; set;}
+        public List<layerDtls> lyrDtls {get;set;}
         public DateTime createdAt {get;set;}
         public DateTime updatedAt {get;set;}
           public string createdBy {get;set;}
@@ -105,7 +128,7 @@ public class AddCG_RFI {
         [DataType(DataType.Date)]
         public DateTime CG_approval_date { get; set; }
 
-        [EnumDataType(typeof(commonEnum.CG_RFIStatus), ErrorMessage = "RFI SStatus value doesn't exist within enum")]
+        [EnumDataType(typeof(commonEnum.CG_RFIStatus), ErrorMessage = "RFI Status value doesn't exist within enum")]
         public commonEnum.CG_RFIStatus CG_RFI_status { get; set;}
 
 }

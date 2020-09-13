@@ -17,6 +17,7 @@ namespace GridManagement.domain.Models
         public string Email { get; set; }
         public string Mobile { get; set; }
         public string Address { get; set; }
+        public bool? IsDelete { get; set; }
         public DateTime? CreatedAt { get; set; }
         public int? CreatedBy { get; set; }
         public DateTime? UpdateAt { get; set; }

@@ -39,18 +39,16 @@ private readonly ISubContService _subContService;
             try
             {
                 var response = _subContService.AddSubCont(model);
-                
-                return  StatusCode(201);
+                return StatusCode(StatusCodes.Status201Created, (new { message = "Sub-Contractor added successfully",code =201}));
             }
             catch(ValueNotFoundException e) {
-                return StatusCode(StatusCodes.Status400BadRequest, new ErrorClass() { code= StatusCodes.Status400BadRequest.ToString(), message=e.Message});
+                return StatusCode(StatusCodes.Status422UnprocessableEntity, new ErrorClass() { code= StatusCodes.Status422UnprocessableEntity.ToString(), message=e.Message});
             }
-            
-            catch (Exception ex)
+            catch (Exception e)
             {
-                Log.Logger.Error(ex.Message);
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
-            }
+                Log.Logger.Error(e.StackTrace);
+                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorClass() { code= StatusCodes.Status500InternalServerError.ToString(), message="Something went wrong"});
+            } 
         }
 
         [HttpPut]
@@ -64,17 +62,17 @@ private readonly ISubContService _subContService;
             {
                 var response = _subContService.UpdateSubCont(model, Id);
                 if (response == false) return BadRequest(new { message = "SubContractorId doesn't exists or SubcontractorCode alredy exists" });
-                return  StatusCode(204);
+                // return  StatusCode(204);
+                return Ok((new { message = "Updated subcontractor successfully",code =204}));
             }
            catch(ValueNotFoundException e) {
-                return StatusCode(StatusCodes.Status400BadRequest, new ErrorClass() { code= StatusCodes.Status400BadRequest.ToString(), message=e.Message});
+                return StatusCode(StatusCodes.Status422UnprocessableEntity, new ErrorClass() { code= StatusCodes.Status422UnprocessableEntity.ToString(), message=e.Message});
             }
-             
-            catch (Exception ex)
+             catch (Exception e)
             {
-                Log.Logger.Error(ex.Message);
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
-            }
+                Log.Logger.Error(e.StackTrace);
+                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorClass() { code= StatusCodes.Status500InternalServerError.ToString(), message="Something went wrong"});
+            } 
         }
 
         [HttpGet]
@@ -87,11 +85,11 @@ private readonly ISubContService _subContService;
            var response = _subContService.GetSubContList();
            return Ok(response); 
             }
-            catch (Exception ex)
+            catch (Exception e)
             {
-                Log.Logger.Error(ex.Message);
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
-            }        
+                Log.Logger.Error(e.StackTrace);
+                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorClass() { code= StatusCodes.Status500InternalServerError.ToString(), message="Something went wrong"});
+            }  
         }
 
 
@@ -106,16 +104,17 @@ private readonly ISubContService _subContService;
             try {
            var response = _subContService.DeleteSubCont(id);
             
-           return  StatusCode(204);                  
+         //  return  StatusCode(204);  
+          return Ok(new { message = "Deleted SubContractor successfully",code =204});                
              }
              catch(ValueNotFoundException e) {
-                return StatusCode(StatusCodes.Status400BadRequest, new ErrorClass() { code= StatusCodes.Status400BadRequest.ToString(), message=e.Message});
+                return StatusCode(StatusCodes.Status422UnprocessableEntity, new ErrorClass() { code= StatusCodes.Status422UnprocessableEntity.ToString(), message=e.Message});
             }
             
-            catch (Exception ex)
+             catch (Exception e)
             {
-                Log.Logger.Error(ex.Message);
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+                Log.Logger.Error(e.StackTrace);
+                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorClass() { code= StatusCodes.Status500InternalServerError.ToString(), message="Something went wrong"});
             } 
         }     
 
@@ -124,17 +123,17 @@ private readonly ISubContService _subContService;
         [ProducesResponseType(401)]
         [ProducesResponseType(200)]        
         [Route("SubContractorNoList")]
-        public async Task<ActionResult<List<SubContractorName>>> GetGridNoList()
+        public async Task<ActionResult<List<SubContractorName>>> GetSubContractorNoList()
         {
         try {
            var response =  _subContService.GetSubContNoList();
            return Ok(response); 
             }
-            catch (Exception ex)
+            catch (Exception e)
             {
-                Log.Logger.Error(ex.StackTrace);
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
-            }        
+                Log.Logger.Error(e.StackTrace);
+                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorClass() { code= StatusCodes.Status500InternalServerError.ToString(), message="Something went wrong"});
+            }     
         }  
 
     }

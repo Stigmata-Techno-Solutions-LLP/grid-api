@@ -22,6 +22,9 @@ namespace GridManagement.repository
 
         public List<PageAccess> GetPageAccess()
         {
+            try {
+
+            
             List<PageAccess> result = new List<PageAccess>();
             var pageAccesses = _context.RolesApplicationforms.ToList();
             List<ApplicationForms> applicationForms = _context.ApplicationForms.ToList();
@@ -34,10 +37,16 @@ namespace GridManagement.repository
                 pageAccess.PageDetail = _mapper.Map<PageDetails>(applicationForm);
             }
             return result;
+            }
+            catch (Exception ex) {
+               throw ex; 
+            }
         }
 
         public List<PageAccess> GetPageAccessBasedOnRoleId(int roleId)
         {
+            try {
+                
             List<PageAccess> result = new List<PageAccess>();
             var pageAccesses = _context.RolesApplicationforms.Where(x => x.RoleId == roleId).ToList();
             List<ApplicationForms> applicationForms = _context.ApplicationForms.ToList();
@@ -50,6 +59,10 @@ namespace GridManagement.repository
                 pageAccess.PageDetail = _mapper.Map<PageDetails>(applicationForm);
             }
             return result;
+            }
+            catch(Exception ex) {
+                throw ex;
+            }
         }
 
         public ResponseMessage UpdatePageAccess(List<PageAccess> pageAccessDetails)
@@ -68,17 +81,12 @@ namespace GridManagement.repository
                 }
                 return responseMessage = new ResponseMessage()
                 {
-                    Message = "Page Access updated successfully.",
-                    IsValid = true
+                    Message = "Page Access updated successfully."
                 };
             }
             catch (Exception ex)
             {
-                return responseMessage = new ResponseMessage()
-                {
-                    Message = "Error in updating the pageAccess. Please contact administrator. Error : " + ex.Message,
-                    IsValid = false
-                };
+               throw ex;
             }
         }
 

@@ -45,7 +45,7 @@ namespace GridManagement.repository
         {
             try
             {
-                Subcontractors subCont = _context.Subcontractors.Where(x => x.Id == Id).FirstOrDefault();
+                Subcontractors subCont = _context.Subcontractors.Where(x => x.Id == Id && x.IsDelete ==false).FirstOrDefault();
                 if (subCont == null ) throw new ValueNotFoundException("SubContrtactorId doesn't exists");
                 
              if ( _context.Subcontractors.Where(x => x.Code == subContReq.code && x.Id != Id).Count() >0 ) throw new ValueNotFoundException("new value SubContractor Code already exists, give unique value");                           
@@ -73,7 +73,8 @@ namespace GridManagement.repository
             {                    
                Subcontractors subCon =  _context.Subcontractors.Where(x=>x.Id == Id).FirstOrDefault(); 
                if (subCon == null) throw new ValueNotFoundException("SubContrtactorId doesn't exists");
-                _context.Remove(subCon);  
+                subCon.IsDelete = true;
+                _context.Update(subCon);
                  _context.SaveChanges();        
                 return true;
             }
@@ -90,7 +91,7 @@ namespace GridManagement.repository
 
                 var res = _context.Subcontractors
         .Include(c => c.CreatedByNavigation)
-        .ToList();
+        .ToList().Where(x=>x.IsDelete == false);
           List<SubContractorDetails> lstSubContDetails = _mapper.Map<List<SubContractorDetails>>(res);
 
                 return lstSubContDetails;
@@ -106,7 +107,7 @@ namespace GridManagement.repository
         {
             try
             {               
-          List<SubContractorName> lstGridDetails = _mapper.Map<List<SubContractorName>>(_context.Subcontractors.ToList());
+          List<SubContractorName> lstGridDetails = _mapper.Map<List<SubContractorName>>(_context.Subcontractors.ToList().Where(x=>x.IsDelete == false));
                 return lstGridDetails;
             }
             catch (Exception ex)

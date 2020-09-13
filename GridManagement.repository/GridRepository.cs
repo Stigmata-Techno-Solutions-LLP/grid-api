@@ -36,8 +36,8 @@ namespace GridManagement.repository
                 {
                     GridGeolocations geo = new GridGeolocations();
                     geo.GridId = grid.Id;
-                    geo.Latitude = geoLoc.latitude;
-                    geo.Longitude = geoLoc.longitude;
+                    geo.Latitude = geoLoc.latitude.ToString();
+                    geo.Longitude = geoLoc.longitude.ToString();
                     _context.GridGeolocations.Add(geo);
                 }
                 _context.SaveChanges();
@@ -58,6 +58,8 @@ namespace GridManagement.repository
                 if ( _context.Grids.Where(x => x.Gridno == gridReq.gridno && x.Id != Id).Count() >0 )  throw new ValueNotFoundException("new GridNo value already exists, should be unique");           
                 gridDtls.GridArea = gridReq.grid_area;
                 gridDtls.Gridno = gridReq.gridno;
+                gridDtls.MarkerLatitide = gridReq.marker_latitide.ToString();
+                gridDtls.MarkerLongitude = gridReq.marker_longitude.ToString();
                 List<GridGeolocations> gridLocList = _context.GridGeolocations.Where(x=>x.GridId == Id).ToList();
                 _context.RemoveRange(gridLocList);
                 _context.SaveChanges();
@@ -67,8 +69,8 @@ namespace GridManagement.repository
                 {
                     GridGeolocations geo = new GridGeolocations();
                     geo.GridId = gridDtls.Id;
-                    geo.Latitude = geoLoc.latitude;
-                    geo.Longitude = geoLoc.longitude;
+                    geo.Latitude = geoLoc.latitude.ToString();
+                    geo.Longitude = geoLoc.longitude.ToString();
                     _context.GridGeolocations.Add(geo);
                 }
                 _context.SaveChanges();
@@ -108,9 +110,7 @@ namespace GridManagement.repository
             {
                 Grids gridDtls = _context.Grids.Where(x => x.Id == Id).FirstOrDefault();
                 if (gridDtls == null ) throw new ValueNotFoundException("GridId doesn't exists");
-                 List<GridGeolocations> gridLocList = _context.GridGeolocations.Where(x=>x.GridId == Id).ToList();
-                _context.RemoveRange(gridLocList);
-                _context.Remove(gridDtls);               
+                gridDtls.IsDelete = true;
                 _context.SaveChanges();
                 return true;
             }
@@ -126,16 +126,44 @@ namespace GridManagement.repository
             {     
 
         var res = _context.Grids
-        .Include(c => c.GridGeolocations)
-       .ToList().Where(x=> (!string.IsNullOrEmpty(filterReq.gridNo) ? x.Gridno == filterReq.gridNo : 
-       !string.IsNullOrEmpty(filterReq.status) ? x.Status == filterReq.status : 
-       !string.IsNullOrEmpty(filterReq.CG_RFIno) ? x.CgRfino == filterReq.CG_RFIno:
-      // !string.IsNullOrEmpty(filterReq.CG_RFI_status.ToString()) ? x.CgRfiStatus == filterReq.CG_RFI_status.ToString():
-       true));
+        .Include(c => c.GridGeolocations).ToList();        
+       
+       if (!string.IsNullOrEmpty(filterReq.gridNo)) res = res.Where(x=> x.Gridno == filterReq.gridNo).ToList();
+       if (!string.IsNullOrEmpty(filterReq.status)) res = res.Where(x=> x.Status == filterReq.status).ToList();
+       if (!string.IsNullOrEmpty(filterReq.CG_RFIno)) res = res.Where(x=> x.CgRfino == filterReq.CG_RFIno).ToList();
+       if (!string.IsNullOrEmpty(filterReq.CG_RFI_status.ToString())) res = res.Where(x=> x.CgRfiStatus == filterReq.CG_RFI_status.ToString()).ToList();
+       if (!string.IsNullOrEmpty(filterReq.gridId.ToString())) res = res.Where(x=> x.Id == filterReq.gridId).ToList();
+       
+       
           
           List<GridDetails> lstGridDetails = _mapper.Map<List<GridDetails>>(res);
 
                 return lstGridDetails;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+
+            }
+        }
+    
+
+      public GridDetails GetGridDetails(int Id)
+        {
+            try
+            {     
+
+        var res = _context.Grids
+        .Include(c => c.GridGeolocations)
+        
+      //  .Include(c =>c.LayerDetails)
+       .FirstOrDefault();
+       //.Where(x=> (x.Id == Id));
+          
+          GridDetails lstGridDetails = _mapper.Map<GridDetails>(res);
+
+lstGridDetails.lyrDtls =  _mapper.Map<List<layerDtls>>(_context.LayerDetails.Include(c => c.Layer).Include(c =>c.LayerSubcontractors).Where(x=>x.GridId==Id).ToList()); //  _mapper.Map<List<LayerDetails>>(_context.LayerDetails.Where(x=>x.GridId == Id).ToList());
+            return lstGridDetails;
             }
             catch (Exception ex)
             {
@@ -146,55 +174,37 @@ namespace GridManagement.repository
 
 
 
+
         public List<layerDtls> GetLayerList(layerFilter filterReq)
         {
             try
             {     
 bool isFilterReqEmpty = true;
-dynamic res =null;
-        // foreach(PropertyInfo pi in filterReq.GetType().GetProperties())
-        // {
-        //         string value = (object)pi.GetValue(filterReq);
-        //         if(!string.IsNullOrEmpty(value))
-        //         {
-        //             isFilterReqEmpty = false;
-        //         }
-            
-        // }
-        if (string.IsNullOrEmpty(filterReq.gridNo) && string.IsNullOrEmpty(filterReq.layerNo) && string.IsNullOrEmpty(filterReq.CT_RFIno) && string.IsNullOrEmpty(filterReq.CT_RFI_status.ToString()) 
-        && string.IsNullOrEmpty(filterReq.isBillGenerated.ToString()) && string.IsNullOrEmpty(filterReq.layerStatus) && string.IsNullOrEmpty(filterReq.subContractorId.ToString()) && string.IsNullOrEmpty(filterReq.layerDtlsId.ToString())
-        ){
-    res = _context.LayerDetails
-    .Include(c=>c.Layer)
-        .Include(c => c.LayerSubcontractors)
-        .Include(c =>c.LayerDocuments)
-       .ToList();
 
-        }
-
-        else 
-        {
 
             Layers layer = _context.Layers.Where(x=>x.Layerno == filterReq.layerNo).FirstOrDefault();
             Grids grid = _context.Grids.Where(x=>x.Gridno == filterReq.gridNo).FirstOrDefault();
 
-res = _context.LayerDetails
+var res = _context.LayerDetails
         .Include(c => c.LayerSubcontractors)
         .Include(c =>c.LayerDocuments)
-       .ToList().Where(x=> (!string.IsNullOrEmpty( filterReq.gridNo) ? x.GridId == (grid ==null ? 0 : grid.Id): 
-       !string.IsNullOrEmpty(filterReq.layerDtlsId.ToString()) ? x.Id == filterReq.layerDtlsId : 
-       !string.IsNullOrEmpty(filterReq.layerNo) ? x.LayerId == (grid == null ? 0: grid.Id) : 
-       !string.IsNullOrEmpty(filterReq.CT_RFIno) ? x.CtRfino == filterReq.CT_RFIno:
-        !string.IsNullOrEmpty(filterReq.CT_RFI_status.ToString()) ? x.CtRfiStatus == filterReq.CT_RFI_status.ToString() : 
-      !string.IsNullOrEmpty(filterReq.LV_RFIno) ? x.LvRfino == filterReq.LV_RFIno:
-        !string.IsNullOrEmpty(filterReq.LV_RFI_status.ToString()) ? x.LvRfiStatus == filterReq.LV_RFI_status.ToString() : 
-       !string.IsNullOrEmpty(filterReq.isBillGenerated.ToString()) ? x.IsBillGenerated == filterReq.isBillGenerated:
-       !string.IsNullOrEmpty(filterReq.layerStatus) ? x.Status == filterReq.layerStatus:
-       !string.IsNullOrEmpty(filterReq.subContractorId.ToString()) ? x.LayerSubcontractors == x.LayerSubcontractors.Where(x=>x.SubcontractorId ==  filterReq.subContractorId):
-       true));
-          
-        }
-      
+        .Include(c => c.Layer).ToList();       
+       
+         if (!string.IsNullOrEmpty(filterReq.gridNo)) res = res.Where(x=> x.GridId == (grid ==null ? 0 : grid.Id)).ToList();
+         if (!string.IsNullOrEmpty(filterReq.layerNo)) res = res.Where(x=> x.LayerId == (layer ==null ? 0 : layer.Id)).ToList();
+         if (!string.IsNullOrEmpty(filterReq.layerDtlsId.ToString())) res = res.Where(x=> x.Id == filterReq.layerDtlsId).ToList();
+         if (!string.IsNullOrEmpty(filterReq.CT_RFIno)) res = res.Where(x=> x.CtRfino == filterReq.CT_RFIno).ToList();                                    
+         if (!string.IsNullOrEmpty(filterReq.CT_RFI_status.ToString())) res = res.Where(x=> x.CtRfiStatus == filterReq.CT_RFI_status.ToString()).ToList();                                    
+         if (!string.IsNullOrEmpty(filterReq.LV_RFIno)) res = res.Where(x=> x.LvRfino == filterReq.LV_RFIno).ToList();                                    
+
+         if (!string.IsNullOrEmpty(filterReq.LV_RFI_status.ToString())) res = res.Where(x=> x.LvRfiStatus == filterReq.LV_RFI_status.ToString()).ToList();                                    
+         if (!string.IsNullOrEmpty(filterReq.isBillGenerated.ToString())) res = res.Where(x=> x.IsBillGenerated == filterReq.isBillGenerated).ToList();                                    
+     
+       
+         if (!string.IsNullOrEmpty(filterReq.layerStatus)) res = res.Where(x=> x.Status == filterReq.layerStatus).ToList();                                    
+         if (!string.IsNullOrEmpty(filterReq.subContractorId.ToString())) res = res.Where(x=>  x.LayerSubcontractors == x.LayerSubcontractors.Where(x=>x.SubcontractorId ==  filterReq.subContractorId)).ToList();                                    
+     
+ 
           List<layerDtls> lstGridDetails = _mapper.Map<List<layerDtls>>(res);
 
                 return lstGridDetails;
@@ -227,14 +237,13 @@ res = _context.LayerDetails
         {
             try
             {             
-
                 LayerDetails layerDtls = _context.LayerDetails.Where(x=>x.GridId == layerReq.gridId && x.LayerId == layerReq.layerId).FirstOrDefault();
                 int layerId;
                 if (layerDtls != null) {
                     layerId = layerDtls.Id;
                 layerDtls.AreaLayer = layerReq.area_layer;
                 layerDtls.UpdatedBy = layerReq.user_id;
-                layerDtls.CtApprovalDate = layerReq.CT_approval_date;
+                layerDtls.CtApprovalDate = layerReq.CT_inspection_date ;
                 layerDtls.CtInspectionDate = layerReq.CT_inspection_date;
                 layerDtls.CtRfino = layerReq.CT_RFIno;
                 layerDtls.CtRfiStatus = layerReq.CT_RFI_status.ToString();
@@ -248,9 +257,7 @@ res = _context.LayerDetails
                 layerDtls.Remarks = layerReq.remarks;
                 layerDtls.ToplevelFillmaterial = layerReq.topFillMaterial;
                 layerDtls.TotalQuantity = layerReq.totalQuantity;   
-
-                 layerDtls.Status = layerReq.status.ToString();   
-                
+                 layerDtls.Status = layerReq.status.ToString();                   
                 }  
                 else {
                 LayerDetails layer = _mapper.Map<LayerDetails>(layerReq);
@@ -258,6 +265,8 @@ res = _context.LayerDetails
                 _context.SaveChanges();
                 layerId= layer.Id;
                 }
+                if (layerReq.layerSubContractor != null) {
+                
                 foreach (LayerSubcontractor ls in layerReq.layerSubContractor)
                 {
                     LayerSubcontractors layerSub = new LayerSubcontractors();
@@ -265,6 +274,7 @@ res = _context.LayerDetails
                     layerSub.SubcontractorId = ls.subContractorId;
                     layerSub.Quantity = ls.quantity;
                     _context.LayerSubcontractors.Add(layerSub);
+                }
                 }
                _context.SaveChanges();
                 return true;
@@ -305,11 +315,13 @@ clBill.BillMonth = billingReq.billingMonth;
                         clBillingLayerDtls.ClientBillingId =clBill.Id;
                        clBillingLayerDtls.LayerDetailsId = lyId;
                     _context.ClientBillingLayerDetails.Add(clBillingLayerDtls);
+
+LayerDetails layerDtls = _context.LayerDetails.Where(x=>x.Id == lyId).FirstOrDefault();
+layerDtls.IsBillGenerated = true;
                      }                  
                 }
                _context.SaveChanges();
               
-
             transaction.Commit();
         } catch(Exception ex) {
 transaction.Rollback();
