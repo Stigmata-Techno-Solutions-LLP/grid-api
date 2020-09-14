@@ -8,5 +8,7 @@ namespace GridManagement.repository
         List<PageAccess> GetPageAccess();
         List<PageAccess> GetPageAccessBasedOnRoleId(int roleId);
         ResponseMessage UpdatePageAccess(List<PageAccess> pageAccessDetails);
+
+        List<Role> GetRoles();
     }
 }
