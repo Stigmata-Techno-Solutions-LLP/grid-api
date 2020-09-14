@@ -20,7 +20,7 @@ namespace GridManagement.repository
 
         public AuthenticateResponse ValidateUser(AuthenticateRequest userReq)
         {
-            AuthenticateResponse result = new AuthenticateResponse();
+            AuthenticateResponse result = null;
             Users user = _context.Users.Where(x => x.Username == userReq.Username && x.Password == userReq.Password).FirstOrDefault();
             if (user != null)
             {
@@ -35,7 +35,6 @@ namespace GridManagement.repository
                     RoleId = Convert.ToInt32(user.RoleId)
                 };
             }
-
             return result;
         }
 
