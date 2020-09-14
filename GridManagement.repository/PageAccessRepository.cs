@@ -22,45 +22,64 @@ namespace GridManagement.repository
 
         public List<PageAccess> GetPageAccess()
         {
-            try {
-
-            
-            List<PageAccess> result = new List<PageAccess>();
-            var pageAccesses = _context.RolesApplicationforms.ToList();
-            List<ApplicationForms> applicationForms = _context.ApplicationForms.ToList();
-
-            result = _mapper.Map<List<PageAccess>>(pageAccesses);
-            foreach (PageAccess pageAccess in result)
+            try
             {
-                ApplicationForms applicationForm = new ApplicationForms();
-                applicationForm = applicationForms.Where(x => x.Id == pageAccess.PageDetailId).FirstOrDefault();
-                pageAccess.PageDetail = _mapper.Map<PageDetails>(applicationForm);
+
+
+                List<PageAccess> result = new List<PageAccess>();
+                var pageAccesses = _context.RolesApplicationforms.ToList();
+                List<ApplicationForms> applicationForms = _context.ApplicationForms.ToList();
+
+                result = _mapper.Map<List<PageAccess>>(pageAccesses);
+                foreach (PageAccess pageAccess in result)
+                {
+                    ApplicationForms applicationForm = new ApplicationForms();
+                    applicationForm = applicationForms.Where(x => x.Id == pageAccess.PageDetailId).FirstOrDefault();
+                    pageAccess.PageDetail = _mapper.Map<PageDetails>(applicationForm);
+                }
+                return result;
             }
-            return result;
+            catch (Exception ex)
+            {
+                throw ex;
             }
-            catch (Exception ex) {
-               throw ex; 
+        }
+
+        public List<Role> GetRoles()
+        {
+            try
+            {
+                List<Role> result = new List<Role>();
+                var roles = _context.Roles.ToList();
+                result = _mapper.Map<List<Role>>(roles);
+                return result;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
             }
         }
 
         public List<PageAccess> GetPageAccessBasedOnRoleId(int roleId)
         {
-            try {
-                
-            List<PageAccess> result = new List<PageAccess>();
-            var pageAccesses = _context.RolesApplicationforms.Where(x => x.RoleId == roleId).ToList();
-            List<ApplicationForms> applicationForms = _context.ApplicationForms.ToList();
-
-            result = _mapper.Map<List<PageAccess>>(pageAccesses);
-            foreach (PageAccess pageAccess in result)
+            try
             {
-                ApplicationForms applicationForm = new ApplicationForms();
-                applicationForm = applicationForms.Where(x => x.Id == pageAccess.PageDetailId).FirstOrDefault();
-                pageAccess.PageDetail = _mapper.Map<PageDetails>(applicationForm);
+
+                List<PageAccess> result = new List<PageAccess>();
+                var pageAccesses = _context.RolesApplicationforms.Where(x => x.RoleId == roleId).ToList();
+                List<ApplicationForms> applicationForms = _context.ApplicationForms.ToList();
+
+                result = _mapper.Map<List<PageAccess>>(pageAccesses);
+                foreach (PageAccess pageAccess in result)
+                {
+                    ApplicationForms applicationForm = new ApplicationForms();
+                    applicationForm = applicationForms.Where(x => x.Id == pageAccess.PageDetailId).FirstOrDefault();
+                    pageAccess.PageDetail = _mapper.Map<PageDetails>(applicationForm);
+                }
+                return result;
             }
-            return result;
-            }
-            catch(Exception ex) {
+            catch (Exception ex)
+            {
                 throw ex;
             }
         }
@@ -86,7 +105,7 @@ namespace GridManagement.repository
             }
             catch (Exception ex)
             {
-               throw ex;
+                throw ex;
             }
         }
 

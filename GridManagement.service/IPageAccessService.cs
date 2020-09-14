@@ -10,5 +10,7 @@ namespace GridManagement.service
         List<PageAccess> GetPageAccessBasedonRoleId(int roleId);
 
         ResponseMessage UpdatePageAccess(List<PageAccess> pageAccessDetails);
+
+        List<Role> GetRoles();
     }
 }

@@ -19,10 +19,12 @@ namespace GridManagement.Api.Controllers
     public class AuthController : ControllerBase
     {
         private readonly IAuthService _authService;
+        private readonly ILogger _loggerService;
 
         public AuthController(IAuthService authService)
         {
             _authService = authService;
+            _loggerService = new LoggerConfiguration().WriteTo.File("logs\\Authentication.txt", rollingInterval:RollingInterval.Day).CreateLogger();
         }
 
         [HttpPost("authenticate")]
@@ -37,7 +39,7 @@ namespace GridManagement.Api.Controllers
             }
             catch (Exception e)
             {
-                Log.Logger.Error(e.StackTrace);
+                _loggerService.Error(e.StackTrace);
                 return StatusCode(StatusCodes.Status500InternalServerError, new ErrorClass() { code= StatusCodes.Status500InternalServerError.ToString(), message="Something went wrong"});
             } 
         }
@@ -54,7 +56,7 @@ namespace GridManagement.Api.Controllers
             }
              catch (Exception e)
             {
-                Log.Logger.Error(e.StackTrace);
+                _loggerService.Error(e.StackTrace);
                 return StatusCode(StatusCodes.Status500InternalServerError, new ErrorClass() { code= StatusCodes.Status500InternalServerError.ToString(), message="Something went wrong"});
             } 
         }
@@ -71,7 +73,7 @@ namespace GridManagement.Api.Controllers
             }
             catch (Exception e)
             {
-                Log.Logger.Error(e.StackTrace);
+                _loggerService.Error(e.StackTrace);
                 return StatusCode(StatusCodes.Status500InternalServerError, new ErrorClass() { code= StatusCodes.Status500InternalServerError.ToString(), message="Something went wrong"});
             } 
         }
