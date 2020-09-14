@@ -54,7 +54,6 @@ public double? latitude {get;set;} = null;
        
    //     public string longitude { get; set; }
 
-        public int grid_id { get; set; }
     }
 
     public class GridNo {

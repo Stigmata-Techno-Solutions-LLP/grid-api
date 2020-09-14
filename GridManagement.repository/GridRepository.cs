@@ -28,7 +28,7 @@ namespace GridManagement.repository
         {
             try
             {
-                if (_context.Grids.Where(x => x.Gridno == gridReq.gridno).Count() > 0) throw new ValueNotFoundException("GridNo already exists");            
+                if (_context.Grids.Where(x => x.Gridno == gridReq.gridno && x.IsDelete == false).Count() > 0) throw new ValueNotFoundException("GridNo already exists");            
                 Grids grid = _mapper.Map<Grids>(gridReq);
                _context.Grids.Add(grid);
                 _context.SaveChanges();
@@ -55,7 +55,7 @@ namespace GridManagement.repository
             {
                 Grids gridDtls = _context.Grids.Where(x => x.Id == Id).FirstOrDefault();
                 if (gridDtls == null ) throw new ValueNotFoundException("GridId doesn't exists");
-                if ( _context.Grids.Where(x => x.Gridno == gridReq.gridno && x.Id != Id).Count() >0 )  throw new ValueNotFoundException("new GridNo value already exists, should be unique");           
+                if ( _context.Grids.Where(x => x.Gridno == gridReq.gridno && x.IsDelete == false && x.Id != Id).Count() >0 )  throw new ValueNotFoundException("new GridNo value already exists, should be unique");           
                 gridDtls.GridArea = gridReq.grid_area;
                 gridDtls.Gridno = gridReq.gridno;
                 gridDtls.MarkerLatitide = gridReq.marker_latitide.ToString();
@@ -126,7 +126,7 @@ namespace GridManagement.repository
             {     
 
         var res = _context.Grids
-        .Include(c => c.GridGeolocations).ToList();        
+        .Include(c => c.GridGeolocations).Where(x=>x.IsDelete== false).ToList();        
        
        if (!string.IsNullOrEmpty(filterReq.gridNo)) res = res.Where(x=> x.Gridno == filterReq.gridNo).ToList();
        if (!string.IsNullOrEmpty(filterReq.status)) res = res.Where(x=> x.Status == filterReq.status).ToList();
@@ -154,7 +154,7 @@ namespace GridManagement.repository
             {     
 
         var res = _context.Grids
-        .Include(c => c.GridGeolocations)
+        .Include(c => c.GridGeolocations).Where(x=>x.IsDelete== false)
         
       //  .Include(c =>c.LayerDetails)
        .FirstOrDefault();
@@ -188,7 +188,8 @@ bool isFilterReqEmpty = true;
 var res = _context.LayerDetails
         .Include(c => c.LayerSubcontractors)
         .Include(c =>c.LayerDocuments)
-        .Include(c => c.Layer).ToList();       
+        .Include(c=>c.Grid)
+        .Include(c => c.Layer).Where(x=>x.Grid.IsDelete == false).ToList();       
        
          if (!string.IsNullOrEmpty(filterReq.gridNo)) res = res.Where(x=> x.GridId == (grid ==null ? 0 : grid.Id)).ToList();
          if (!string.IsNullOrEmpty(filterReq.layerNo)) res = res.Where(x=> x.LayerId == (layer ==null ? 0 : layer.Id)).ToList();
@@ -201,7 +202,8 @@ var res = _context.LayerDetails
          if (!string.IsNullOrEmpty(filterReq.isBillGenerated.ToString())) res = res.Where(x=> x.IsBillGenerated == filterReq.isBillGenerated).ToList();                                    
      
        
-         if (!string.IsNullOrEmpty(filterReq.layerStatus)) res = res.Where(x=> x.Status == filterReq.layerStatus).ToList();                                    
+         
+          res = res.Where(x=> x.Status == filterReq.layerStatus).ToList();                                    
          if (!string.IsNullOrEmpty(filterReq.subContractorId.ToString())) res = res.Where(x=>  x.LayerSubcontractors == x.LayerSubcontractors.Where(x=>x.SubcontractorId ==  filterReq.subContractorId)).ToList();                                    
      
  
@@ -221,7 +223,7 @@ var res = _context.LayerDetails
             try
             {     
           
-          List<GridNo> lstGridDetails = _mapper.Map<List<GridNo>>(_context.Grids.ToList());
+          List<GridNo> lstGridDetails = _mapper.Map<List<GridNo>>(_context.Grids.Where(x=>x.IsDelete== false).ToList());
 
                 return lstGridDetails;
             }
@@ -351,6 +353,16 @@ throw ex;
             }
         }
 
+
+public string GetCompletedLayerCountByGridNo(int gridId) {
+    try{
+return _context.LayerDetails.Where(x=>x.GridId == gridId && x.Status== commonEnum.LayerStatus.Completed.ToString()).Count().ToString();
+  
+    }
+    catch(Exception ex) {
+        throw ex;
+    }
+}
          public List<LayerNo> clientBillingLayerByGridId(layerNoFilter filterReq)
         {
             try

@@ -23,5 +23,6 @@ namespace GridManagement.service
         public bool CreateClientBilling(AddClientBilling billingReq);
         public List<LayerNo> ClientBillingLayersNo(layerNoFilter layerNoFilter);
         public GridDetails GetGridDetails(int Id);
+        public string GetCompletedLayerCountByGridNo(int gridId);
         }
 }

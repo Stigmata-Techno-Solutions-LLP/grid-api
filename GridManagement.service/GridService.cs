@@ -85,7 +85,16 @@ namespace GridManagement.service
             return _gridRepo.GetGridDetails(Id);
         }
 
+public string GetCompletedLayerCountByGridNo(int gridId) {
+    try{
+return _gridRepo.GetCompletedLayerCountByGridNo(gridId);
+  
     }
+    catch (Exception ex) {
+        throw ex;
+    }
+}
+}
 
 
 }

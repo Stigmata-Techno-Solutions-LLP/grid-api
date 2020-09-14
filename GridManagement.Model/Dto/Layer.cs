@@ -8,11 +8,11 @@ namespace GridManagement.Model.Dto
 {
     public class AddLayer
     {
-        [Required, Range(0, 10)]
+        [Required]
         public int? gridId { get; set; }
 
 
-        [Required, Range(0, 10)]
+        [Required]
         public int? layerId { get; set; }   
 
         [Display(Name = "Filling Date")]
@@ -46,7 +46,6 @@ namespace GridManagement.Model.Dto
         [Display(Name = "User Id")]
         public int? user_id { get; set; }
 
-        public bool isApproved {get;set;}
 
         [Display(Name = "Compact testing RFI No")]
         public string CT_RFIno { get; set; }
@@ -95,7 +94,6 @@ namespace GridManagement.Model.Dto
 
     public class LayerSubcontractor
     {
-        public int layerDtlsId { get; set; }
 
         [Required]
         public int subContractorId { get; set; }

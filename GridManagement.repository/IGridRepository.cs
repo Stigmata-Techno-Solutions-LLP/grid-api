@@ -23,6 +23,7 @@ namespace GridManagement.repository
         public List<LayerNo> clientBillingLayerByGridId(layerNoFilter filterReq);
 
         public GridDetails GetGridDetails(int Id);
+        public string GetCompletedLayerCountByGridNo(int gridId);
         
     }
 }

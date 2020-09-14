@@ -80,10 +80,7 @@ namespace GridManagement.Api.Extensions
                         opt => opt.MapFrom(src => double.Parse( src.Latitude)))
                     .ForMember(dest =>
                         dest.longitude,
-                        opt => opt.MapFrom(src => double.Parse(src.Longitude)))
-                         .ForMember(dest =>
-                        dest.grid_id,
-                        opt => opt.MapFrom(src => src.GridId));
+                        opt => opt.MapFrom(src => double.Parse(src.Longitude)));
 
                         
   CreateMap<Grids, GridDetails>()
@@ -199,10 +196,7 @@ namespace GridManagement.Api.Extensions
                         //   dest.LayerSubcontractors,
                         //   opt => opt.MapFrom(src => src.layerSubContractor))
 
-        CreateMap< LayerSubcontractors,LayerSubcontractor>()
-            .ForMember(dest =>
-                dest.layerDtlsId,
-                opt => opt.MapFrom(src => src.LayerdetailsId))
+        CreateMap< LayerSubcontractors,LayerSubcontractor>()            
                .ForMember(dest =>
                 dest.quantity,
                 opt => opt.MapFrom(src => src.Quantity))
@@ -326,6 +320,7 @@ namespace GridManagement.Api.Extensions
                .ForMember(dest =>
                 dest.ContactName,
                 opt => opt.MapFrom(src => src.contact_person))
+                
                 .ForMember(dest =>
                 dest.Email,
                 opt => opt.MapFrom(src => src.email))
@@ -338,14 +333,21 @@ namespace GridManagement.Api.Extensions
 
             CreateMap<Subcontractors, SubContractorDetails>()
            .ForMember(dest =>
-            dest.SubContrtactorId,
+            dest.SubContractorId,
             opt => opt.MapFrom(src => src.Id))
             .ForMember(dest =>
+            dest.code,
+            opt => opt.MapFrom(src => src.Code))
+
+             .ForMember(dest =>
             dest.code,
             opt => opt.MapFrom(src => src.Code))
            .ForMember(dest =>
             dest.contact_person,
             opt => opt.MapFrom(src => src.ContactName))
+            .ForMember(dest =>
+            dest.contact_address,
+            opt => opt.MapFrom(src => src.Address))
             .ForMember(dest =>
             dest.email,
             opt => opt.MapFrom(src => src.Email))

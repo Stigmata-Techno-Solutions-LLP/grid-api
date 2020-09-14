@@ -150,6 +150,25 @@ namespace GridManagement.Api.Controllers
             }          
         }
 
+        [HttpGet]
+        [ProducesResponseType(201)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(401)]
+        [Route("LayerCmplCountByGrid")]
+        public async Task<ActionResult<string>> GetCompletedCountbyGridNo([FromQuery]int Id)
+        {
+              try {
+           var response =  _gridService.GetCompletedLayerCountByGridNo(Id);
+           return Ok(response); 
+            }
+            catch (Exception e)
+            {
+                Log.Logger.Error(e.StackTrace);
+                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorClass() { code= StatusCodes.Status500InternalServerError.ToString(), message="Something went wrong"});
+            }      
+        }    
+        
+
 
         [HttpPut]
         [ProducesResponseType(204)]
