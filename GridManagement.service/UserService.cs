@@ -1,16 +1,8 @@
 using System;
 using GridManagement.Model.Dto;
-using System.Security.Claims;
-using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
 using System.Collections.Generic;
 using GridManagement.repository;
 using Microsoft.Extensions.Options;
-using System.Threading.Tasks;
-using System.Text;
-using System.Security.Cryptography;
-using System.IO;
-using GridManagement.common;
 using MailKit.Net.Smtp;
 using MailKit.Security;
 using MimeKit;
@@ -42,8 +34,17 @@ namespace GridManagement.service
             ResponseMessage responseMessage = new ResponseMessage();
             userDetails.password = CreateRandomPassword(10);
             responseMessage = _userRepository.AddUser(userDetails);
-            SendMail("Password for L & T project", "<h1>Password for the user : " + userDetails.firstName + " " + userDetails.lastName + " </h1><br /><br /><p>Your Password is " + userDetails.password + "</p>", userDetails.email);
-            return responseMessage;
+            bool isEmailSent = SendMail("Password for L & T project", "<h1>Password for the user : " + userDetails.firstName + " " + userDetails.lastName + " </h1><br /><br /><p>Your Password is " + userDetails.password + "</p>", userDetails.email);
+            if (isEmailSent)
+                return responseMessage;
+            else
+            {
+                return new ResponseMessage()
+                {
+                    Message = "User Created. Error in sending the email. check the email.",
+
+                };
+            }
         }
 
         public ResponseMessage UpdateUser(UserDetails userDetails, int id)
@@ -82,12 +83,13 @@ namespace GridManagement.service
             }
             catch (Exception ex)
             {
-             throw ex;
+                return "";
             }
         }
 
-        public void SendMail(string subject, string bodyHtml, string toEmail)
+        public bool SendMail(string subject, string bodyHtml, string toEmail)
         {
+            bool isEMailSent = false;
             try
             {
                 var email = new MimeMessage();
@@ -102,10 +104,12 @@ namespace GridManagement.service
                 smtp.Authenticate(_appSettings.Username, _appSettings.Password);
                 smtp.Send(email);
                 smtp.Disconnect(true);
+                isEMailSent = true;
+                return isEMailSent;
             }
             catch (Exception ex)
             {
-                throw ex;
+                return false;
             }
         }
     }
