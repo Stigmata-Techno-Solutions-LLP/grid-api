@@ -29,6 +29,13 @@ namespace GridManagement.service
             return users;
         }
 
+        public UserDetails getUserById(int id)
+        {
+            UserDetails user = _userRepository.getUserById(id);
+            if(user == null) return null;
+            return user;
+        }
+
         public ResponseMessage AddUser(UserDetails userDetails)
         {
             ResponseMessage responseMessage = new ResponseMessage();
