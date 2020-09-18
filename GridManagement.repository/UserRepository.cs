@@ -29,6 +29,17 @@ namespace GridManagement.repository
             return result;
         }
 
+        public UserDetails getUserById(int id)
+        {
+            UserDetails user = new UserDetails();
+            var userDetail = _context.Users.Where(x => x.Id == id && x.IsDelete == false).FirstOrDefault();
+            if(userDetail != null)
+                user = _mapper.Map<UserDetails>(userDetail);
+            else
+                user = null;
+            return user;
+        }
+
         public ResponseMessage AddUser(UserDetails userDetails)
         {
             ResponseMessage responseMessage = new ResponseMessage();
