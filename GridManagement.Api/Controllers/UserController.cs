@@ -44,6 +44,21 @@ namespace GridManagement.Api.Controllers
             }
         }
 
+        [HttpGet("getuser/{id}")]
+        public IActionResult GetUserById(int id)
+        {
+            try
+            {
+                var response = _userService.getUserById(id);
+                return Ok(response);
+            }
+            catch (Exception e)
+            {
+                _loggerService.Error(e.StackTrace);
+                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorClass() { code = StatusCodes.Status500InternalServerError.ToString(), message = "Something went wrong" });
+            }
+        }
+
         [HttpPost("adduser")]
         public IActionResult AddUser(UserDetails userDetails)
         {
