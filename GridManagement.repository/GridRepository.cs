@@ -133,8 +133,6 @@ namespace GridManagement.repository
        if (!string.IsNullOrEmpty(filterReq.CG_RFIno)) res = res.Where(x=> x.CgRfino == filterReq.CG_RFIno).ToList();
        if (!string.IsNullOrEmpty(filterReq.CG_RFI_status.ToString())) res = res.Where(x=> x.CgRfiStatus == filterReq.CG_RFI_status.ToString()).ToList();
        if (!string.IsNullOrEmpty(filterReq.gridId.ToString())) res = res.Where(x=> x.Id == filterReq.gridId).ToList();
-       
-       
           
           List<GridDetails> lstGridDetails = _mapper.Map<List<GridDetails>>(res);
 
@@ -154,15 +152,14 @@ namespace GridManagement.repository
             {     
 
         var res = _context.Grids
-        .Include(c => c.GridGeolocations).Where(x=>x.IsDelete== false)
+        .Include(c => c.GridGeolocations).Where(x=>x.IsDelete== false && x.Id == Id)
         
       //  .Include(c =>c.LayerDetails)
        .FirstOrDefault();
-       //.Where(x=> (x.Id == Id));
           
           GridDetails lstGridDetails = _mapper.Map<GridDetails>(res);
 
-lstGridDetails.lyrDtls =  _mapper.Map<List<layerDtls>>(_context.LayerDetails.Include(c => c.Layer).Include(c =>c.LayerSubcontractors).Where(x=>x.GridId==Id).ToList()); //  _mapper.Map<List<LayerDetails>>(_context.LayerDetails.Where(x=>x.GridId == Id).ToList());
+            lstGridDetails.lyrDtls =  _mapper.Map<List<layerDtls>>(_context.LayerDetails.Include(c => c.Layer).Include(c =>c.LayerSubcontractors).Where(x=>x.GridId==Id).ToList()); //  _mapper.Map<List<LayerDetails>>(_context.LayerDetails.Where(x=>x.GridId == Id).ToList());
             return lstGridDetails;
             }
             catch (Exception ex)
@@ -180,8 +177,7 @@ lstGridDetails.lyrDtls =  _mapper.Map<List<layerDtls>>(_context.LayerDetails.Inc
             try
             {     
 bool isFilterReqEmpty = true;
-
-
+           // filterReq.layerNo = filterReq.layerNo.Replace("  "," ");
             Layers layer = _context.Layers.Where(x=>x.Layerno == filterReq.layerNo).FirstOrDefault();
             Grids grid = _context.Grids.Where(x=>x.Gridno == filterReq.gridNo).FirstOrDefault();
 
@@ -193,17 +189,20 @@ var res = _context.LayerDetails
        
          if (!string.IsNullOrEmpty(filterReq.gridNo)) res = res.Where(x=> x.GridId == (grid ==null ? 0 : grid.Id)).ToList();
          if (!string.IsNullOrEmpty(filterReq.layerNo)) res = res.Where(x=> x.LayerId == (layer ==null ? 0 : layer.Id)).ToList();
+        if (!string.IsNullOrEmpty(filterReq.gridId.ToString())) res = res.Where(x=> x.GridId == filterReq.gridId).ToList();
+        if (!string.IsNullOrEmpty(filterReq.layerId.ToString())) res = res.Where(x=> x.LayerId == filterReq.layerId).ToList();
          if (!string.IsNullOrEmpty(filterReq.layerDtlsId.ToString())) res = res.Where(x=> x.Id == filterReq.layerDtlsId).ToList();
          if (!string.IsNullOrEmpty(filterReq.CT_RFIno)) res = res.Where(x=> x.CtRfino == filterReq.CT_RFIno).ToList();                                    
          if (!string.IsNullOrEmpty(filterReq.CT_RFI_status.ToString())) res = res.Where(x=> x.CtRfiStatus == filterReq.CT_RFI_status.ToString()).ToList();                                    
          if (!string.IsNullOrEmpty(filterReq.LV_RFIno)) res = res.Where(x=> x.LvRfino == filterReq.LV_RFIno).ToList();                                    
 
          if (!string.IsNullOrEmpty(filterReq.LV_RFI_status.ToString())) res = res.Where(x=> x.LvRfiStatus == filterReq.LV_RFI_status.ToString()).ToList();                                    
-         if (!string.IsNullOrEmpty(filterReq.isBillGenerated.ToString())) res = res.Where(x=> x.IsBillGenerated == filterReq.isBillGenerated).ToList();                                    
-     
-       
+         if (!string.IsNullOrEmpty(filterReq.isBillGenerated.ToString())) res = res.Where(x=> x.IsBillGenerated == filterReq.isBillGenerated).ToList();                                         
+         if (!string.IsNullOrEmpty(filterReq.isApproved.ToString())) res = res.Where(x=> x.IsApproved == filterReq.isApproved).ToList();                                    
          
-          res = res.Where(x=> x.Status == filterReq.layerStatus).ToList();                                    
+         if (!string.IsNullOrEmpty(filterReq.layerStatus)) res = res.Where(x=> x.Status == filterReq.layerStatus).ToList();                                    
+         
+       // res = res.Where(x=> x.Status == filterReq.layerStatus).ToList();                                    
          if (!string.IsNullOrEmpty(filterReq.subContractorId.ToString())) res = res.Where(x=>  x.LayerSubcontractors == x.LayerSubcontractors.Where(x=>x.SubcontractorId ==  filterReq.subContractorId)).ToList();                                    
      
  
@@ -267,6 +266,9 @@ var res = _context.LayerDetails
                 _context.SaveChanges();
                 layerId= layer.Id;
                 }
+                List<LayerSubcontractors> lstlayerSub =  _context.LayerSubcontractors.Where(x=>x.LayerdetailsId == layerId).ToList();
+                _context.RemoveRange(lstlayerSub);
+                _context.SaveChanges();
                 if (layerReq.layerSubContractor != null) {
                 
                 foreach (LayerSubcontractor ls in layerReq.layerSubContractor)
@@ -288,6 +290,20 @@ var res = _context.LayerDetails
         }
 
 
+
+public void ApproveLayer(int layerDtlsId) {
+    try {
+
+    
+   LayerDetails lyrDtls=  _context.LayerDetails.Where(x=>x.Id == layerDtlsId && x.Status == commonEnum.LayerStatus.Completed.ToString() && x.IsApproved == false).FirstOrDefault();
+    if (lyrDtls == null ) throw new ValueNotFoundException("LayerDetailsId doesn't exists in below criteria(should be completed & non-approved layers)");
+   lyrDtls.IsApproved = true;
+   _context.SaveChanges();
+}
+    catch(Exception ex) {
+        throw ex;
+    }
+}
         public bool CreateClientBilling(AddClientBilling billingReq)
         {
             try
@@ -380,6 +396,129 @@ return _context.LayerDetails.Where(x=>x.GridId == gridId && x.Status== commonEnu
             }
         }
     
+    public LayerMonthWiseDashboard LayerMonthDashboard(FilterDashboard filter) {
+
+try {
+    var compltCountData = _mapper.Map<List<layerDtls>>(_context.LayerDetails.ToList());
+    var billedCountData = _mapper.Map<List<layerDtls>>(_context.LayerDetails.ToList());
+
+    if (filter.isMonthly == true) {
+    compltCountData = _mapper.Map<List<layerDtls>>(_context.LayerDetails.Where(x=>x.UpdatedAt >= DateTime.Now.AddMonths(-1)));
+    billedCountData = _mapper.Map<List<layerDtls>>(_context.LayerDetails.Where(x=>x.UpdatedAt >= DateTime.Now.AddMonths(-1)).ToList());
+    }
+    else if (filter.isYearly == true) {
+    compltCountData = _mapper.Map<List<layerDtls>>(_context.LayerDetails.Where(x=>x.UpdatedAt >= DateTime.Now.AddYears(-1)));
+    billedCountData = _mapper.Map<List<layerDtls>>(_context.LayerDetails.Where(x=>x.UpdatedAt >= DateTime.Now.AddYears(-1)).ToList());
+
+    }
+    else if (filter.startDate != null && filter.endDate != null) {
+    compltCountData = _mapper.Map<List<layerDtls>>(_context.LayerDetails.Where(x=>x.UpdatedAt >= filter.startDate && x.UpdatedAt < filter.endDate.Value.AddDays(1)));
+    billedCountData = _mapper.Map<List<layerDtls>>(_context.LayerDetails.Where(x=>x.UpdatedAt >= filter.startDate && x.UpdatedAt < filter.endDate.Value.AddDays(1)).ToList());
+
+    }
+     var compltCountDataGrp = compltCountData.GroupBy(s => s.updatedAt.ToString("MMM-yyyy"))
+    .Select(g => new 
+    {
+        Date = g.Key.ToString(),
+        Completed = g.Where(s=>s.status == commonEnum.LayerStatus.Completed.ToString()).Count()   
+    
+    })
+    .ToList();
+
+
+    var billedCountDataGrp= billedCountData.GroupBy(s => s.updatedAt.ToString("MMM-yyyy"))
+    .Select(g => new 
+    {
+        Date = g.Key.ToString(),
+        Billed = g.Where(s=>s.IsBillGenerated == true).Count()    
+    })
+    .ToList();
+    LayerMonthWiseDashboard layerMonthlyChart = new LayerMonthWiseDashboard();
+    layerMonthlyChart.Completed = compltCountDataGrp.Select(x=>x.Completed).ToArray();
+    layerMonthlyChart.Billed = billedCountDataGrp.Select(x=>x.Billed).ToArray();
+    layerMonthlyChart.Date = compltCountDataGrp.Select(x=>x.Date).ToArray();
+    return layerMonthlyChart;
+}
+catch (Exception ex) {
+    throw ex;
+}
+    }
+
+    public DashboardSummary dashboardSummary(FilterDashboard filterDash) {
+        try {
+        List<Grids> lstGrid = new List<Grids>();
+         List<LayerDetails> lstLayer = new List<LayerDetails>();
+        
+        lstGrid =  _context.Grids.Where(x=>x.IsDelete==false).ToList();
+        lstLayer = _context.LayerDetails.Include(c=>c.Grid).Where(x=>x.Grid.IsDelete ==false).ToList();
+if (filterDash.isMonthly == true) {
+lstGrid = lstGrid.Where(x=>x.CreatedAt.Value>= DateTime.Now.AddMonths(-1)).ToList();
+lstLayer = lstLayer.Where(x=>x.CreatedAt.Value>= DateTime.Now.AddMonths(-1)).ToList();
+}
+else  if (filterDash.isYearly == true) {
+lstGrid = lstGrid.Where(x=>x.CreatedAt.Value>= DateTime.Now.AddYears(-1)).ToList();
+lstLayer = lstLayer.Where(x=>x.CreatedAt.Value>= DateTime.Now.AddYears(-1)).ToList();
+}
+else  if (filterDash.startDate != null && filterDash.endDate != null) {
+    if (filterDash.startDate >= filterDash.endDate) throw new ValueNotFoundException("start date should not greater than end date");            
+lstGrid = lstGrid.Where(x=>x.CreatedAt.Value>= filterDash.startDate && x.CreatedAt.Value < filterDash.endDate.Value.AddDays(1)).ToList();
+lstLayer = lstLayer.Where(x=>x.CreatedAt.Value>= filterDash.startDate && x.CreatedAt.Value < filterDash.endDate.Value.AddDays(1)).ToList();
+}
+
+
+        DashboardSummary dshSummary = new DashboardSummary();
+        dshSummary.CompletedGrid = lstGrid.Where(x=>x.Status==commonEnum.GridStatus.InProgress.ToString()).Count().ToString();
+        dshSummary.InProgresssGrid = lstGrid.Where(x=>x.Status==commonEnum.GridStatus.Completed.ToString()).Count().ToString();
+        dshSummary.NewGrid = lstGrid.Where(x=>x.Status == commonEnum.GridStatus.New.ToString()).Count().ToString();
+        dshSummary.TotalGrid = lstGrid.Count().ToString();
+
+int totalLayerCount = lstGrid.Count() * _context.Layers.Count();
+int inProgLayerCount  =  lstLayer.Where(x=>x.Status == commonEnum.LayerStatus.InProgress.ToString()).Count();
+int compLayerCount = lstLayer.Where(x=>x.Status == commonEnum.LayerStatus.Completed.ToString()).Count();
+int newLayerCount =  totalLayerCount - (inProgLayerCount+ compLayerCount);
+
+dshSummary.CompletedLayer =compLayerCount.ToString();
+dshSummary.InProgressLayer =inProgLayerCount.ToString();
+dshSummary.TotalLayer = totalLayerCount.ToString();
+dshSummary.NewLayer = newLayerCount.ToString();
+dshSummary.UnBilledLayer = lstLayer.Where(x=>x.IsBillGenerated == false).Count().ToString();
+
+dshSummary.BilledLayer = lstLayer.Where(x=>x.IsBillGenerated == true).Count().ToString();
+        return dshSummary;
+        }
+        catch ( Exception ex) {
+            throw ex;
+        }
+    }
+
+    public List<MasterReport> MasterReport(FilterReport filterReport) {
+try {
+
+List<MasterReport> masterRpt = new List<MasterReport>();
+       masterRpt  =  (from grid in _context.Grids
+join lyr in _context.LayerDetails on grid.Id equals lyr.GridId
+//join subc in _context.LayerSubcontractors on lyr.Id equals subc.LayerdetailsId
+join l in _context.Layers on lyr.LayerId  equals l.Id
+where grid.IsDelete == false 
+select  new MasterReport{
+      layerDtls = _mapper.Map<layerDtls>(lyr),
+      gridDetails = _mapper.Map<GridDetailsforReport>(grid),
+    layerNo = _mapper.Map<LayerNo>(l),
+      subContractorsCode = String.Join(',',_context.LayerSubcontractors.Where(x=>x.LayerdetailsId == lyr.Id).Select(x=>x.Subcontractor.Code).ToArray()),
+  
+}).ToList();
+
+  if (!string.IsNullOrEmpty(filterReport.startDate.ToString())) masterRpt = masterRpt.Where(x=> x.layerDtls.createdAt >= filterReport.startDate).ToList();                                    
+  if (!string.IsNullOrEmpty(filterReport.endDate.ToString())) masterRpt = masterRpt.Where(x=> x.layerDtls.createdAt < filterReport.endDate.Value.AddDays(1)).ToList();                                    
+
+return masterRpt;
+}
+catch (Exception ex) {
+    throw ex;
+}
+    }
+
+
 
         public void Dispose()
         {
@@ -394,6 +533,8 @@ return _context.LayerDetails.Where(x=>x.GridId == gridId && x.Status== commonEnu
                 _context.Dispose();
             }
         }
+
+    
     }
    
 

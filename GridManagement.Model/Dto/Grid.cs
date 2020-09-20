@@ -70,7 +70,7 @@ public double? latitude {get;set;} = null;
         [Display(Name = "RFI No")]
         public string CG_RFIno { get; set; }
                 
-        [EnumDataType(typeof(commonEnum.CG_RFIStatus), ErrorMessage = "RFI SStatus value doesn't exist within enum")]
+        [EnumDataType(typeof(commonEnum.CG_RFIStatus), ErrorMessage = "RFI Status value doesn't exist within enum")]
         public commonEnum.CG_RFIStatus? CG_RFI_status { get; set;} = null;
     }
 

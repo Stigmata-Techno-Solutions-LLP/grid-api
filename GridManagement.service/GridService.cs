@@ -94,6 +94,34 @@ return _gridRepo.GetCompletedLayerCountByGridNo(gridId);
         throw ex;
     }
 }
+
+    public LayerMonthWiseDashboard LayerMonthDashboard(FilterDashboard filter) {
+    try{
+        return _gridRepo.LayerMonthDashboard(filter);
+    }
+    catch (Exception ex) {
+        throw ex;
+    }
+}
+    public DashboardSummary dashboardSummary(FilterDashboard filter) {
+        return this._gridRepo.dashboardSummary(filter);
+    }
+
+
+public void ApproveLayer(int layerDtlsId) {
+ try {
+_gridRepo.ApproveLayer(layerDtlsId);
+ }
+  catch(Exception ex) {
+throw ex;
+  }
+}
+     public List<MasterReport> MasterReport(FilterReport filter){
+         return _gridRepo.MasterReport(filter);
+     }
+
+
+   
 }
 
 

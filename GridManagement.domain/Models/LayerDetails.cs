@@ -36,6 +36,7 @@ namespace GridManagement.domain.Models
         public DateTime? UpdatedAt { get; set; }
         public int? CreatedBy { get; set; }
         public int? UpdatedBy { get; set; }
+        public bool? IsApproved { get; set; }
 
         public virtual Users CreatedByNavigation { get; set; }
         public virtual Grids Grid { get; set; }

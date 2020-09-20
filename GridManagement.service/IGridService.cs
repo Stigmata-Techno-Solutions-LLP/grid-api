@@ -24,5 +24,10 @@ namespace GridManagement.service
         public List<LayerNo> ClientBillingLayersNo(layerNoFilter layerNoFilter);
         public GridDetails GetGridDetails(int Id);
         public string GetCompletedLayerCountByGridNo(int gridId);
+        public void ApproveLayer(int layerDtlsId);
+        public LayerMonthWiseDashboard LayerMonthDashboard(FilterDashboard filter);
+        public DashboardSummary dashboardSummary(FilterDashboard filter);
+        public List<MasterReport> MasterReport(FilterReport filter);
+
         }
 }

@@ -116,6 +116,33 @@ namespace GridManagement.Api.Extensions
                         opt => opt.MapFrom(src =>  src.LayerDetails));  
                   
 
+                  CreateMap<Grids, GridDetailsforReport>()
+                     .ForMember(dest =>
+                        dest.gridId,
+                        opt => opt.MapFrom(src => src.Id))
+                    .ForMember(dest =>
+                        dest.CG_RFIno,
+                        opt => opt.MapFrom(src => src.CgRfino))
+                    .ForMember(dest =>
+                        dest.CG_RFI_status,
+                        opt => opt.MapFrom(src => src.CgRfiStatus))
+                    .ForMember(dest =>
+                        dest.CG_inspection_date,
+                        opt => opt.MapFrom(src => src.CgInspectionDate != null ? src.CgInspectionDate.Value.ToString("yyyy-MM-dd"):""))
+                    .ForMember(dest =>
+                        dest.CG_approval_date,
+                        opt => opt.MapFrom(src => src.CgApprovalDate != null ? src.CgApprovalDate.Value.ToString("yyyy-MM-dd"):"" ))
+                    .ForMember(dest =>
+                        dest.grid_area,
+                        opt => opt.MapFrom(src => src.GridArea))
+                     .ForMember(dest =>
+                        dest.createdBy,
+                        opt => opt.MapFrom(src => src.CreatedByNavigation.CreatedBy))
+                    .ForMember(dest =>
+                        dest.updatedBy,
+                        opt => opt.MapFrom(src => src.UpdatedByNavigation.UpdatedBy));
+                  
+
                     CreateMap<Layers,LayerNo>()                   
                     .ForMember(dest =>
                         dest.layerName,
@@ -204,12 +231,26 @@ namespace GridManagement.Api.Extensions
                 dest.subContractorId,
                 opt => opt.MapFrom(src => src.SubcontractorId));
 
+        // CreateMap< dynamic,LayerMonthWiseDashboard>()            
+        //        .ForMember(dest =>
+        //         dest.Date,
+        //         opt => opt.MapFrom(src => src.Date))
+        //         .ForMember(dest =>
+        //         dest.Completed,
+        //         opt => opt.MapFrom(src => src.Completed))
+        //         .ForMember(dest =>
+        //         dest.Billed,
+        //         opt => opt.MapFrom(src => src.Billed));
+
 
   CreateMap<LayerDetails, layerDtls>()
 
                         .ForMember(dest =>
                             dest.layerNo,
                             opt => opt.MapFrom(src => src.Layer.Layerno))
+                        .ForMember(dest =>
+                            dest.gridNo,
+                            opt => opt.MapFrom(src => src.Grid.Gridno))
 
                         .ForMember(dest =>
                             dest.layerId,

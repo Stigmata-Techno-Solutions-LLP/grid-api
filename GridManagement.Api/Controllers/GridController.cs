@@ -91,7 +91,7 @@ namespace GridManagement.Api.Controllers
             }        
         }
 
-         [HttpGet]
+        [HttpGet]
         [ProducesResponseType(401)]
         [ProducesResponseType(200)]        
         [Route("GridDetailsById")]
@@ -193,64 +193,6 @@ namespace GridManagement.Api.Controllers
             }       
         }
 
-    }
-
-
-    [ApiController]
-    [EnableCors("AllowAll")]
-    [Route("api/[controller]")]
-    public class ClientController : ControllerBase
-    {
-
-
-        private readonly IGridService _gridService;
-
-        public ClientController(IGridService gridService)
-        {
-            _gridService = gridService;
-        }
-
-        [HttpPost]
-        [ProducesResponseType(404)]
-        [ProducesResponseType(401)]
-        [ProducesResponseType(201)]
-        [Route("CreateClientBilling")]
-        public IActionResult CLientBilling(AddClientBilling model)
-        {
-            try
-            {
-                var response = _gridService.CreateClientBilling(model);
-               
-              //  return Ok(response);
-                  return StatusCode(StatusCodes.Status201Created, (new { message = "Client Billing Generated successfully",code =201}));
-            }
-            catch(ValueNotFoundException e) {
-                return StatusCode(StatusCodes.Status422UnprocessableEntity, new ErrorClass() { code= StatusCodes.Status422UnprocessableEntity.ToString(), message=e.Message});
-            }
-             catch (Exception e)
-            {
-                Log.Logger.Error(e.StackTrace);
-                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorClass() { code= StatusCodes.Status500InternalServerError.ToString(), message="Something went wrong"});
-            } 
-        }
-
-
-        [HttpGet]
-        [ProducesResponseType(401)]
-        [ProducesResponseType(200)]        
-        [Route("LayerNoforBilling")]
-        public async Task<ActionResult<List<LayerNo>>> GetLayerNoforBilling([FromQuery]  layerNoFilter layerNoFilter )
-        {
-        try {
-           var response =  _gridService.ClientBillingLayersNo(layerNoFilter);
-           return Ok(response); 
-            }
-             catch (Exception e)
-            {
-                Log.Logger.Error(e.StackTrace);
-                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorClass() { code= StatusCodes.Status500InternalServerError.ToString(), message="Something went wrong"});
-            }          
-        }
     }
 
 }

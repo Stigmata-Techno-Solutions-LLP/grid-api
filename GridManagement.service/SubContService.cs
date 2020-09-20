@@ -34,12 +34,16 @@ namespace GridManagement.service
             return _subContRepo.DeleteSubContractor( Id);
         }
 
-         public List<SubContractorDetails> GetSubContList() {
-            return _subContRepo.GetSubContractorsList();
+         public List<SubContractorDetails> GetSubContList(int? subId) {
+            return _subContRepo.GetSubContractorsList(subId);
         }
 
         public List<SubContractorName> GetSubContNoList() {
             return _subContRepo.GetSubContNoList();
         }
+
+    public List<SubContractorReport> SubContReport(FilterReport filterReq) {
+        return this._subContRepo.SubContractorReports(filterReq);
+    }
     }
 }

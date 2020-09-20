@@ -62,7 +62,7 @@ namespace GridManagement.Model.Dto
 
         [Display(Name = "Comapct tesing RFI Status")]
         //[EnumDataType(typeof(commonEnum.CT_RFIStatus), ErrorMessage = "RFI SStatus value doesn't exist within enum")]
-        public commonEnum.CG_RFIStatus CT_RFI_status { get; set;}
+        public commonEnum.CT_RFIStatus CT_RFI_status { get; set;}
 
 
         [Display(Name = "Level Verification  RFI No")]
@@ -80,7 +80,7 @@ namespace GridManagement.Model.Dto
 
         [Display(Name = "Level Verification RFI Status")]
        // [EnumDataType(typeof(commonEnum.LV_RFIStatus), ErrorMessage = "RFI SStatus value doesn't exist within enum")]
-        public commonEnum.CG_RFIStatus LV_RFI_status { get; set;}
+        public commonEnum.LV_RFIStatus LV_RFI_status { get; set;}
 
         [Required]
          [Display(Name = "Layer Status")]
@@ -134,6 +134,11 @@ public class layerNoFilter{
         [Display(Name = "Layer No")]
         public string layerNo { get; set; }
 
+ [Display(Name = "Grid Id")]
+        public int? gridId { get; set; } = null;
+
+        [Display(Name = "Layer Id")]
+        public int? layerId { get; set; } = null;
 
         [Display(Name = "Compact testing RFI No")]
         public string CT_RFIno { get; set; }
@@ -151,6 +156,9 @@ public class layerNoFilter{
         [Display(Name = "Client Billing Generated Status")]
         public bool? isBillGenerated {get;set;} = null;
 
+        [Display(Name = "Layer Approved Status")]
+        public bool? isApproved {get;set;} = null;
+
         [Display(Name = "Sub-Contractor Id")]
         public int? subContractorId { get;set; } =null;
 
@@ -165,6 +173,7 @@ public class layerNoFilter{
         public int? layerDtlsId { get; set; } = null;
 
         public string layerNo { get; set; }
+        public string gridNo {get;set;}
         public int gridId { get; set; }
 
         public int layerId { get; set; }
@@ -197,13 +206,12 @@ public class layerNoFilter{
         public  string status { get; set;}       
         public string LV_RFI_status { get; set;}
         public bool IsBillGenerated {get;set;}
+        public bool isApproved {get;set;}
         public DateTime createdAt {get;set;}
         public DateTime updatedAt {get;set;}
 
         public ICollection<LayerSubcontractor> layerSubContractor { get; set; }  
         public List<LayerDocuments> layeDocument { get; set; }
 
-    }   
-
-
+    } 
 }
