@@ -32,7 +32,11 @@ namespace GridManagement.Model.Dto
         public bool? isTillDate {get;set;} = false;
         public bool? isYearly {get;set;} = false;
         public bool? isMonthly {get;set;} = false;
+
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:yyyy-MM-dd}")]
         public DateTime? startDate {get;set;} = null;
+        
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:yyyy-MM-dd}")]
         public DateTime? endDate {get;set;} = null;
     }
 

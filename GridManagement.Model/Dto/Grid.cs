@@ -98,8 +98,8 @@ public double? latitude {get;set;} = null;
 
         public List<GridGeoLocation> gridGeoLocation { get; set;}
         public List<layerDtls> lyrDtls {get;set;}
-        public DateTime createdAt {get;set;}
-        public DateTime updatedAt {get;set;}
+        public string createdAt {get;set;}
+        public string updatedAt {get;set;}
           public string createdBy {get;set;}
         public string updatedBy {get;set;}
 

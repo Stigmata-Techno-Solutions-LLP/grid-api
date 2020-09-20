@@ -240,6 +240,9 @@ var res = _context.LayerDetails
             {             
                 LayerDetails layerDtls = _context.LayerDetails.Where(x=>x.GridId == layerReq.gridId && x.LayerId == layerReq.layerId).FirstOrDefault();
                 int layerId;
+                int roleLevel = Convert.ToInt32(commonEnum.RolesLevel.Level3);
+                Users userData = _context.Users.Include(c=>c.Role).Where(x=>x.Id==layerReq.user_id && x.Role.Level == roleLevel ).FirstOrDefault();
+                
                 if (layerDtls != null) {
                     layerId = layerDtls.Id;
                 layerDtls.AreaLayer = layerReq.area_layer;
@@ -258,13 +261,22 @@ var res = _context.LayerDetails
                 layerDtls.Remarks = layerReq.remarks;
                 layerDtls.ToplevelFillmaterial = layerReq.topFillMaterial;
                 layerDtls.TotalQuantity = layerReq.totalQuantity;   
-                 layerDtls.Status = layerReq.status.ToString();                   
+                layerDtls.Status = layerReq.status.ToString();     
+
+                if (userData != null) {
+                    layerDtls.IsApproved = true;                   
+                }              
                 }  
                 else {
                 LayerDetails layer = _mapper.Map<LayerDetails>(layerReq);
+                 if (userData != null) {
+                    layer.IsApproved = true;                   
+                }
                 _context.LayerDetails.Add(layer);
+                
                 _context.SaveChanges();
                 layerId= layer.Id;
+
                 }
                 List<LayerSubcontractors> lstlayerSub =  _context.LayerSubcontractors.Where(x=>x.LayerdetailsId == layerId).ToList();
                 _context.RemoveRange(lstlayerSub);
@@ -279,7 +291,7 @@ var res = _context.LayerDetails
                     layerSub.Quantity = ls.quantity;
                     _context.LayerSubcontractors.Add(layerSub);
                 }
-                }
+                }                
                _context.SaveChanges();
                 return true;
             }

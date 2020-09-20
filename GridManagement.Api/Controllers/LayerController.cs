@@ -91,27 +91,27 @@ private readonly IGridService _gridService;
    
    
    
-        [HttpPost]
-        [ProducesResponseType(401)]
-        [ProducesResponseType(201)]        
-        [Route("ApproveLayer")]
-        public  IActionResult ApproveLayer([FromQuery]  int layerDtlsId )
-        {
-        try {
-               _gridService.ApproveLayer(layerDtlsId);
-                // return StatusCode(StatusCodes.Status204NoContent, (new { message = "Grid updated successfully",code =204}));
-                   return Ok(new { message = "Layer Approved successfully",code =204});      
+        // [HttpPost]
+        // [ProducesResponseType(401)]
+        // [ProducesResponseType(201)]        
+        // [Route("ApproveLayer")]
+        // public  IActionResult ApproveLayer([FromQuery]  int layerDtlsId )
+        // {
+        // try {
+        //        _gridService.ApproveLayer(layerDtlsId);
+        //         // return StatusCode(StatusCodes.Status204NoContent, (new { message = "Grid updated successfully",code =204}));
+        //            return Ok(new { message = "Layer Approved successfully",code =204});      
             
-            }
-             catch(ValueNotFoundException e) {
-                return StatusCode(StatusCodes.Status422UnprocessableEntity, new ErrorClass() { code= StatusCodes.Status422UnprocessableEntity.ToString(), message=e.Message});
-            }
-             catch (Exception e)
-            {
-                Log.Logger.Error(e.StackTrace);
-                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorClass() { code= StatusCodes.Status500InternalServerError.ToString(), message="Something went wrong"});
-            }          
-        }
+        //     }
+        //      catch(ValueNotFoundException e) {
+        //         return StatusCode(StatusCodes.Status422UnprocessableEntity, new ErrorClass() { code= StatusCodes.Status422UnprocessableEntity.ToString(), message=e.Message});
+        //     }
+        //      catch (Exception e)
+        //     {
+        //         Log.Logger.Error(e.StackTrace);
+        //         return StatusCode(StatusCodes.Status500InternalServerError, new ErrorClass() { code= StatusCodes.Status500InternalServerError.ToString(), message="Something went wrong"});
+        //     }          
+        // }
 
    
     #endregion

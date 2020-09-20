@@ -99,6 +99,9 @@ namespace GridManagement.Api.Extensions
                     .ForMember(dest =>
                         dest.CG_approval_date,
                         opt => opt.MapFrom(src => src.CgApprovalDate != null ? src.CgApprovalDate.Value.ToString("yyyy-MM-dd"):"" ))
+                     .ForMember(dest =>
+                        dest.createdAt,
+                        opt => opt.MapFrom(src => src.CreatedAt != null ? src.CreatedAt.Value.ToString("yyyy-MM-dd"):"" ))   
                     .ForMember(dest =>
                         dest.grid_area,
                         opt => opt.MapFrom(src => src.GridArea))
@@ -266,7 +269,7 @@ namespace GridManagement.Api.Extensions
                             opt => opt.MapFrom(src => src.AreaLayer))
                         .ForMember(dest =>
                             dest.createdAt,
-                            opt => opt.MapFrom(src => src.CreatedAt))
+                            opt => opt.MapFrom(src => src.CreatedAt != null ? src.CreatedAt.Value.ToString("yyyy-MM-dd"):""))
                         .ForMember(dest =>
                             dest.CT_inspection_date,
                             opt => opt.MapFrom(src => src.CtInspectionDate != null ? src.CtInspectionDate.Value.ToString("yyyy-MM-dd"):""))
@@ -403,7 +406,7 @@ namespace GridManagement.Api.Extensions
             opt => opt.MapFrom(src => src.CreatedBy))
             .ForMember(dest =>
             dest.createdDate,
-            opt => opt.MapFrom(src => src.CreatedAt));
+            opt => opt.MapFrom(src => src.CreatedAt != null ? src.CreatedAt.Value.ToString("yyyy-MM-dd"):""));
 
 
  CreateMap<Subcontractors ,SubContractorName>()                   
