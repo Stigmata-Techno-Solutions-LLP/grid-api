@@ -21,7 +21,7 @@ namespace GridManagement.repository
         public AuthenticateResponse ValidateUser(AuthenticateRequest userReq)
         {
             AuthenticateResponse result = null;
-            Users user = _context.Users.Where(x => x.Username == userReq.Username && x.Password == userReq.Password).FirstOrDefault();
+            Users user = _context.Users.Where(x => x.Username == userReq.Username && x.Password == userReq.Password && x.IsActive==true && x.IsDelete== false).FirstOrDefault();
             if (user != null)
             {
                 result = new AuthenticateResponse

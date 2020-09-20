@@ -36,7 +36,7 @@ namespace GridManagement.Model.Dto
 
     public class SubContractorDetails
     {             
-        public string SubContrtactorId{get;set;}
+        public string SubContractorId{get;set;}
         public string name {get;set;}           
         public string code {get;set;}
 

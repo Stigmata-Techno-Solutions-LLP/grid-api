@@ -5,8 +5,8 @@ using Microsoft.EntityFrameworkCore.Metadata;
 namespace GridManagement.domain.Models
 {
     public partial class gridManagementContext : DbContext
-    {
-    
+    {       
+
         public gridManagementContext(DbContextOptions<gridManagementContext> options)
             : base(options)
         {
@@ -26,7 +26,6 @@ namespace GridManagement.domain.Models
         public virtual DbSet<Roles> Roles { get; set; }
         public virtual DbSet<RolesApplicationforms> RolesApplicationforms { get; set; }
         public virtual DbSet<Subcontractors> Subcontractors { get; set; }
-        public virtual DbSet<Tempppp> Tempppp { get; set; }
         public virtual DbSet<Users> Users { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -351,6 +350,8 @@ namespace GridManagement.domain.Models
 
                 entity.Property(e => e.GridId).HasColumnName("grid_id");
 
+                entity.Property(e => e.IsApproved).HasColumnName("isApproved");
+
                 entity.Property(e => e.IsBillGenerated)
                     .HasColumnName("isBillGenerated")
                     .HasDefaultValueSql("((0))");
@@ -625,17 +626,6 @@ namespace GridManagement.domain.Models
                     .WithMany(p => p.SubcontractorsUpdatedByNavigation)
                     .HasForeignKey(d => d.UpdatedBy)
                     .HasConstraintName("subcont_updatedby_users__fkey");
-            });
-
-            modelBuilder.Entity<Tempppp>(entity =>
-            {
-                entity.HasNoKey();
-
-                entity.ToTable("tempppp");
-
-                entity.Property(e => e.Latitude)
-                    .HasColumnName("latitude")
-                    .HasColumnType("decimal(18, 8)");
             });
 
             modelBuilder.Entity<Users>(entity =>

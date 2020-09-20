@@ -54,7 +54,7 @@ namespace GridManagement.service
                 {
                     new Claim(ClaimTypes.Name, userId)
                 }),
-                Expires = DateTime.UtcNow.AddDays(1),
+                Expires = DateTime.UtcNow.AddMinutes(2),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
             };
             var token = tokenHandler.CreateJwtSecurityToken(tokenDescriptor);
@@ -70,7 +70,7 @@ namespace GridManagement.service
                 return new RefreshToken
                 {
                     Token = Convert.ToBase64String(randomBytes),
-                    Expires = DateTime.UtcNow.AddDays(7),
+                    Expires = DateTime.UtcNow.AddMinutes(15),
                     Created = DateTime.UtcNow,
                     CreatedBy = userId
                 };

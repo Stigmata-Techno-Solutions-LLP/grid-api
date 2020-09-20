@@ -79,10 +79,10 @@ private readonly ISubContService _subContService;
         [ProducesResponseType(401)]
         [ProducesResponseType(200)]        
         [Route("GetSubContractorList")]
-        public  ActionResult<List<SubContractorDetails>> GetSubContractorList()
+        public  ActionResult<List<SubContractorDetails>> GetSubContractorList(int? subId)
         {
             try {
-           var response = _subContService.GetSubContList();
+           var response = _subContService.GetSubContList(subId);
            return Ok(response); 
             }
             catch (Exception e)
@@ -134,7 +134,9 @@ private readonly ISubContService _subContService;
                 Log.Logger.Error(e.StackTrace);
                 return StatusCode(StatusCodes.Status500InternalServerError, new ErrorClass() { code= StatusCodes.Status500InternalServerError.ToString(), message="Something went wrong"});
             }     
-        }  
+        }
+
+  
 
     }
 
