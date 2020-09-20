@@ -18,8 +18,9 @@ namespace GridManagement.service
     {        
         public bool AddSubCont(AddSubContractorModel model);
         public bool UpdateSubCont(AddSubContractorModel subCont, int Id);
-        public List<SubContractorDetails> GetSubContList(); 
+        public List<SubContractorDetails> GetSubContList(int? subId); 
         public bool DeleteSubCont( int Id);
         public List<SubContractorName> GetSubContNoList();
+                    public List<SubContractorReport> SubContReport(FilterReport filterReq);
     }
 }

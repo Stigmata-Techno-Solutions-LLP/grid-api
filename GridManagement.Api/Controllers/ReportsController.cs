@@ -1,107 +1,95 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using GridManagement.service;
 using GridManagement.Model.Dto;
 using Serilog;
-using System.Net;
 using Microsoft.AspNetCore.Http;
-using GridManagement.common;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
+using GridManagement.common;
+
 // For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace GridManagement.Api.Controllers
 {
-   
-    [ApiController]
     [EnableCors("AllowAll")]
+    // [Authorize]
+    [ApiController]
     [Route("api/[controller]")]
-    public class LayerController : ControllerBase
+    public class ReportsController : ControllerBase
     {
+   private readonly IGridService _gridService;  
+    private readonly ISubContService _subContService;
 
-
-private readonly IGridService _gridService;
-
-        public LayerController(IGridService gridService)
+        public ReportsController(IGridService gridService, ISubContService subContService)
         {
             _gridService = gridService;
+            _subContService = subContService;
         }
-#region Layer API endpoints
-
-        [HttpPost]
-        [ProducesResponseType(401)]
-        [ProducesResponseType(201)]
-        [Route("AddLayer")]
-        public IActionResult AddLayer(AddLayer model)
-        {
-            try
-            {
-                var response = _gridService.AddLayer(model);
-                // return Ok(response);   
-                return StatusCode(StatusCodes.Status201Created, (new { message = "Grid Layer updated successfully",code =201}));             
-            }
-            catch(ValueNotFoundException e) {
-                return StatusCode(StatusCodes.Status422UnprocessableEntity, new ErrorClass() { code= StatusCodes.Status422UnprocessableEntity.ToString(), message=e.Message});
-            }
-            catch (Exception e)
-            {
-                Log.Logger.Error(e.StackTrace);
-                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorClass() { code= StatusCodes.Status500InternalServerError.ToString(), message="Something went wrong"});
-            } 
-        }
-
         [HttpGet]
         [ProducesResponseType(401)]
         [ProducesResponseType(200)]        
-        [Route("LayerList")]
-        public async Task<ActionResult<List<layerDtls>>> GetLayerList([FromQuery]layerFilter layerFilter)
-        {
-              try {
-           var response =  _gridService.GetLayerList(layerFilter);
-           return Ok(response); 
-            }
-            
-            catch (Exception e)
-            {
-                Log.Logger.Error(e.StackTrace);
-                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorClass() { code= StatusCodes.Status500InternalServerError.ToString(), message="Something went wrong"});
-            }      
-        }
-
-
-        [HttpGet]
-        [ProducesResponseType(401)]
-        [ProducesResponseType(200)]        
-        [Route("LayerNoList")]
-        public async Task<ActionResult<List<LayerNo>>> GetLayerNoList( )
+        [Route("MasterReport")]
+        public async Task<ActionResult<List<MasterReport>>> GetMasterReport( [FromQuery] FilterReport filterReport)
         {
         try {
-           var response =  _gridService.GetLayerNoList();
+           var response =  _gridService.MasterReport(filterReport);
            return Ok(response); 
             }
              catch (Exception e)
             {
                 Log.Logger.Error(e.StackTrace);
                 return StatusCode(StatusCodes.Status500InternalServerError, new ErrorClass() { code= StatusCodes.Status500InternalServerError.ToString(), message="Something went wrong"});
-            }      
+            }          
         }
-   
-   
-   
-        [HttpPost]
+
+
+        [HttpGet]
         [ProducesResponseType(401)]
-        [ProducesResponseType(201)]        
-        [Route("ApproveLayer")]
-        public  IActionResult ApproveLayer([FromQuery]  int layerDtlsId )
+        [ProducesResponseType(200)]        
+        [Route("SubContracorReport")]
+        public  ActionResult<List<SubContractorReport>> SubSontReport([FromQuery] FilterReport filterReport)
+        {
+            try {
+           var response = _subContService.SubContReport(filterReport);
+           return Ok(response); 
+            }
+            catch (Exception e)
+            {
+                Log.Logger.Error(e.StackTrace);
+                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorClass() { code= StatusCodes.Status500InternalServerError.ToString(), message="Something went wrong"});
+            }  
+        }
+
+
+        [HttpGet]
+        [ProducesResponseType(401)]
+        [ProducesResponseType(200)]        
+        [Route("LayerMonthlyDashboard")]
+        public async Task<ActionResult<List<LayerMonthWiseDashboard>>> LayerMonthlyDashboard([FromQuery] FilterDashboard filter)
         {
         try {
-               _gridService.ApproveLayer(layerDtlsId);
-                // return StatusCode(StatusCodes.Status204NoContent, (new { message = "Grid updated successfully",code =204}));
-                   return Ok(new { message = "Layer Approved successfully",code =204});      
-            
+           LayerMonthWiseDashboard response =  _gridService.LayerMonthDashboard(filter);
+           return Ok(response); 
+            }
+             catch (Exception e)
+            {
+                Log.Logger.Error(e.StackTrace);
+                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorClass() { code= StatusCodes.Status500InternalServerError.ToString(), message="Something went wrong"});
+            }          
+        }
+
+        [HttpGet]
+        [ProducesResponseType(401)]
+        [ProducesResponseType(200)]        
+        [Route("DashboardSummary")]
+        public async Task<ActionResult<DashboardSummary>> DashboardSummary([FromQuery] FilterDashboard filter)
+        {
+        try {
+           DashboardSummary response =  _gridService.dashboardSummary(filter);
+           return Ok(response); 
             }
              catch(ValueNotFoundException e) {
                 return StatusCode(StatusCodes.Status422UnprocessableEntity, new ErrorClass() { code= StatusCodes.Status422UnprocessableEntity.ToString(), message=e.Message});
@@ -112,11 +100,6 @@ private readonly IGridService _gridService;
                 return StatusCode(StatusCodes.Status500InternalServerError, new ErrorClass() { code= StatusCodes.Status500InternalServerError.ToString(), message="Something went wrong"});
             }          
         }
-
-   
-    #endregion
+        
     }
-
-
-
 }

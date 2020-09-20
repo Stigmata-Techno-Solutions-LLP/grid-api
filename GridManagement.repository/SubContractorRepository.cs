@@ -84,15 +84,15 @@ namespace GridManagement.repository
             }
         }
 
-          public List<SubContractorDetails> GetSubContractorsList()
+          public List<SubContractorDetails> GetSubContractorsList(int? SubId)
         {
             try
             {     
-
-                var res = _context.Subcontractors
+        var res = _context.Subcontractors
         .Include(c => c.CreatedByNavigation)
         .ToList().Where(x=>x.IsDelete == false);
-          List<SubContractorDetails> lstSubContDetails = _mapper.Map<List<SubContractorDetails>>(res);
+        List<SubContractorDetails> lstSubContDetails = _mapper.Map<List<SubContractorDetails>>(res);        
+        if (!string.IsNullOrEmpty(SubId.ToString())) lstSubContDetails = lstSubContDetails.Where(x=> x.SubContractorId == SubId.ToString()).ToList();
 
                 return lstSubContDetails;
             }
@@ -115,6 +115,35 @@ namespace GridManagement.repository
                 throw ex;
             }
         }
+
+            public List<SubContractorReport> SubContractorReports(FilterReport filterReport) {
+        try {
+                    List<SubContractorReport> ltssubContrdata = new List<SubContractorReport>();
+if ( filterReport.startDate != null && filterReport.endDate != null) {
+
+
+  ltssubContrdata = _context.Subcontractors.Where(x=>x.IsDelete == false && x.CreatedAt >= filterReport.startDate && x.CreatedAt< filterReport.endDate.Value.AddDays(1)).ToList()
+        .Select( y=> new SubContractorReport {  code =y.Code, name = y.Name, subContractorId = y.Id.ToString(), quantity = _context.LayerSubcontractors.Where(z=>z.SubcontractorId == y.Id).Count(), 
+        materialDesc =  String.Join(',', _context.LayerSubcontractors.Include(c=>c.Layerdetails).Where(w=>w.SubcontractorId ==y.Id).ToList().Select(r=>r.Layerdetails.FillingMaterial).ToArray().Distinct()).ToString()
+        }).ToList();
+            
+} else {
+
+        ltssubContrdata = _context.Subcontractors.Where(x=>x.IsDelete == false ).ToList()
+        .Select( y=> new SubContractorReport {  code =y.Code, name = y.Name, subContractorId = y.Id.ToString(), quantity = _context.LayerSubcontractors.Where(z=>z.SubcontractorId == y.Id).Count(), 
+        materialDesc =  String.Join(',', _context.LayerSubcontractors.Include(c=>c.Layerdetails).Where(w=>w.SubcontractorId ==y.Id).ToList().Select(r=>r.Layerdetails.FillingMaterial).ToArray().Distinct()).ToString()
+        }).ToList();          
+        
+} 
+
+
+    return ltssubContrdata; 
+        }
+        catch (Exception ex) {
+         throw ex;   
+        }   
+    
+    }
         
     }
 }

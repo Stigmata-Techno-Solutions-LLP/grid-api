@@ -3,17 +3,16 @@ namespace GridManagement.common
     public class commonEnum
     {
         public enum CG_RFIStatus {
-New ,
-Completed
-
+No,
+Yes
         }
         public enum LV_RFIStatus {
-New ,
-Completed
+No,
+Yes
         }
         public enum CT_RFIStatus{
-New ,
-Completed
+No,
+Yes
         }
 
               public enum GridStatus{
