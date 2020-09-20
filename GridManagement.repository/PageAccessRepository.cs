@@ -92,10 +92,10 @@ namespace GridManagement.repository
                 foreach (PageAccess pageAccess in pageAccessDetails)
                 {
                     var pageAccessFromDB = _context.RolesApplicationforms.Where(x => x.FormId == pageAccess.PageDetailId && x.RoleId == pageAccess.RoleId).FirstOrDefault();
-                    pageAccessFromDB.IsAdd = pageAccess.IsAdd;
-                    pageAccessFromDB.IsDelete = pageAccess.IsDelete;
-                    pageAccessFromDB.IsUpdate = pageAccess.IsUpdate;
-                    pageAccessFromDB.IsView = pageAccess.IsView;
+                    pageAccessFromDB.IsAdd = pageAccess.PageDetail.IsAdd;
+                    pageAccessFromDB.IsDelete = pageAccess.PageDetail.IsDelete;
+                    pageAccessFromDB.IsUpdate = pageAccess.PageDetail.IsUpdate;
+                    pageAccessFromDB.IsView = pageAccess.PageDetail.IsView;
                     _context.SaveChanges();
                 }
                 return responseMessage = new ResponseMessage()
