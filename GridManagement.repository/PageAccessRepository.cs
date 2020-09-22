@@ -36,6 +36,10 @@ namespace GridManagement.repository
                     ApplicationForms applicationForm = new ApplicationForms();
                     applicationForm = applicationForms.Where(x => x.Id == pageAccess.PageDetailId).FirstOrDefault();
                     pageAccess.PageDetail = _mapper.Map<PageDetails>(applicationForm);
+                    pageAccess.PageDetail.IsAdd = pageAccess.IsAdd;
+                    pageAccess.PageDetail.IsView = pageAccess.IsView;
+                    pageAccess.PageDetail.IsDelete = pageAccess.IsDelete;
+                    pageAccess.PageDetail.IsUpdate = pageAccess.IsUpdate;
                 }
                 return result;
             }
@@ -75,6 +79,10 @@ namespace GridManagement.repository
                     ApplicationForms applicationForm = new ApplicationForms();
                     applicationForm = applicationForms.Where(x => x.Id == pageAccess.PageDetailId).FirstOrDefault();
                     pageAccess.PageDetail = _mapper.Map<PageDetails>(applicationForm);
+                    pageAccess.PageDetail.IsAdd = pageAccess.IsAdd;
+                    pageAccess.PageDetail.IsView = pageAccess.IsView;
+                    pageAccess.PageDetail.IsDelete = pageAccess.IsDelete;
+                    pageAccess.PageDetail.IsUpdate = pageAccess.IsUpdate;
                 }
                 return result;
             }
