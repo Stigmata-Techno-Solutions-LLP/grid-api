@@ -107,8 +107,7 @@ CREATE TABLE gridManagement.dbo.users (
 	created_by int NULL,
 	updated_by int NULL,
 	CONSTRAINT users_pkey PRIMARY KEY (id),
-	CONSTRAINT user_roles_id_fkey FOREIGN KEY (role_id) REFERENCES roles(id),
-    CONSTRAINT uq_Users_username_email_isdelete UNIQUE(username,email, is_delete)
+	CONSTRAINT user_roles_id_fkey FOREIGN KEY (role_id) REFERENCES roles(id)
 
 );
 
@@ -147,8 +146,7 @@ update_at DATETIME default CURRENT_TIMESTAMP,
 updated_by int null,
 CONSTRAINT subcont_pkey PRIMARY KEY (id),
 CONSTRAINT subcont_user_id_fkey FOREIGN KEY (created_by) REFERENCES users(id),
-CONSTRAINT subcont_updatedby_users__fkey FOREIGN KEY (updated_by) REFERENCES users(id),
-CONSTRAINT uq_subCont_code_isdelete UNIQUE(code, is_delete)
+CONSTRAINT subcont_updatedby_users__fkey FOREIGN KEY (updated_by) REFERENCES users(id)
 
 )
 
@@ -180,9 +178,7 @@ CREATE TABLE grids(
 	updated_at DATETIME NULL DEFAULT CURRENT_TIMESTAMP,
 	created_by int NULL,
 	updated_by int NULL,
-	CONSTRAINT grids_pkey PRIMARY KEY (id),
-	CONSTRAINT uq_Grids_gridno_isdelete UNIQUE(gridno, is_delete),
-
+	CONSTRAINT grids_pkey PRIMARY KEY (id),	
 	CONSTRAINT grids_createdby_users__fkey FOREIGN KEY (created_by) REFERENCES users(id),
 	CONSTRAINT grids_updatedby_users__fkey FOREIGN KEY (updated_by) REFERENCES users(id)
 ) 

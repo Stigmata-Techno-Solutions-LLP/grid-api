@@ -30,6 +30,7 @@ namespace GridManagement.repository
             {
                 if (_context.Grids.Where(x => x.Gridno == gridReq.gridno && x.IsDelete == false).Count() > 0) throw new ValueNotFoundException("GridNo already exists");            
                 Grids grid = _mapper.Map<Grids>(gridReq);
+                grid.Status = commonEnum.GridStatus.New.ToString();
                _context.Grids.Add(grid);
                 _context.SaveChanges();
                 foreach (GridGeoLocation geoLoc in gridReq.gridGeoLocation)
@@ -53,9 +54,9 @@ namespace GridManagement.repository
         {
             try
             {
-                Grids gridDtls = _context.Grids.Where(x => x.Id == Id).FirstOrDefault();
+                Grids gridDtls = _context.Grids.Where(x => x.Id == Id && x.IsDelete ==false).FirstOrDefault();
                 if (gridDtls == null ) throw new ValueNotFoundException("GridId doesn't exists");
-                if ( _context.Grids.Where(x => x.Gridno == gridReq.gridno && x.IsDelete == false && x.Id != Id).Count() >0 )  throw new ValueNotFoundException("new GridNo value already exists, should be unique");           
+                if ( _context.Grids.Where(x => x.Gridno == gridReq.gridno && x.Id != Id).Count() >0 )  throw new ValueNotFoundException("new GridNo value already exists, should be unique");           
                 gridDtls.GridArea = gridReq.grid_area;
                 gridDtls.Gridno = gridReq.gridno;
                 gridDtls.MarkerLatitide = gridReq.marker_latitide.ToString();
@@ -94,7 +95,7 @@ namespace GridManagement.repository
                 gridDtls.CgRfino = gridCGReq.CG_RFIno;
                 gridDtls.CgInspectionDate = gridCGReq.CG_inspection_date;
                 gridDtls.CgApprovalDate = gridCGReq.CG_approval_date;
-                gridDtls.Status = gridCGReq.CG_RFI_status.ToString();
+                gridDtls.CgRfiStatus = gridCGReq.CG_RFI_status.ToString();
                 _context.SaveChanges();              
                 return true;
             }
@@ -135,6 +136,8 @@ namespace GridManagement.repository
        if (!string.IsNullOrEmpty(filterReq.gridId.ToString())) res = res.Where(x=> x.Id == filterReq.gridId).ToList();
           
           List<GridDetails> lstGridDetails = _mapper.Map<List<GridDetails>>(res);
+double cLat = lstGridDetails.Sum(x=>x.marker_latitide)/lstGridDetails.Count();
+double cLong = lstGridDetails.Sum(x=>x.marker_longitude)/lstGridDetails.Count();
 
                 return lstGridDetails;
             }
@@ -144,7 +147,33 @@ namespace GridManagement.repository
 
             }
         }
+
+        
     
+
+      public GridProgressMap GetGridProgress()
+        {
+            try
+            {     
+
+        var res = _context.Grids
+        .Include(c => c.GridGeolocations).Where(x=>x.IsDelete== false).ToList();        
+       
+          List<GridDetails> lstGridDetails = _mapper.Map<List<GridDetails>>(res);
+double gLat = lstGridDetails.Sum(x=>x.marker_latitide)/lstGridDetails.Count();
+double gLong = lstGridDetails.Sum(x=>x.marker_longitude)/lstGridDetails.Count();
+GridProgressMap grdMap = new GridProgressMap();
+grdMap.lstGridDtls = lstGridDetails;
+grdMap.gLatitide = gLat;
+grdMap.gLongitude = gLong;
+                return grdMap;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+
+            }
+        }
 
       public GridDetails GetGridDetails(int Id)
         {
@@ -160,6 +189,14 @@ namespace GridManagement.repository
           GridDetails lstGridDetails = _mapper.Map<GridDetails>(res);
 
             lstGridDetails.lyrDtls =  _mapper.Map<List<layerDtls>>(_context.LayerDetails.Include(c => c.Layer).Include(c =>c.LayerSubcontractors).Where(x=>x.GridId==Id).ToList()); //  _mapper.Map<List<LayerDetails>>(_context.LayerDetails.Where(x=>x.GridId == Id).ToList());
+            // LayerSubcontractors layerSubcontractors= new LayerSubcontractors();
+  //        lstGridDetails.lyrDtls = lstGridDetails.lyrDtls.Select(x=>x.layerSubContractor.Select(y=>y.subContractorName = _context.Subcontractors.Where(z=>z.Id == Convert.ToInt32(y.subContractorId)).Select(a=>a.Name; return a;)))
+           lstGridDetails.lyrDtls.ForEach(x=>x.layerSubContractor.ToList().ForEach(y=>y.subContractorName = _context.Subcontractors.Where(z =>z.Id== Convert.ToInt32( y.subContractorId)).FirstOrDefault().Name));
+//            foreach(layerDtls lyr in lstGridDetails.lyrDtls) {
+//                foreach (LayerSubcontractor subcon in  lyr.layerSubContractor) {
+// subcon.subContractorName = _context.Subcontractors.Where(x=>x.Id == subcon.subContractorId).FirstOrDefault().Name;
+//                }
+//            }
             return lstGridDetails;
             }
             catch (Exception ex)
@@ -207,7 +244,7 @@ var res = _context.LayerDetails
      
  
           List<layerDtls> lstGridDetails = _mapper.Map<List<layerDtls>>(res);
-
+lstGridDetails.ForEach(x=>x.layerSubContractor.ToList().ForEach(y=>y.subContractorName = _context.Subcontractors.Where(z =>z.Id== Convert.ToInt32( y.subContractorId)).FirstOrDefault().Name));
                 return lstGridDetails;
             }
             catch (Exception ex)
@@ -240,8 +277,8 @@ var res = _context.LayerDetails
             {             
                 LayerDetails layerDtls = _context.LayerDetails.Where(x=>x.GridId == layerReq.gridId && x.LayerId == layerReq.layerId).FirstOrDefault();
                 int layerId;
-                int roleLevel = Convert.ToInt32(commonEnum.RolesLevel.Level3);
-                Users userData = _context.Users.Include(c=>c.Role).Where(x=>x.Id==layerReq.user_id && x.Role.Level == roleLevel ).FirstOrDefault();
+              //  int roleLevel = Convert.ToInt32(commonEnum.RolesLevel.Level3);
+              //  Users userData = _context.Users.Include(c=>c.Role).Where(x=>x.Id==layerReq.user_id && x.Role.Level == roleLevel ).FirstOrDefault();
                 
                 if (layerDtls != null) {
                     layerId = layerDtls.Id;
@@ -262,18 +299,20 @@ var res = _context.LayerDetails
                 layerDtls.ToplevelFillmaterial = layerReq.topFillMaterial;
                 layerDtls.TotalQuantity = layerReq.totalQuantity;   
                 layerDtls.Status = layerReq.status.ToString();     
-
-                if (userData != null) {
-                    layerDtls.IsApproved = true;                   
-                }              
+                
+                // if (userData != null) {
+                //     layerDtls.IsApproved = true;                   
+                // }              
                 }  
                 else {
                 LayerDetails layer = _mapper.Map<LayerDetails>(layerReq);
-                 if (userData != null) {
-                    layer.IsApproved = true;                   
-                }
+                //  if (userData != null) {
+                //     layer.IsApproved = true;                   
+                // }
                 _context.LayerDetails.Add(layer);
-                
+                Grids grid = _context.Grids.Where(x=>x.Id == layerReq.gridId).FirstOrDefault();
+                grid.Status = commonEnum.GridStatus.InProgress.ToString();
+
                 _context.SaveChanges();
                 layerId= layer.Id;
 
@@ -293,6 +332,12 @@ var res = _context.LayerDetails
                 }
                 }                
                _context.SaveChanges();
+
+               if (_context.Layers.Count() == _context.LayerDetails.Where(x=>x.GridId == layerReq.gridId).Count()) {
+                    Grids grid = _context.Grids.Where(x=>x.Id == layerReq.gridId).FirstOrDefault();
+                    grid.Status = commonEnum.GridStatus.Completed.ToString();
+                    _context.SaveChanges();
+               }
                 return true;
             }
             catch (Exception ex)
@@ -306,7 +351,9 @@ var res = _context.LayerDetails
 public void ApproveLayer(int layerDtlsId) {
     try {
 
-    
+    // int roleLevel = Convert.ToInt32(commonEnum.RolesLevel.Level3);
+           //    Users userData = _context.Users.Include(c=>c.Role).Where(x=>x.Id==layerReq.user_id && x.Role.Level == roleLevel ).FirstOrDefault();
+                
    LayerDetails lyrDtls=  _context.LayerDetails.Where(x=>x.Id == layerDtlsId && x.Status == commonEnum.LayerStatus.Completed.ToString() && x.IsApproved == false).FirstOrDefault();
     if (lyrDtls == null ) throw new ValueNotFoundException("LayerDetailsId doesn't exists in below criteria(should be completed & non-approved layers)");
    lyrDtls.IsApproved = true;
@@ -529,6 +576,7 @@ catch (Exception ex) {
     throw ex;
 }
     }
+
 
 
 

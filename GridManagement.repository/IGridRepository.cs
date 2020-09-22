@@ -29,6 +29,7 @@ namespace GridManagement.repository
        public LayerMonthWiseDashboard LayerMonthDashboard(FilterDashboard filter);
         public DashboardSummary dashboardSummary(FilterDashboard filterDash); 
         public List<MasterReport> MasterReport(FilterReport filter);
+        public GridProgressMap GetGridProgress();
 
         
     }

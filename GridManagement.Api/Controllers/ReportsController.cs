@@ -100,6 +100,24 @@ namespace GridManagement.Api.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, new ErrorClass() { code= StatusCodes.Status500InternalServerError.ToString(), message="Something went wrong"});
             }          
         }
+
+
+        [HttpGet]
+        [ProducesResponseType(401)]
+        [ProducesResponseType(200)]        
+        [Route("GridProgressMap")]
+        public async Task<ActionResult<GridProgressMap>> GetGridProgressMap()
+        {
+              try {
+           var response =  _gridService.GetGridProgress();
+           return Ok(response); 
+            }
+            catch (Exception e)
+            {
+                Log.Logger.Error(e.StackTrace);
+                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorClass() { code= StatusCodes.Status500InternalServerError.ToString(), message="Something went wrong"});
+            }        
+        }
         
     }
 }

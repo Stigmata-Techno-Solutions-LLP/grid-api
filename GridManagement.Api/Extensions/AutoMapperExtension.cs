@@ -232,7 +232,10 @@ namespace GridManagement.Api.Extensions
                 opt => opt.MapFrom(src => src.Quantity))
                 .ForMember(dest =>
                 dest.subContractorId,
-                opt => opt.MapFrom(src => src.SubcontractorId));
+                opt => opt.MapFrom(src => src.SubcontractorId))
+                .ForMember(dest =>
+                dest.subContractorName,
+                opt => opt.MapFrom(src => src.Subcontractor.Name));
 
         // CreateMap< dynamic,LayerMonthWiseDashboard>()            
         //        .ForMember(dest =>
@@ -364,6 +367,9 @@ namespace GridManagement.Api.Extensions
                .ForMember(dest =>
                 dest.ContactName,
                 opt => opt.MapFrom(src => src.contact_person))
+                .ForMember(dest =>
+                dest.Address,
+                opt => opt.MapFrom(src => src.contact_address))
                 
                 .ForMember(dest =>
                 dest.Email,

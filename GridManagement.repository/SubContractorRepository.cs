@@ -28,7 +28,7 @@ namespace GridManagement.repository
         {
             try
             {
-                if (_context.Subcontractors.Where(x => x.Code == subContReq.code).Count() > 0) throw new ValueNotFoundException("SubContractorId already exists");             
+                if (_context.Subcontractors.Where(x => x.Code == subContReq.code  && x.IsDelete ==false).Count() > 0) throw new ValueNotFoundException("SubContractorId already exists");             
                 Subcontractors subCont = _mapper.Map<Subcontractors>(subContReq);
                 subCont.CreatedBy = subContReq.user_id;
                _context.Subcontractors.Add(subCont);

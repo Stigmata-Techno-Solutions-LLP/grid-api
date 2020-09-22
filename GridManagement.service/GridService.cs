@@ -119,6 +119,9 @@ throw ex;
      public List<MasterReport> MasterReport(FilterReport filter){
          return _gridRepo.MasterReport(filter);
      }
+           public GridProgressMap GetGridProgress() {
+               return _gridRepo.GetGridProgress();
+           }
 
 
    

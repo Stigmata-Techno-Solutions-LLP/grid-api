@@ -45,11 +45,11 @@ namespace GridManagement.repository
             ResponseMessage responseMessage = new ResponseMessage();
             try
             {
-                if (_context.Users.Where(x => x.Email == userDetails.email).Count() > 0)
+                if (_context.Users.Where(x => x.Email == userDetails.email && x.IsDelete == false).Count() > 0)
                 {
                     throw new ValueNotFoundException("Email Id already exist.");                      
                 }
-                else if (_context.Users.Where(x => x.Username == userDetails.userName).Count() > 0)
+                else if (_context.Users.Where(x => x.Username == userDetails.userName && x.IsDelete == false).Count() > 0)
                 {
                   throw new ValueNotFoundException("UserName already exist.");                 
                 }
@@ -74,7 +74,7 @@ namespace GridManagement.repository
             ResponseMessage responseMessage = new ResponseMessage();
             try
             {
-                var userData = _context.Users.Where(x => x.Id == id).FirstOrDefault();
+                var userData = _context.Users.Where(x => x.Id == id  && x.IsDelete ==false).FirstOrDefault();
                 if (userData != null)
                 {
                     if (_context.Users.Where(x => x.Email == userDetails.email && x.Id != id).Count() > 0)
@@ -122,10 +122,9 @@ namespace GridManagement.repository
             try
             {
                 
-                var userData = _context.Users.Where(x => x.Id == id).FirstOrDefault();
+                var userData = _context.Users.Where(x => x.Id == id  && x.IsDelete ==false).FirstOrDefault();
                 if (userData == null) throw new ValueNotFoundException("User Id doesnt exist."); 
                 userData.IsDelete = true;
-
                 _context.SaveChanges();
                 return responseMessage = new ResponseMessage()
                 {
