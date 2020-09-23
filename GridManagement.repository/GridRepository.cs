@@ -309,6 +309,8 @@ lstGridDetails.ForEach(x=>x.layerSubContractor.ToList().ForEach(y=>y.subContract
                 //  if (userData != null) {
                 //     layer.IsApproved = true;                   
                 // }
+                layer.IsApproved= false;
+                layer.IsBillGenerated = false;
                 _context.LayerDetails.Add(layer);
                 Grids grid = _context.Grids.Where(x=>x.Id == layerReq.gridId).FirstOrDefault();
                 grid.Status = commonEnum.GridStatus.InProgress.ToString();
