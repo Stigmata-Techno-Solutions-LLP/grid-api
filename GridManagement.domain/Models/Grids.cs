@@ -7,6 +7,7 @@ namespace GridManagement.domain.Models
     {
         public Grids()
         {
+            GridDocuments = new HashSet<GridDocuments>();
             GridGeolocations = new HashSet<GridGeolocations>();
             LayerDetails = new HashSet<LayerDetails>();
         }
@@ -29,6 +30,7 @@ namespace GridManagement.domain.Models
 
         public virtual Users CreatedByNavigation { get; set; }
         public virtual Users UpdatedByNavigation { get; set; }
+        public virtual ICollection<GridDocuments> GridDocuments { get; set; }
         public virtual ICollection<GridGeolocations> GridGeolocations { get; set; }
         public virtual ICollection<LayerDetails> LayerDetails { get; set; }
     }

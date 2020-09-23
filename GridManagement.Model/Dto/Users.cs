@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace GridManagement.Model.Dto
 {
-    public class AddUser
+    public class UserDetails
     {
 
         [Required]
@@ -17,7 +17,7 @@ namespace GridManagement.Model.Dto
         [Required]
         [StringLength(100)]
         [Display(Name = "User Name")]
-        public string username { get; set; }
+        public string userName { get; set; }
         
         [Required]
         [StringLength(100)]
@@ -34,16 +34,19 @@ namespace GridManagement.Model.Dto
 
         [Required]
         [Display(Name = "Created By")]
-        public int user_id { get; set; }
+        public int userId { get; set; }
 
         [Required]
         [Display(Name = "Role Id")]
-        public int role_id { get; set; }
+        public int roleId { get; set; }
 
         [Required]
         [Display(Name = "Password")]
         [StringLength(20)]
         public string password { get; set; }
+        public bool isActive {get;set;}
+        public int createdBy {get;set;}
+        public int updatedBy {get;set;}
 
     }
 
@@ -110,20 +113,20 @@ namespace GridManagement.Model.Dto
         public  string mailId{get;set;}
     }
 
-     public class UserDetails {
-        public string firstName { get; set; }
-        public string lastName { get; set; }
-        public string email { get; set; }
-        public string mobileNo {get;set;}
-        public int userId { get; set; }
-        public string userName {get;set;}
-        public string password {get;set;}
-        public string roleName { get; set; }    
-        public int roleId {get;set;}
-        public bool isActive {get;set;}
-        public int createdBy {get;set;}
-        public int updatedBy {get;set;}
-     }
+    //  public class UserDetails {
+    //     public string firstName { get; set; }
+    //     public string lastName { get; set; }
+    //     public string email { get; set; }
+    //     public string mobileNo {get;set;}
+    //     public int userId { get; set; }
+    //     public string userName {get;set;}
+    //     public string password {get;set;}
+    //     public string roleName { get; set; }    
+    //     public int roleId {get;set;}
+    //     public bool isActive {get;set;}
+    //     public int createdBy {get;set;}
+    //     public int updatedBy {get;set;}
+    //  }
     
      
 

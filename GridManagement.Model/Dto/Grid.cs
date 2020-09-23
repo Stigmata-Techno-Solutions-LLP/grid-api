@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using GridManagement.common;
+using Microsoft.AspNetCore.Http;  
+
 namespace GridManagement.Model.Dto
 {
 
@@ -32,7 +34,7 @@ namespace GridManagement.Model.Dto
         [Required]
         [Range(-180,180)]
         [Display(Name = "Marker Longitide Value")]
-        public double? marker_longitude { get; set; } = null;
+        public double? marker_longitude { get; set; } = null;       
 
     }
     public class GridGeoLocation
@@ -53,6 +55,20 @@ public double? latitude {get;set;} = null;
        // [RegularExpression(@"^[-+]?([1-8]?\d(\.\d+)?|90(\.0+)?),\s*[-+]?(180(\.0+)?|((1[0-7]\d)|([1-9]?\d))(\.\d+)?)$", ErrorMessage="Longitude value not valid")]
        
    //     public string longitude { get; set; }
+
+    }
+
+    public class RemoveDocs {
+
+    }
+
+
+    public class GridDocs
+    {
+        [Required]
+        public int fileId { get; set; }
+        public string fileName {get;set;}
+        public string fileUrl{get;set;}
 
     }
 
@@ -93,8 +109,7 @@ public double? latitude {get;set;} = null;
         public double marker_latitide { get; set; }
         public double marker_longitude { get; set; }
 
-        [EnumDataType(typeof(commonEnum.CG_RFIStatus), ErrorMessage = "RFI Status value doesn't exist within enum")]
-        public commonEnum.CG_RFIStatus? CG_RFI_status { get; set;} =null;
+        public string CG_RFI_status { get; set;} =null;
 
         public List<GridGeoLocation> gridGeoLocation { get; set;}
         public List<layerDtls> lyrDtls {get;set;}
@@ -129,6 +144,10 @@ public class AddCG_RFI {
 
         [EnumDataType(typeof(commonEnum.CG_RFIStatus), ErrorMessage = "RFI Status value doesn't exist within enum")]
         public commonEnum.CG_RFIStatus CG_RFI_status { get; set;}
+
+         public IFormFile[] uploadDocs { get; set; }  
+
+        public string[] remove_docs_id {get;set;}
 
 }
 }

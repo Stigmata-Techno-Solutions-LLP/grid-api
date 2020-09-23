@@ -37,6 +37,9 @@ IF OBJECT_ID('gridManagement.dbo.layers', 'U') IS NOT NULL
   IF OBJECT_ID('gridManagement.dbo.grid_geolocations', 'U') IS NOT NULL 
   DROP TABLE gridManagement.dbo.grid_geolocations; 
 
+  IF OBJECT_ID('gridManagement.dbo.grid_documents', 'U') IS NOT NULL 
+  DROP TABLE gridManagement.dbo.grid_documents; 
+
  
 
 IF OBJECT_ID('gridManagement.dbo.grids', 'U') IS NOT NULL 
@@ -108,7 +111,6 @@ CREATE TABLE gridManagement.dbo.users (
 	updated_by int NULL,
 	CONSTRAINT users_pkey PRIMARY KEY (id),
 	CONSTRAINT user_roles_id_fkey FOREIGN KEY (role_id) REFERENCES roles(id)
-
 );
 
 
@@ -196,6 +198,22 @@ CREATE TABLE grid_geolocations(
 
 
 
+CREATE TABLE grid_documents(
+    id int not null identity(1,1),
+    grid_id int not null,
+    upload_type varchar(10) null,
+	file_name varchar(500) null,    
+	file_type varchar(10) null,
+    "path" varchar(1000) null,
+    created_by int NULL,
+    created_at datetime default CURRENT_TIMESTAMP,
+    CONSTRAINT grid_documents_pkey PRIMARY KEY (id),
+	CONSTRAINT grid_documents_gridid_fkey FOREIGN KEY (grid_id) REFERENCES grids(id),  
+	CONSTRAINT grid_documents_createdby_users__fkey FOREIGN KEY (created_by) REFERENCES users(id)	
+    )
+
+
+
 CREATE TABLE layers(
     id int not null identity(1,1),
     layerno varchar(20) not null unique,
@@ -258,8 +276,12 @@ CREATE TABLE gridManagement.dbo.layer_subcontractors(
 CREATE TABLE gridManagement.dbo.layer_documents(
     id int not null identity(1,1),
     layerdetails_id int not null,
-    "path" varchar(500) null,
+    uploadType varchar(10) null,
+file_name varchar(500) null,    
+file_type varchar(10) null,
+    "path" varchar(1000) null,
     created_by int NULL,
+    created_at datetime default CURRENT_TIMESTAMP,
     CONSTRAINT layer_documents_pkey PRIMARY KEY (id),
 	CONSTRAINT layer_documents_layerdetailsid_fkey FOREIGN KEY (layerdetails_id) REFERENCES layer_details(id),  
 	CONSTRAINT layer_documents_createdby_users__fkey FOREIGN KEY (created_by) REFERENCES users(id)

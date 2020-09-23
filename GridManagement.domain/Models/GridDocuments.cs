@@ -3,10 +3,10 @@ using System.Collections.Generic;
 
 namespace GridManagement.domain.Models
 {
-    public partial class LayerDocuments
+    public partial class GridDocuments
     {
         public int Id { get; set; }
-        public int LayerdetailsId { get; set; }
+        public int GridId { get; set; }
         public string UploadType { get; set; }
         public string FileName { get; set; }
         public string FileType { get; set; }
@@ -15,6 +15,6 @@ namespace GridManagement.domain.Models
         public DateTime? CreatedAt { get; set; }
 
         public virtual Users CreatedByNavigation { get; set; }
-        public virtual LayerDetails Layerdetails { get; set; }
+        public virtual Grids Grid { get; set; }
     }
 }

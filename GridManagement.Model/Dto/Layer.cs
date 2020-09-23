@@ -112,7 +112,6 @@ namespace GridManagement.Model.Dto
         public int file { get; set; }
         public IFormFile ProfileImage { get; set; }  
 
-
         [Required]
         public int quantity { get; set; }
     }

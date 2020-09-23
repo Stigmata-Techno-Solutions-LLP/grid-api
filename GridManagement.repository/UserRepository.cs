@@ -94,7 +94,7 @@ namespace GridManagement.repository
                         userData.Phoneno = userDetails.mobileNo;
                         userData.IsActive = userDetails.isActive;
                         userData.Username = userDetails.userName;
-                        userData.Password = userDetails.password;
+                   
                         userData.RoleId = userDetails.roleId;
                         userData.UpdatedBy = userDetails.updatedBy;
                         _context.SaveChanges();
