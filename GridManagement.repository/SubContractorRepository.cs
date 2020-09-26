@@ -118,6 +118,10 @@ namespace GridManagement.repository
 
             public List<SubContractorReport> SubContractorReports(FilterReport filterReport) {
         try {
+
+                 if (!string.IsNullOrEmpty(filterReport.startDate.ToString()) &&  !string.IsNullOrEmpty(filterReport.startDate.ToString())) {
+    if (filterReport.startDate >= filterReport.endDate) throw new ValueNotFoundException("start date should not be greater than end date");            
+ }
                     List<SubContractorReport> ltssubContrdata = new List<SubContractorReport>();
 if ( filterReport.startDate != null && filterReport.endDate != null) {
 

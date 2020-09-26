@@ -26,7 +26,6 @@ namespace GridManagement.Model.Dto
         public string email { get; set; }
 
 
-        [Required]
         [StringLength(15)]
         [Display(Name = "Contact No")]
         [Phone(ErrorMessage = "Invalid mobile No")]
@@ -40,9 +39,7 @@ namespace GridManagement.Model.Dto
         [Display(Name = "Role Id")]
         public int roleId { get; set; }
 
-        [Required]
-        [Display(Name = "Password")]
-        [StringLength(20)]
+     
         public string password { get; set; }
         public bool isActive {get;set;}
         public int createdBy {get;set;}
