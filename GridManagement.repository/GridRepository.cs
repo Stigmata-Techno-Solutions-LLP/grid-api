@@ -56,7 +56,7 @@ namespace GridManagement.repository
             {
                 Grids gridDtls = _context.Grids.Where(x => x.Id == Id && x.IsDelete ==false).FirstOrDefault();
                 if (gridDtls == null ) throw new ValueNotFoundException("GridId doesn't exists");
-                if ( _context.Grids.Where(x => x.Gridno == gridReq.gridno && x.Id != Id).Count() >0 )  throw new ValueNotFoundException("new GridNo value already exists, should be unique");           
+                if ( _context.Grids.Where(x => x.Gridno == gridReq.gridno && x.Id != Id && x.IsDelete == false).Count() >0 )  throw new ValueNotFoundException("new GridNo value already exists, should be unique");           
                 gridDtls.GridArea = gridReq.grid_area;
                 gridDtls.Gridno = gridReq.gridno;
                 gridDtls.MarkerLatitide = gridReq.marker_latitide.ToString();
