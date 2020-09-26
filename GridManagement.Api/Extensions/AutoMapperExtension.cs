@@ -23,11 +23,6 @@ namespace GridManagement.Api.Extensions
         {
             /// Hero Map
             
-        CreateMap<AddUser, Users>()
-                    .ForMember(dest =>
-                        dest.CreatedBy,
-                        opt => opt.MapFrom(src => src.user_id))                   
-                    .ReverseMap();
 
               CreateMap<Grids,GridNo>()                   
                     .ForMember(dest =>
@@ -82,6 +77,27 @@ namespace GridManagement.Api.Extensions
                         dest.longitude,
                         opt => opt.MapFrom(src => double.Parse(src.Longitude)));
 
+        CreateMap<GridDocuments, Grid_Docs>()
+                     .ForMember(dest =>
+                        dest.fileName,
+                        opt => opt.MapFrom(src =>  src.FileName))
+                    .ForMember(dest =>
+                        dest.filepath,
+                        opt => opt.MapFrom(src => src.Path))
+                       .ForMember(dest =>
+                        dest.Id,
+                        opt => opt.MapFrom(src => src.Id));  
+  CreateMap<LayerDocuments, Layer_Docs>()
+                     .ForMember(dest =>
+                        dest.fileName,
+                        opt => opt.MapFrom(src =>  src.FileName))
+                    .ForMember(dest =>
+                        dest.filepath,
+                        opt => opt.MapFrom(src => src.Path))
+                       .ForMember(dest =>
+                        dest.Id,
+                        opt => opt.MapFrom(src => src.Id));  
+
                         
   CreateMap<Grids, GridDetails>()
                      .ForMember(dest =>
@@ -114,6 +130,9 @@ namespace GridManagement.Api.Extensions
                     .ForMember(dest =>
                         dest.gridGeoLocation,
                         opt => opt.MapFrom(src =>  src.GridGeolocations))
+                          .ForMember(dest =>
+                        dest.gridDocuments,
+                        opt => opt.MapFrom(src =>  src.GridDocuments))
                     .ForMember(dest =>
                         dest.lyrDtls,
                         opt => opt.MapFrom(src =>  src.LayerDetails));  
@@ -218,6 +237,8 @@ namespace GridManagement.Api.Extensions
                          .ForMember(dest =>
                             dest.Remarks,
                             opt => opt.MapFrom(src => src.remarks))
+   
+
                          .ForMember(dest =>
                          dest.ToplevelFillmaterial,
                          opt => opt.MapFrom(src => src.topFillMaterial));
@@ -317,6 +338,10 @@ namespace GridManagement.Api.Extensions
                          .ForMember(dest =>
                          dest.layerSubContractor,
                          opt => opt.MapFrom(src => src.LayerSubcontractors))
+                        .ForMember(dest =>
+                            dest.layerDocs,
+                            opt => opt.MapFrom(src => src.LayerDocuments))
+
                          .ForMember(dest =>
                          dest.layerNo,
                          opt => opt.MapFrom(src => src.Layer.Layerno));

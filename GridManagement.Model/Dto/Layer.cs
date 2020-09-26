@@ -87,11 +87,26 @@ namespace GridManagement.Model.Dto
          [Display(Name = "Layer Status")]
         public commonEnum.LayerStatus status { get; set;}
 
+public string layerSubContractor1 {get;set; }
+        public List<LayerSubcontractor> layerSubContractor { get; set; }  
 
-        public ICollection<LayerSubcontractor> layerSubContractor { get; set; }  
+
+        public IFormFile[] uploadDocs { get; set; }  
+
+        public string[] remove_docs_filename {get;set;} 
               // public List<LayerDocuments> layeDocument { get; set; }
 
     }   
+
+
+public class Layer_Docs {
+    
+    public int Id {get;set;} 
+    public string fileName {get;set;}
+    public string fileType {get;set;}
+    public string uploadType {get;set;} 
+    public string filepath {get;set;}    
+}
 
     public class LayerSubcontractor
     {
@@ -104,17 +119,17 @@ namespace GridManagement.Model.Dto
         public string subContractorName {get;set;}
     }
 
-    public class LayerDocs
+    public class LayerSubcontractor1
     {
-        public int layerDtlsId { get; set; }
 
         [Required]
-        public int file { get; set; }
-        public IFormFile ProfileImage { get; set; }  
+        public int subContractorId { get; set; }
 
         [Required]
         public int quantity { get; set; }
     }
+
+    
 
     public class LayerNo {
         public int Id{get;set;}
@@ -214,6 +229,7 @@ public class layerNoFilter{
         public DateTime updatedAt {get;set;}
 
         public ICollection<LayerSubcontractor> layerSubContractor { get; set; }  
+        public List<Layer_Docs> layerDocs {get;set;}
        // public List<LayerDocuments> layeDocument { get; set; }
 
     }

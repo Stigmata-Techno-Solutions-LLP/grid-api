@@ -13,6 +13,8 @@ using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using System;
 using GridManagement.Api.Helper;
+using Microsoft.Extensions.FileProviders;
+using System.IO;
 
 namespace GridManagement.Api
 {
@@ -123,7 +125,8 @@ namespace GridManagement.Api
             services.AddCompression();
 
             
-
+ services.AddControllersWithViews();
+    services.AddDirectoryBrowser();
 
         }
 
@@ -139,6 +142,21 @@ namespace GridManagement.Api
     
             app.UseCustomSerilogRequestLogging();
             app.UseRouting();
+            app.UseStaticFiles();
+           app.UseStaticFiles(new StaticFileOptions
+    {
+        FileProvider = new PhysicalFileProvider(
+            Path.Combine(env.ContentRootPath, "Images")),
+        RequestPath = "/Images"
+    });
+
+    app.UseDirectoryBrowser(new DirectoryBrowserOptions
+    {
+        FileProvider = new PhysicalFileProvider(
+            Path.Combine(env.ContentRootPath, "Images")),
+        RequestPath = "/Images"
+    });
+
             app.UseCors("AllowAll");
 
             app.UseApiDoc();

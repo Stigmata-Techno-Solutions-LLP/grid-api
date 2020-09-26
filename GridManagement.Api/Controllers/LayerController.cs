@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Http;
 using GridManagement.common;
 using Microsoft.AspNetCore.Cors;
 // For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+using Newtonsoft.Json;
 
 namespace GridManagement.Api.Controllers
 {
@@ -35,10 +36,13 @@ private readonly IGridService _gridService;
         [ProducesResponseType(401)]
         [ProducesResponseType(201)]
         [Route("AddLayer")]
-        public IActionResult AddLayer(AddLayer model)
+        public IActionResult AddLayer([FromForm] AddLayer model)
         {
             try
             {
+                List<LayerSubcontractor> layerSub  = JsonConvert.DeserializeObject<List<LayerSubcontractor>>(model.layerSubContractor1);
+        
+                model.layerSubContractor = layerSub;
                 var response = _gridService.AddLayer(model);
                 // return Ok(response);   
                 return StatusCode(StatusCodes.Status201Created, (new { message = "Grid Layer updated successfully",code =201}));             

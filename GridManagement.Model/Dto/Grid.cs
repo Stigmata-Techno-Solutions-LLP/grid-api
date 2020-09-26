@@ -112,6 +112,7 @@ public double? latitude {get;set;} = null;
         public string CG_RFI_status { get; set;} =null;
 
         public List<GridGeoLocation> gridGeoLocation { get; set;}
+        public List<Grid_Docs> gridDocuments {get;set;}
         public List<layerDtls> lyrDtls {get;set;}
         public string createdAt {get;set;}
         public string updatedAt {get;set;}
@@ -144,10 +145,19 @@ public class AddCG_RFI {
 
         [EnumDataType(typeof(commonEnum.CG_RFIStatus), ErrorMessage = "RFI Status value doesn't exist within enum")]
         public commonEnum.CG_RFIStatus CG_RFI_status { get; set;}
+        public string layerSubContractor { get; set; }         
+        public IFormFile[] uploadDocs { get; set; }  
+        public string[] remove_docs_filename {get;set;} 
 
-         public IFormFile[] uploadDocs { get; set; }  
+    
+}
 
-        public string[] remove_docs_id {get;set;}
-
+public class Grid_Docs {
+    
+    public int Id {get;set;} 
+    public string fileName {get;set;}
+    public string fileType {get;set;}
+    public string uploadType {get;set;} 
+    public string filepath {get;set;}    
 }
 }

@@ -11,16 +11,24 @@ using System.Text;
 using System.Security.Cryptography;
 using System.IO;
 using GridManagement.common;
+using Microsoft.AspNetCore.Hosting;  
+using Microsoft.AspNetCore.Http;  
+
 namespace GridManagement.service
 {
 
     public class GridService : IGridService
     {
+                private readonly IWebHostEnvironment webHostEnvironment;  
+            string prefixPath = "Images";
+
         IGridRepository _gridRepo;       
 
-        public GridService(IGridRepository gridRepo )
+        public GridService(IGridRepository gridRepo,IWebHostEnvironment hostEnvironment )
         {
             _gridRepo = gridRepo;
+            webHostEnvironment = hostEnvironment;  
+
         }
 
         public  bool AddGrid(AddGrid model)
@@ -40,7 +48,16 @@ namespace GridManagement.service
         {
             try
             {
-                return _gridRepo.InsertNewLayer(model);
+                int layerId =  _gridRepo.InsertNewLayer(model);
+            RemoveLayerDocs(model.remove_docs_filename);
+             foreach(IFormFile file in model.uploadDocs) {                
+                 Layer_Docs layerDoc = new Layer_Docs();
+                 layerDoc.fileName = file.FileName;
+                 layerDoc.filepath =  UploadedFile(file);                 
+                 layerDoc.fileType = Path.GetExtension(file.FileName);
+                 _gridRepo.LayerDocsUpload(layerDoc, layerId);
+             }
+             return true;                    
             }
             catch (Exception ex)
             {
@@ -48,19 +65,93 @@ namespace GridManagement.service
             }
         }
 
+        private string UploadedFile(IFormFile file)  
+        { 
+            try {
+            string uniqueFileName = null;  
+            if (file != null)  
+            {  
+                string uploadsFolder = Path.Combine(webHostEnvironment.ContentRootPath, prefixPath);  
+                uniqueFileName = Guid.NewGuid().ToString() + "_" + file.FileName;  
+                string filePath = Path.Combine(uploadsFolder, uniqueFileName);  
+                using (var fileStream = new FileStream(filePath, FileMode.Create))  
+                {  
+                    file.CopyTo(fileStream);  
+                }  
+            }  
+            return Path.Combine(prefixPath, uniqueFileName);  
+            } catch (Exception ex) {
+                throw ex;
+            }
+        }
+
+        private bool RemoveGridDocs(string[] fileslist)  
+        {  
+            try {            
+            if (fileslist == null) return true;
+            string uniqueFileName = null;  
+            foreach(string filepath in fileslist) {
+                this._gridRepo.CleaningGrubEntryRemoveDocs(Path.Combine(prefixPath, filepath ));
+            string docsFolder = Path.Combine(webHostEnvironment.ContentRootPath, prefixPath);
+            var fileInfo = new System.IO.FileInfo( Path.Combine(docsFolder,filepath));
+            fileInfo.Delete();
+            }            
+            return true; }
+            catch (Exception ex) {
+                throw ex; 
+            } 
+        }  
+
+
+        private bool RemoveLayerDocs(string[] fileslist)  
+        {  
+            try {            
+            if (fileslist == null) return true;
+            string uniqueFileName = null;  
+            foreach(string filepath in fileslist) {
+                this._gridRepo.LayerRemoveDocs(Path.Combine(prefixPath, filepath ));
+            string docsFolder = Path.Combine(webHostEnvironment.ContentRootPath, prefixPath);
+            var fileInfo = new System.IO.FileInfo( Path.Combine(docsFolder,filepath));
+            fileInfo.Delete();
+            }            
+            return true; }
+            catch (Exception ex) {
+                throw ex; 
+            } 
+        }  
+
         public bool UpdateGrid( AddGrid gridReq, int Id) {
             return _gridRepo.UpdateGrid(gridReq, Id);
         }
 
          public bool CleaningGrubbingEntry( AddCG_RFI gridReq, int Id) {
-            return _gridRepo.CleaningGrubEntry(gridReq, Id);
+             try {
+                 RemoveGridDocs(gridReq.remove_docs_filename);
+             foreach(IFormFile file in gridReq.uploadDocs) {
+                
+                 Grid_Docs gridDoc = new Grid_Docs();
+                 gridDoc.fileName = file.FileName;
+                 gridDoc.filepath =  UploadedFile(file);                 
+                 gridDoc.fileType = Path.GetExtension(file.FileName);
+                 _gridRepo.CleaningGrubEntryUploadDocs(gridDoc, Id);
+             }
+                return _gridRepo.CleaningGrubEntry(gridReq, Id);
+             }
+             catch(Exception ex) {
+                  throw ex;  
+             }
         }
         public bool DeleteGrid( int Id) {
             return _gridRepo.DeleteGrid( Id);
         }
 
          public List<GridDetails> GetGridList(gridFilter filterReq) {
-            return _gridRepo.GetGridList(filterReq);
+
+List<GridDetails> grdList = _gridRepo.GetGridList(filterReq);
+//grdList.ForEach(x =>x.gridDocuments.ForEach(x=>x.filepath = Convert.ToBase64String( File.ReadAllBytes( Path.Combine(webHostEnvironment.ContentRootPath,x.filepath)))));
+
+
+            return grdList;
         }
 
         public List<GridNo> GetGridNoList() {
