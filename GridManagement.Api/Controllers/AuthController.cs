@@ -36,7 +36,7 @@ namespace GridManagement.Api.Controllers
             {
                 var response = _authService.Authenticate(model);
                 if (response == null)
-                    return BadRequest(new { message = "Username or password is incorrect", code = StatusCodes.Status401Unauthorized.ToString() });
+                    return Unauthorized(new { message = "Username or password is incorrect", code = StatusCodes.Status401Unauthorized.ToString() });
                 return Ok(response);
             }
             catch (Exception e)
@@ -53,8 +53,12 @@ namespace GridManagement.Api.Controllers
             {
                 var response = _authService.RefreshToken(refreshToken.token);
                 if (response == null)
-                    return Unauthorized(new { message = "Invalid token" });
+                    return Unauthorized(new { message = "Invalid token",code = 401 });
                 return Ok(new { response = response.Message, code = 200 });
+            }
+            catch(ValueNotFoundException e) {
+                Util.LogError(e);
+                return StatusCode(StatusCodes.Status401Unauthorized, new ErrorClass() { code= StatusCodes.Status401Unauthorized.ToString(), message=e.Message});
             }
              catch (Exception e)
             {
