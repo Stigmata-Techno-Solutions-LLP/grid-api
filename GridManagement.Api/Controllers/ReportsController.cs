@@ -15,9 +15,12 @@ using GridManagement.common;
 namespace GridManagement.Api.Controllers
 {
     [EnableCors("AllowAll")]
-    // [Authorize]
+    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
+       // [ValidateAntiForgeryToken]
+
+
     public class ReportsController : ControllerBase
     {
    private readonly IGridService _gridService;  
@@ -58,7 +61,7 @@ namespace GridManagement.Api.Controllers
             }
             catch (Exception e)
             {
-                Log.Logger.Error(e.StackTrace);
+                Util.LogError(e);
                 return StatusCode(StatusCodes.Status500InternalServerError, new ErrorClass() { code= StatusCodes.Status500InternalServerError.ToString(), message="Something went wrong"});
             }  
         }
@@ -76,7 +79,7 @@ namespace GridManagement.Api.Controllers
             }
              catch (Exception e)
             {
-                Log.Logger.Error(e.StackTrace);
+                Util.LogError(e);
                 return StatusCode(StatusCodes.Status500InternalServerError, new ErrorClass() { code= StatusCodes.Status500InternalServerError.ToString(), message="Something went wrong"});
             }          
         }
@@ -92,13 +95,32 @@ namespace GridManagement.Api.Controllers
            return Ok(response); 
             }
              catch(ValueNotFoundException e) {
+                 Util.LogError(e);
                 return StatusCode(StatusCodes.Status422UnprocessableEntity, new ErrorClass() { code= StatusCodes.Status422UnprocessableEntity.ToString(), message=e.Message});
             }
              catch (Exception e)
             {
-                Log.Logger.Error(e.StackTrace);
+                Util.LogError(e);                
                 return StatusCode(StatusCodes.Status500InternalServerError, new ErrorClass() { code= StatusCodes.Status500InternalServerError.ToString(), message="Something went wrong"});
             }          
+        }
+
+
+        [HttpGet]
+        [ProducesResponseType(401)]
+        [ProducesResponseType(200)]        
+        [Route("GridProgressMap")]
+        public async Task<ActionResult<GridProgressMap>> GetGridProgressMap()
+        {
+              try {
+           var response =  _gridService.GetGridProgress();
+           return Ok(response); 
+            }
+            catch (Exception e)
+            {
+                Util.LogError(e);
+                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorClass() { code= StatusCodes.Status500InternalServerError.ToString(), message="Something went wrong"});
+            }        
         }
         
     }

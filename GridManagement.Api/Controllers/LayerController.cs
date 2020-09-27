@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Http;
 using GridManagement.common;
 using Microsoft.AspNetCore.Cors;
 // For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+using Newtonsoft.Json;
 
 namespace GridManagement.Api.Controllers
 {
@@ -19,6 +20,9 @@ namespace GridManagement.Api.Controllers
     [ApiController]
     [EnableCors("AllowAll")]
     [Route("api/[controller]")]
+    [Authorize]
+   // [ValidateAntiForgeryToken]
+
     public class LayerController : ControllerBase
     {
 
@@ -35,20 +39,24 @@ private readonly IGridService _gridService;
         [ProducesResponseType(401)]
         [ProducesResponseType(201)]
         [Route("AddLayer")]
-        public IActionResult AddLayer(AddLayer model)
+        public IActionResult AddLayer([FromForm] AddLayer model)
         {
             try
             {
+                List<LayerSubcontractor> layerSub  = JsonConvert.DeserializeObject<List<LayerSubcontractor>>(model.layerSubContractor1);
+        
+                model.layerSubContractor = layerSub;
                 var response = _gridService.AddLayer(model);
                 // return Ok(response);   
                 return StatusCode(StatusCodes.Status201Created, (new { message = "Grid Layer updated successfully",code =201}));             
             }
             catch(ValueNotFoundException e) {
+                Util.LogError(e);
                 return StatusCode(StatusCodes.Status422UnprocessableEntity, new ErrorClass() { code= StatusCodes.Status422UnprocessableEntity.ToString(), message=e.Message});
             }
             catch (Exception e)
             {
-                Log.Logger.Error(e.StackTrace);
+                Util.LogError(e);
                 return StatusCode(StatusCodes.Status500InternalServerError, new ErrorClass() { code= StatusCodes.Status500InternalServerError.ToString(), message="Something went wrong"});
             } 
         }
@@ -66,7 +74,7 @@ private readonly IGridService _gridService;
             
             catch (Exception e)
             {
-                Log.Logger.Error(e.StackTrace);
+               Util.LogError(e);
                 return StatusCode(StatusCodes.Status500InternalServerError, new ErrorClass() { code= StatusCodes.Status500InternalServerError.ToString(), message="Something went wrong"});
             }      
         }
@@ -84,7 +92,7 @@ private readonly IGridService _gridService;
             }
              catch (Exception e)
             {
-                Log.Logger.Error(e.StackTrace);
+                Util.LogError(e);
                 return StatusCode(StatusCodes.Status500InternalServerError, new ErrorClass() { code= StatusCodes.Status500InternalServerError.ToString(), message="Something went wrong"});
             }      
         }
@@ -104,11 +112,12 @@ private readonly IGridService _gridService;
             
             }
              catch(ValueNotFoundException e) {
+                 Util.LogError(e);
                 return StatusCode(StatusCodes.Status422UnprocessableEntity, new ErrorClass() { code= StatusCodes.Status422UnprocessableEntity.ToString(), message=e.Message});
             }
              catch (Exception e)
             {
-                Log.Logger.Error(e.StackTrace);
+               Util.LogError(e);
                 return StatusCode(StatusCodes.Status500InternalServerError, new ErrorClass() { code= StatusCodes.Status500InternalServerError.ToString(), message="Something went wrong"});
             }          
         }

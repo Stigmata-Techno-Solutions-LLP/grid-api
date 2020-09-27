@@ -70,7 +70,7 @@ namespace GridManagement.service
                 return new RefreshToken
                 {
                     Token = Convert.ToBase64String(randomBytes),
-                    Expires = DateTime.UtcNow.AddMinutes(15),
+                    Expires = DateTime.UtcNow.AddMinutes(5),
                     Created = DateTime.UtcNow,
                     CreatedBy = userId
                 };

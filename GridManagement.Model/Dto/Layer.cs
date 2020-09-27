@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using GridManagement.common;
+using Microsoft.AspNetCore.Http;  
 
 
 namespace GridManagement.Model.Dto
@@ -62,7 +63,7 @@ namespace GridManagement.Model.Dto
 
         [Display(Name = "Comapct tesing RFI Status")]
         //[EnumDataType(typeof(commonEnum.CT_RFIStatus), ErrorMessage = "RFI SStatus value doesn't exist within enum")]
-        public commonEnum.CT_RFIStatus CT_RFI_status { get; set;}
+        public commonEnum.CT_RFIStatus? CT_RFI_status { get; set;}= null;
 
 
         [Display(Name = "Level Verification  RFI No")]
@@ -80,17 +81,32 @@ namespace GridManagement.Model.Dto
 
         [Display(Name = "Level Verification RFI Status")]
        // [EnumDataType(typeof(commonEnum.LV_RFIStatus), ErrorMessage = "RFI SStatus value doesn't exist within enum")]
-        public commonEnum.LV_RFIStatus LV_RFI_status { get; set;}
+        public commonEnum.LV_RFIStatus? LV_RFI_status { get; set;} = null;
 
         [Required]
          [Display(Name = "Layer Status")]
         public commonEnum.LayerStatus status { get; set;}
 
+public string layerSubContractor1 {get;set; }
+        public List<LayerSubcontractor> layerSubContractor { get; set; }  
 
-        public ICollection<LayerSubcontractor> layerSubContractor { get; set; }  
-               public List<LayerDocuments> layeDocument { get; set; }
+
+        public IFormFile[] uploadDocs { get; set; }  
+
+        public string[] remove_docs_filename {get;set;} 
+              // public List<LayerDocuments> layeDocument { get; set; }
 
     }   
+
+
+public class Layer_Docs {
+    
+    public int Id {get;set;} 
+    public string fileName {get;set;}
+    public string fileType {get;set;}
+    public string uploadType {get;set;} 
+    public string filepath {get;set;}    
+}
 
     public class LayerSubcontractor
     {
@@ -100,18 +116,20 @@ namespace GridManagement.Model.Dto
 
         [Required]
         public int quantity { get; set; }
+        public string subContractorName {get;set;}
     }
 
-    public class LayerDocuments
+    public class LayerSubcontractor1
     {
-        public int layerDtlsId { get; set; }
 
         [Required]
-        public int file { get; set; }
+        public int subContractorId { get; set; }
 
         [Required]
         public int quantity { get; set; }
     }
+
+    
 
     public class LayerNo {
         public int Id{get;set;}
@@ -178,7 +196,7 @@ public class layerNoFilter{
 
         public int layerId { get; set; }
 
-                public string fillingDate { get; set; }
+        public string fillingDate { get; set; }
 
         public string fillingMaterial { get; set; }
 
@@ -209,9 +227,13 @@ public class layerNoFilter{
         public bool isApproved {get;set;}
         public DateTime createdAt {get;set;}
         public DateTime updatedAt {get;set;}
+        public string createdDate {get;set;}
+        public string updatedDate {get;set;}
 
         public ICollection<LayerSubcontractor> layerSubContractor { get; set; }  
-        public List<LayerDocuments> layeDocument { get; set; }
+        public List<Layer_Docs> layerDocs {get;set;}
+       // public List<LayerDocuments> layeDocument { get; set; }
 
-    } 
+    }
+
 }

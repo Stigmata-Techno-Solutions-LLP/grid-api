@@ -37,6 +37,9 @@ IF OBJECT_ID('gridManagement.dbo.layers', 'U') IS NOT NULL
   IF OBJECT_ID('gridManagement.dbo.grid_geolocations', 'U') IS NOT NULL 
   DROP TABLE gridManagement.dbo.grid_geolocations; 
 
+  IF OBJECT_ID('gridManagement.dbo.grid_documents', 'U') IS NOT NULL 
+  DROP TABLE gridManagement.dbo.grid_documents; 
+
  
 
 IF OBJECT_ID('gridManagement.dbo.grids', 'U') IS NOT NULL 
@@ -93,12 +96,12 @@ CREATE TABLE gridManagement.dbo.application_forms (
 CREATE TABLE gridManagement.dbo.users (
 	id int NOT NULL identity(1,1),	
 	
-	username varchar(100) NOT NULL UNIQUE,
+	username varchar(100),
 	"password" varchar(500) NOT NULL,
 	first_name varchar(100),
 	last_name varchar(100),
 	phoneno varchar(15),
-	email varchar(100) NOT NULL UNIQUE,
+	email varchar(100) ,
 	role_id int null,
     is_active bit NULL DEFAULT 0,    
     is_delete bit NULL DEFAULT 0,
@@ -107,9 +110,7 @@ CREATE TABLE gridManagement.dbo.users (
 	created_by int NULL,
 	updated_by int NULL,
 	CONSTRAINT users_pkey PRIMARY KEY (id),
-	CONSTRAINT user_roles_id_fkey FOREIGN KEY (role_id) REFERENCES roles(id),
-    CONSTRAINT uq_Users_username_email_isdelete UNIQUE(username,email, is_delete)
-
+	CONSTRAINT user_roles_id_fkey FOREIGN KEY (role_id) REFERENCES roles(id)
 );
 
 
@@ -147,8 +148,7 @@ update_at DATETIME default CURRENT_TIMESTAMP,
 updated_by int null,
 CONSTRAINT subcont_pkey PRIMARY KEY (id),
 CONSTRAINT subcont_user_id_fkey FOREIGN KEY (created_by) REFERENCES users(id),
-CONSTRAINT subcont_updatedby_users__fkey FOREIGN KEY (updated_by) REFERENCES users(id),
-CONSTRAINT uq_subCont_code_isdelete UNIQUE(code, is_delete)
+CONSTRAINT subcont_updatedby_users__fkey FOREIGN KEY (updated_by) REFERENCES users(id)
 
 )
 
@@ -180,9 +180,7 @@ CREATE TABLE grids(
 	updated_at DATETIME NULL DEFAULT CURRENT_TIMESTAMP,
 	created_by int NULL,
 	updated_by int NULL,
-	CONSTRAINT grids_pkey PRIMARY KEY (id),
-	CONSTRAINT uq_Grids_gridno_isdelete UNIQUE(gridno, is_delete),
-
+	CONSTRAINT grids_pkey PRIMARY KEY (id),	
 	CONSTRAINT grids_createdby_users__fkey FOREIGN KEY (created_by) REFERENCES users(id),
 	CONSTRAINT grids_updatedby_users__fkey FOREIGN KEY (updated_by) REFERENCES users(id)
 ) 
@@ -197,6 +195,22 @@ CREATE TABLE grid_geolocations(
     CONSTRAINT gridGeoLocation_pkey PRIMARY KEY (id),
 	CONSTRAINT geoloccation__gridId__fkey FOREIGN KEY (grid_id) REFERENCES grids(id)	
 )
+
+
+
+CREATE TABLE grid_documents(
+    id int not null identity(1,1),
+    grid_id int not null,
+    upload_type varchar(10) null,
+	file_name varchar(500) null,    
+	file_type varchar(10) null,
+    "path" varchar(1000) null,
+    created_by int NULL,
+    created_at datetime default CURRENT_TIMESTAMP,
+    CONSTRAINT grid_documents_pkey PRIMARY KEY (id),
+	CONSTRAINT grid_documents_gridid_fkey FOREIGN KEY (grid_id) REFERENCES grids(id),  
+	CONSTRAINT grid_documents_createdby_users__fkey FOREIGN KEY (created_by) REFERENCES users(id)	
+    )
 
 
 
@@ -262,8 +276,12 @@ CREATE TABLE gridManagement.dbo.layer_subcontractors(
 CREATE TABLE gridManagement.dbo.layer_documents(
     id int not null identity(1,1),
     layerdetails_id int not null,
-    "path" varchar(500) null,
+    uploadType varchar(10) null,
+file_name varchar(500) null,    
+file_type varchar(10) null,
+    "path" varchar(1000) null,
     created_by int NULL,
+    created_at datetime default CURRENT_TIMESTAMP,
     CONSTRAINT layer_documents_pkey PRIMARY KEY (id),
 	CONSTRAINT layer_documents_layerdetailsid_fkey FOREIGN KEY (layerdetails_id) REFERENCES layer_details(id),  
 	CONSTRAINT layer_documents_createdby_users__fkey FOREIGN KEY (created_by) REFERENCES users(id)

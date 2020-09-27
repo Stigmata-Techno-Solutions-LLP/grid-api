@@ -9,6 +9,7 @@ namespace GridManagement.domain.Models
         {
             AuditLogs = new HashSet<AuditLogs>();
             ClientBilling = new HashSet<ClientBilling>();
+            GridDocuments = new HashSet<GridDocuments>();
             GridsCreatedByNavigation = new HashSet<Grids>();
             GridsUpdatedByNavigation = new HashSet<Grids>();
             LayerDetailsCreatedByNavigation = new HashSet<LayerDetails>();
@@ -36,6 +37,7 @@ namespace GridManagement.domain.Models
         public virtual Roles Role { get; set; }
         public virtual ICollection<AuditLogs> AuditLogs { get; set; }
         public virtual ICollection<ClientBilling> ClientBilling { get; set; }
+        public virtual ICollection<GridDocuments> GridDocuments { get; set; }
         public virtual ICollection<Grids> GridsCreatedByNavigation { get; set; }
         public virtual ICollection<Grids> GridsUpdatedByNavigation { get; set; }
         public virtual ICollection<LayerDetails> LayerDetailsCreatedByNavigation { get; set; }
