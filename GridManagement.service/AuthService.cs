@@ -16,6 +16,9 @@ using MailKit.Net.Smtp;
 using MailKit.Security;
 using MimeKit;
 using MimeKit.Text;
+using GridManagement.common;
+using System.Collections;
+
 
 namespace GridManagement.service
 {
@@ -33,6 +36,7 @@ namespace GridManagement.service
 
         public AuthenticateResponse Authenticate(AuthenticateRequest model)
         {
+try {
 
             AuthenticateResponse user = _authRepository.ValidateUser(model);
             // return null if user not found
@@ -41,6 +45,10 @@ namespace GridManagement.service
             user.Token = generateJwtToken(user.Id.ToString());
             user.RefreshToken = generateRefreshToken(user.Id.ToString());
             return user;
+
+} catch (Exception ex) {
+    throw ex;
+}
         }
 
 
@@ -84,6 +92,7 @@ namespace GridManagement.service
             {
                 var tokenHandler = new JwtSecurityTokenHandler();
                 var key = Encoding.ASCII.GetBytes(_appSettings.Secret);
+
                 tokenHandler.ValidateToken(token, new TokenValidationParameters
                 {
                     ValidateIssuerSigningKey = true,
@@ -96,6 +105,7 @@ namespace GridManagement.service
 
                 var jwtToken = (JwtSecurityToken)validatedToken;
                 var userId = int.Parse(jwtToken.Claims.First(x => x.Type == "unique_name").Value);
+               
                 refreshResponse.Token = generateJwtToken(userId.ToString());
                 refreshResponse.RefreshToken = generateRefreshToken(userId.ToString());
                 refreshResponse.Message = "Refresh token regenerated.";
@@ -104,11 +114,7 @@ namespace GridManagement.service
             }
             catch (Exception ex)
             {
-                return refreshResponse = new RefreshResponse()
-                {
-                    Message = "Token expired. Error : " + ex.Message,
-                    IsAPIValid = false
-                };
+                throw new ValueNotFoundException("Token expired or exception: Error:" + ex.Message);               
             }
         }
 
