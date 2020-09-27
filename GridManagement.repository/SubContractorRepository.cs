@@ -48,7 +48,7 @@ namespace GridManagement.repository
                 Subcontractors subCont = _context.Subcontractors.Where(x => x.Id == Id && x.IsDelete ==false).FirstOrDefault();
                 if (subCont == null ) throw new ValueNotFoundException("SubContrtactorId doesn't exists");
                 
-             if ( _context.Subcontractors.Where(x => x.Code == subContReq.code && x.Id != Id).Count() >0 ) throw new ValueNotFoundException("new value SubContractor Code already exists, give unique value");                           
+             if ( _context.Subcontractors.Where(x => x.Code == subContReq.code && x.Id != Id && x.IsDelete == false).Count() >0 ) throw new ValueNotFoundException("new value SubContractor Code already exists, give unique value");                           
                 // subCont = _mapper.Map<Subcontractors>(subContReq);
                 subCont.Email = subContReq.email;
                 subCont.Mobile = subContReq.phone;

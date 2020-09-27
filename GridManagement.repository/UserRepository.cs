@@ -77,12 +77,12 @@ namespace GridManagement.repository
                 var userData = _context.Users.Where(x => x.Id == id  && x.IsDelete ==false).FirstOrDefault();
                 if (userData != null)
                 {
-                    if (_context.Users.Where(x => x.Email == userDetails.email && x.Id != id).Count() > 0)
+                    if (_context.Users.Where(x => x.Email == userDetails.email && x.Id != id && x.IsDelete == false).Count() > 0)
                     {
                          throw new ValueNotFoundException("Email Id already exist.");    
                        
                     }
-                    else if (_context.Users.Where(x => x.Username == userDetails.userName && x.Id != id).Count() > 0)
+                    else if (_context.Users.Where(x => x.Username == userDetails.userName && x.Id != id && x.IsDelete == false).Count() > 0)
                     {
                          throw new ValueNotFoundException("UserName already exist.");                        
                     }
