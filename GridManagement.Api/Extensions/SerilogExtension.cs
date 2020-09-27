@@ -41,7 +41,7 @@ namespace GridManagement.Api.Extensions
                 c.EnrichDiagnosticContext = (diagnosticContext, httpContext) =>
                 {
 string data = ReadRequestBody(httpContext.Request);
-                    Log.Logger.Information(data);
+                   // Log.Logger.Information(data);
                     //Add your useful information here
                 };
             });

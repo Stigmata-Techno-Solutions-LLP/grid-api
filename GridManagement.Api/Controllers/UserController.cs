@@ -19,6 +19,8 @@ namespace GridManagement.Api.Controllers
     [ApiController]
     [Route("api/[controller]")]
     [Authorize]
+  //  [ValidateAntiForgeryToken]
+
     public class UserController : ControllerBase
     {
         private readonly IUserService _userService;

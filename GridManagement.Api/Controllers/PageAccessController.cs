@@ -18,6 +18,8 @@ namespace GridManagement.Api.Controllers
    // [Authorize]
     [ApiController]
     [Authorize]
+   //[ValidateAntiForgeryToken]
+
     [Route("api/[controller]")]
     public class PageAccessController : ControllerBase
     {

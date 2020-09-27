@@ -18,6 +18,8 @@ namespace GridManagement.Api.Controllers
     [Authorize]
     [ApiController]
     [Route("api/[controller]")]
+       // [ValidateAntiForgeryToken]
+
 
     public class ReportsController : ControllerBase
     {
