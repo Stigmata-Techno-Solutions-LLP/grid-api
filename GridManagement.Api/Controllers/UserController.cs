@@ -18,6 +18,7 @@ namespace GridManagement.Api.Controllers
     // [Authorize]
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize]
     public class UserController : ControllerBase
     {
         private readonly IUserService _userService;

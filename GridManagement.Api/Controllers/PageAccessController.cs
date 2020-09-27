@@ -17,7 +17,7 @@ namespace GridManagement.Api.Controllers
     [EnableCors("AllowAll")]
    // [Authorize]
     [ApiController]
-
+    [Authorize]
     [Route("api/[controller]")]
     public class PageAccessController : ControllerBase
     {

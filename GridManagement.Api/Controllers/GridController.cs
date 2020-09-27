@@ -23,6 +23,7 @@ namespace GridManagement.Api.Controllers
     [ApiController]
     [EnableCors("AllowAll")]
     [Route("api/[controller]")]
+    [Authorize]
 
     public class GridController : ControllerBase
     {

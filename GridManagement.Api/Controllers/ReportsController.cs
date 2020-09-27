@@ -15,9 +15,10 @@ using GridManagement.common;
 namespace GridManagement.Api.Controllers
 {
     [EnableCors("AllowAll")]
-    // [Authorize]
+    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
+
     public class ReportsController : ControllerBase
     {
    private readonly IGridService _gridService;  
