@@ -39,7 +39,7 @@ namespace GridManagement.Api.Controllers
             }
             catch (Exception e)
             {
-                _loggerService.Error(e.StackTrace);
+                Util.LogError(e); 
                 return StatusCode(StatusCodes.Status500InternalServerError, new ErrorClass() { code= StatusCodes.Status500InternalServerError.ToString(), message="Something went wrong"});
             } 
         }

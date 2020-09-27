@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using System.Runtime.Serialization;
 
 namespace GridManagement.Model.Dto
 {
@@ -39,7 +40,7 @@ namespace GridManagement.Model.Dto
         [Display(Name = "Role Id")]
         public int roleId { get; set; }
 
-     
+        [IgnoreDataMember]
         public string password { get; set; }
         public bool isActive {get;set;}
         public int createdBy {get;set;}

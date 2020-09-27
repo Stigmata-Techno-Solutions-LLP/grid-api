@@ -15,13 +15,14 @@ using System;
 using GridManagement.Api.Helper;
 using Microsoft.Extensions.FileProviders;
 using System.IO;
-
+using Microsoft.AspNetCore.Mvc;
+using GridManagement.Api.Helper;
+using System.Collections.Generic;
+using System.Linq;
 namespace GridManagement.Api
 {
     public class Startup
     {
-
-
         public IConfiguration Configuration { get; }
         // public IConfiguration Configuration { get; }
         public Startup(IConfiguration configuration)
@@ -81,6 +82,7 @@ namespace GridManagement.Api
 
             services.Configure<GridManagement.Model.Dto.AppSettings>(Configuration.GetSection("AppSettings"));
 
+
            // services.AddCors();
             //app.UseCors(options => options.AllowAnyOrigin());  
 
@@ -106,6 +108,20 @@ namespace GridManagement.Api
         services.AddCors(options => {
             options.AddPolicy("AllowAll", builder => builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
         });
+
+
+
+
+ services.AddMvc().SetCompatibilityVersion(Microsoft.AspNetCore.Mvc.CompatibilityVersion.Version_3_0)  
+
+  .ConfigureApiBehaviorOptions(options => {  
+
+
+   options.InvalidModelStateResponseFactory = actionContext => {  
+ValidateModelAttribute val = new ValidateModelAttribute();
+    return val.CustomErrorResponse(actionContext);  
+   };  
+  });  
             // WebApi Configuration
             services.AddControllers().AddJsonOptions(options =>
             {
@@ -140,7 +156,9 @@ namespace GridManagement.Api
             //app.UseCors("AllowCors");  
            // app.UseCors(x => x.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
     
-            app.UseCustomSerilogRequestLogging();
+           // app.UseCustomSerilogRequestLogging();
+                               app.UseCustomSerilogRequestLogging();
+
             app.UseRouting();
             app.UseStaticFiles();
            app.UseStaticFiles(new StaticFileOptions
@@ -170,6 +188,7 @@ namespace GridManagement.Api
 
             app.UseHttpsRedirection();
             app.UseMiddleware<JwtMiddleware>();
+            app.UseMiddleware<ApiLoggingMiddleware>();
 
             app.UseResponseCompression();
             app.UseAuthentication();
@@ -180,6 +199,8 @@ namespace GridManagement.Api
            // app.UseCors(options => options.AllowAnyOrigin());  
 
 
-        }
+        
+        
+}
     }
 }

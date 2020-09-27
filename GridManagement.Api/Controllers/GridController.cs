@@ -12,6 +12,8 @@ using Microsoft.AspNetCore.Http;
 using GridManagement.common;
 using Microsoft.AspNetCore.Cors;
 using Newtonsoft.Json;
+using GridManagement.common;
+using GridManagement.Api.Helper;
 
 // For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -21,6 +23,7 @@ namespace GridManagement.Api.Controllers
     [ApiController]
     [EnableCors("AllowAll")]
     [Route("api/[controller]")]
+
     public class GridController : ControllerBase
     {
         private readonly IGridService _gridService;
@@ -39,16 +42,16 @@ namespace GridManagement.Api.Controllers
         {
             try
             {
-                   Log.Logger.Error("Error");
                 var response = _gridService.AddGrid(model);              
                 return StatusCode(StatusCodes.Status201Created, (new { message = "Grid added successfully",code =201}));
             }
             catch(ValueNotFoundException e) {
+             Util.LogError(e);
                 return StatusCode(StatusCodes.Status422UnprocessableEntity, new ErrorClass() { code= StatusCodes.Status422UnprocessableEntity.ToString(), message=e.Message});
             }
             catch (Exception e)
             {
-                Log.Logger.Error(e.StackTrace);
+                Util.LogError(e);
                 return StatusCode(StatusCodes.Status500InternalServerError, new ErrorClass() { code= StatusCodes.Status500InternalServerError.ToString(), message="Something went wrong"});
             }
         }
@@ -71,11 +74,12 @@ namespace GridManagement.Api.Controllers
               return Ok(new { message = "Cleaning & Grubbing added successfully",code =201});  
             }
              catch(ValueNotFoundException e) {
+                Util.LogError(e);                 
                 return StatusCode(StatusCodes.Status422UnprocessableEntity, new ErrorClass() { code= StatusCodes.Status422UnprocessableEntity.ToString(), message=e.Message});
             }
             catch (Exception e)
             {
-                Log.Logger.Error(e.StackTrace);
+                Util.LogError(e);
                 return StatusCode(StatusCodes.Status500InternalServerError, new ErrorClass() { code= StatusCodes.Status500InternalServerError.ToString(), message=e.Message});
             }
         }
@@ -93,7 +97,7 @@ namespace GridManagement.Api.Controllers
             }
             catch (Exception e)
             {
-                Log.Logger.Error(e.StackTrace);
+                Util.LogError(e);
                 return StatusCode(StatusCodes.Status500InternalServerError, new ErrorClass() { code= StatusCodes.Status500InternalServerError.ToString(), message="Something went wrong"});
             }        
         }
@@ -110,7 +114,7 @@ namespace GridManagement.Api.Controllers
             }
         catch (Exception e)
             {
-                Log.Logger.Error(e.StackTrace);
+               Util.LogError(e);
                 return StatusCode(StatusCodes.Status500InternalServerError, new ErrorClass() { code= StatusCodes.Status500InternalServerError.ToString(), message="Something went wrong"});
             }      
         }
@@ -127,7 +131,7 @@ namespace GridManagement.Api.Controllers
             }
             catch (Exception e)
             {
-                Log.Logger.Error(e.StackTrace);
+Util.LogError(e);
                 return StatusCode(StatusCodes.Status500InternalServerError, new ErrorClass() { code= StatusCodes.Status500InternalServerError.ToString(), message="Something went wrong"});
             }      
         }    
@@ -148,11 +152,12 @@ namespace GridManagement.Api.Controllers
              }
 
             catch(ValueNotFoundException e) {
+                Util.LogError(e);
                 return StatusCode(StatusCodes.Status422UnprocessableEntity, new ErrorClass() { code= StatusCodes.Status422UnprocessableEntity.ToString(), message=e.Message});
             }
             catch (Exception e)
             {
-                Log.Logger.Error(e.StackTrace);
+               Util.LogError(e);
                 return StatusCode(StatusCodes.Status500InternalServerError, new ErrorClass() { code= StatusCodes.Status500InternalServerError.ToString(), message="Something went wrong"});
             }          
         }
@@ -170,7 +175,7 @@ namespace GridManagement.Api.Controllers
             }
             catch (Exception e)
             {
-                Log.Logger.Error(e.StackTrace);
+                Util.LogError(e);
                 return StatusCode(StatusCodes.Status500InternalServerError, new ErrorClass() { code= StatusCodes.Status500InternalServerError.ToString(), message="Something went wrong"});
             }      
         }    
@@ -191,11 +196,13 @@ namespace GridManagement.Api.Controllers
                    return Ok(new { message = "Grid updated successfully",code =204});      
             }
             catch(ValueNotFoundException e) {
+
+               Util.LogError(e);
                 return StatusCode(StatusCodes.Status422UnprocessableEntity, new ErrorClass() { code= StatusCodes.Status422UnprocessableEntity.ToString(), message=e.Message});
             }
             catch (Exception e)
             {
-                Log.Logger.Error(e.StackTrace);
+                Util.LogError(e);
                 return StatusCode(StatusCodes.Status500InternalServerError, new ErrorClass() { code= StatusCodes.Status500InternalServerError.ToString(), message="Something went wrong"});
             }       
         }

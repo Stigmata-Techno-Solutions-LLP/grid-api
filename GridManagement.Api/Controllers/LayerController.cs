@@ -48,11 +48,12 @@ private readonly IGridService _gridService;
                 return StatusCode(StatusCodes.Status201Created, (new { message = "Grid Layer updated successfully",code =201}));             
             }
             catch(ValueNotFoundException e) {
+                Util.LogError(e);
                 return StatusCode(StatusCodes.Status422UnprocessableEntity, new ErrorClass() { code= StatusCodes.Status422UnprocessableEntity.ToString(), message=e.Message});
             }
             catch (Exception e)
             {
-                Log.Logger.Error(e.StackTrace);
+                Util.LogError(e);
                 return StatusCode(StatusCodes.Status500InternalServerError, new ErrorClass() { code= StatusCodes.Status500InternalServerError.ToString(), message="Something went wrong"});
             } 
         }
@@ -70,7 +71,7 @@ private readonly IGridService _gridService;
             
             catch (Exception e)
             {
-                Log.Logger.Error(e.StackTrace);
+               Util.LogError(e);
                 return StatusCode(StatusCodes.Status500InternalServerError, new ErrorClass() { code= StatusCodes.Status500InternalServerError.ToString(), message="Something went wrong"});
             }      
         }
@@ -88,7 +89,7 @@ private readonly IGridService _gridService;
             }
              catch (Exception e)
             {
-                Log.Logger.Error(e.StackTrace);
+                Util.LogError(e);
                 return StatusCode(StatusCodes.Status500InternalServerError, new ErrorClass() { code= StatusCodes.Status500InternalServerError.ToString(), message="Something went wrong"});
             }      
         }
@@ -108,11 +109,12 @@ private readonly IGridService _gridService;
             
             }
              catch(ValueNotFoundException e) {
+                 Util.LogError(e);
                 return StatusCode(StatusCodes.Status422UnprocessableEntity, new ErrorClass() { code= StatusCodes.Status422UnprocessableEntity.ToString(), message=e.Message});
             }
              catch (Exception e)
             {
-                Log.Logger.Error(e.StackTrace);
+               Util.LogError(e);
                 return StatusCode(StatusCodes.Status500InternalServerError, new ErrorClass() { code= StatusCodes.Status500InternalServerError.ToString(), message="Something went wrong"});
             }          
         }
