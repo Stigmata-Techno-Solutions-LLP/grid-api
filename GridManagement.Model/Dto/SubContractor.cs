@@ -20,13 +20,10 @@ namespace GridManagement.Model.Dto
         [StringLength(2000)]
         [Display(Name = "SubContractor Address")]
         public string contact_address {get;set;}
-        [StringLength(20)]
-        [Phone]
+        
         [Display(Name = "SubContractor PhoneNo")]
         public string phone {get;set;}
         
-        [StringLength(100)]
-        [EmailAddress(ErrorMessage = "Invalid Email Address")]        
         [Display(Name = "SubContractor EmailId")]
         public string email {get;set;}
 
