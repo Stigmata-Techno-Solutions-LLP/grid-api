@@ -64,16 +64,24 @@ namespace GridManagement.Api.Controllers
         [ProducesResponseType(401)]
         [ProducesResponseType(201)]        
         [Route("CreateCG/{id}")]
-        public IActionResult CreateCleaningGrubing([FromForm]AddCG_RFI uploadDocs, int id)
+        public IActionResult CreateCleaningGrubing([FromForm]AddCG_RFI model, int id)
         {
             try
             {
-               // AddCG_RFI model = new AddCG_RFI();
-               // List<LayerSubcontractor1> layerSub  = JsonConvert.DeserializeObject<List<LayerSubcontractor1>>(uploadDocs.layerSubContractor);
-            
-             //   LayerSubcontractor layerSub =  json;
-                             var response = _gridService.CleaningGrubbingEntry(uploadDocs, id);
+            if (model.uploadDocs != null) {
+                                     if (model.uploadDocs.Select(x=>x.Length).Sum() > 50000000)   throw new ValueNotFoundException(" File size exceeded limit");
 
+                  if (model.uploadDocs.Length > 5)  throw new ValueNotFoundException("Document count should not greater than 5"); 
+                      foreach(IFormFile file in model.uploadDocs) {                
+                     if ( constantVal.AllowedDocFileTypes.Where(x=>x.Contains(file.ContentType)).Count() == 0 && constantVal.AllowedIamgeFileTypes.Where(x=>x.Contains(file.ContentType)).Count() == 0 )  throw new ValueNotFoundException( string.Format("File Type {0} is not allowed", file.ContentType)); 
+                      }
+    } 
+           var response = _gridService.CleaningGrubbingEntry(model, id);                
+     
+                
+                //  foreach(IFormFile file in uploadDocs.uploadDocs.Count()) {
+
+                //  }
               return Ok(new { message = "Cleaning & Grubbing added successfully",code =201});  
             }
              catch(ValueNotFoundException e) {

@@ -46,6 +46,15 @@ private readonly IGridService _gridService;
                 List<LayerSubcontractor> layerSub  = JsonConvert.DeserializeObject<List<LayerSubcontractor>>(model.layerSubContractor1);
         
                 model.layerSubContractor = layerSub;
+
+                            if (model.uploadDocs != null) {
+                  if (model.uploadDocs.Length > 5)  throw new ValueNotFoundException("Document count should not greater than 5"); 
+                      foreach(IFormFile file in model.uploadDocs) {                
+                     if ( constantVal.AllowedDocFileTypes.Where(x=>x.Contains(file.ContentType)).Count() == 0 )  throw new ValueNotFoundException( string.Format("File Type {0} is not allowed", file.ContentType)); 
+                      }
+                 if (model.uploadDocs.Select(x=>x.Length).Sum() > 50000000)   throw new ValueNotFoundException(" File size exceeded limit");
+  
+    }
                 var response = _gridService.AddLayer(model);
                 // return Ok(response);   
                 return StatusCode(StatusCodes.Status201Created, (new { message = "Grid Layer updated successfully",code =201}));             

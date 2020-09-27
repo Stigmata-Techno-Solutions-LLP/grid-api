@@ -13,6 +13,8 @@ using System.IO;
 using GridManagement.common;
 using Microsoft.AspNetCore.Hosting;  
 using Microsoft.AspNetCore.Http;  
+using System.Collections;
+using System.Linq;
 
 namespace GridManagement.service
 {
@@ -50,6 +52,9 @@ namespace GridManagement.service
             {
                 int layerId =  _gridRepo.InsertNewLayer(model);
             RemoveLayerDocs(model.remove_docs_filename);
+            if (model.uploadDocs != null) {
+
+            
              foreach(IFormFile file in model.uploadDocs) {                
                  Layer_Docs layerDoc = new Layer_Docs();
                  layerDoc.fileName = file.FileName;
@@ -57,6 +62,7 @@ namespace GridManagement.service
                  layerDoc.fileType = Path.GetExtension(file.FileName);
                  _gridRepo.LayerDocsUpload(layerDoc, layerId);
              }
+            }
              return true;                    
             }
             catch (Exception ex)
@@ -127,13 +133,15 @@ namespace GridManagement.service
          public bool CleaningGrubbingEntry( AddCG_RFI gridReq, int Id) {
              try {
                  RemoveGridDocs(gridReq.remove_docs_filename);
-             foreach(IFormFile file in gridReq.uploadDocs) {
-                
+             
+             if (gridReq.uploadDocs != null) {                
+                 foreach(IFormFile file in gridReq.uploadDocs) {                
                  Grid_Docs gridDoc = new Grid_Docs();
                  gridDoc.fileName = file.FileName;
                  gridDoc.filepath =  UploadedFile(file);                 
                  gridDoc.fileType = Path.GetExtension(file.FileName);
                  _gridRepo.CleaningGrubEntryUploadDocs(gridDoc, Id);
+             }
              }
                 return _gridRepo.CleaningGrubEntry(gridReq, Id);
              }
