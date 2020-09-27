@@ -16,9 +16,6 @@ using MailKit.Net.Smtp;
 using MailKit.Security;
 using MimeKit;
 using MimeKit.Text;
-using GridManagement.common;
-using System.Collections;
-
 
 namespace GridManagement.service
 {
@@ -36,7 +33,6 @@ namespace GridManagement.service
 
         public AuthenticateResponse Authenticate(AuthenticateRequest model)
         {
-try {
 
             AuthenticateResponse user = _authRepository.ValidateUser(model);
             // return null if user not found
@@ -45,10 +41,6 @@ try {
             user.Token = generateJwtToken(user.Id.ToString());
             user.RefreshToken = generateRefreshToken(user.Id.ToString());
             return user;
-
-} catch (Exception ex) {
-    throw ex;
-}
         }
 
 
@@ -69,20 +61,21 @@ try {
             return tokenHandler.WriteToken(token);
         }
 
-        private RefreshToken generateRefreshToken(string userId)
+        private string generateRefreshToken(string userId)
         {
-            using (var rngCryptoServiceProvider = new RNGCryptoServiceProvider())
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var key = Encoding.ASCII.GetBytes(_appSettings.Secret);
+            var tokenDescriptor = new SecurityTokenDescriptor
             {
-                var randomBytes = new byte[64];
-                rngCryptoServiceProvider.GetBytes(randomBytes);
-                return new RefreshToken
+                Subject = new ClaimsIdentity(new Claim[]
                 {
-                    Token = Convert.ToBase64String(randomBytes),
-                    Expires = DateTime.UtcNow.AddMinutes(5),
-                    Created = DateTime.UtcNow,
-                    CreatedBy = userId
-                };
-            }
+                    new Claim(ClaimTypes.Name, userId)
+                }),
+                Expires = DateTime.UtcNow.AddMinutes(5),
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+            };
+            var token = tokenHandler.CreateJwtSecurityToken(tokenDescriptor);
+            return tokenHandler.WriteToken(token);
         }
 
         public RefreshResponse RefreshToken(string token)
@@ -92,7 +85,6 @@ try {
             {
                 var tokenHandler = new JwtSecurityTokenHandler();
                 var key = Encoding.ASCII.GetBytes(_appSettings.Secret);
-
                 tokenHandler.ValidateToken(token, new TokenValidationParameters
                 {
                     ValidateIssuerSigningKey = true,
@@ -105,7 +97,6 @@ try {
 
                 var jwtToken = (JwtSecurityToken)validatedToken;
                 var userId = int.Parse(jwtToken.Claims.First(x => x.Type == "unique_name").Value);
-               
                 refreshResponse.Token = generateJwtToken(userId.ToString());
                 refreshResponse.RefreshToken = generateRefreshToken(userId.ToString());
                 refreshResponse.Message = "Refresh token regenerated.";
@@ -114,7 +105,11 @@ try {
             }
             catch (Exception ex)
             {
-                throw new ValueNotFoundException("Token expired or exception: Error:" + ex.Message);               
+                return refreshResponse = new RefreshResponse()
+                {
+                    Message = "Token expired. Error : " + ex.Message,
+                    IsAPIValid = false
+                };
             }
         }
 
