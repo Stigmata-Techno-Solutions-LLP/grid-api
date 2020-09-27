@@ -21,14 +21,11 @@ namespace GridManagement.Api.Extensions
     {
         public MappingProfile()
         {
-            /// Hero Map
-            
-
+         
               CreateMap<Grids,GridNo>()                   
                     .ForMember(dest =>
                         dest.gridName,
                         opt => opt.MapFrom(src => src.Gridno))
-
                     .ForMember(dest =>
                         dest.Id,
                         opt => opt.MapFrom(src => src.Id));   
@@ -38,7 +35,6 @@ namespace GridManagement.Api.Extensions
                     .ForMember(dest =>
                         dest.GridArea,
                         opt => opt.MapFrom(src => src.grid_area))
-
                     .ForMember(dest =>
                         dest.Gridno,
                         opt => opt.MapFrom(src => src.gridno))   
@@ -342,6 +338,12 @@ namespace GridManagement.Api.Extensions
                             dest.layerDocs,
                             opt => opt.MapFrom(src => src.LayerDocuments))
 
+                         .ForMember(dest =>
+                            dest.createdDate,
+                            opt => opt.MapFrom(src =>   src.CreatedAt != null ? src.CreatedAt.Value.ToString("yyyy-MM-dd"):""))
+                        .ForMember(dest =>
+                            dest.updatedDate ,
+                            opt => opt.MapFrom(src =>  src.UpdatedAt != null ? src.UpdatedAt.Value.ToString("yyyy-MM-dd"):""))
                          .ForMember(dest =>
                          dest.layerNo,
                          opt => opt.MapFrom(src => src.Layer.Layerno));

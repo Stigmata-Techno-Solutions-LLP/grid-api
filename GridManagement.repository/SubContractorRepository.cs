@@ -128,14 +128,18 @@ if ( filterReport.startDate != null && filterReport.endDate != null) {
 
   ltssubContrdata = _context.Subcontractors.Where(x=>x.IsDelete == false && x.CreatedAt >= filterReport.startDate && x.CreatedAt< filterReport.endDate.Value.AddDays(1)).ToList()
         .Select( y=> new SubContractorReport {  code =y.Code, name = y.Name, subContractorId = y.Id.ToString(), quantity = _context.LayerSubcontractors.Where(z=>z.SubcontractorId == y.Id).Count(), 
-        materialDesc =  String.Join(',', _context.LayerSubcontractors.Include(c=>c.Layerdetails).Where(w=>w.SubcontractorId ==y.Id).ToList().Select(r=>r.Layerdetails.FillingMaterial).ToArray().Distinct()).ToString()
+        materialDesc =  String.Join(',', _context.LayerSubcontractors.Include(c=>c.Layerdetails).Where(w=>w.SubcontractorId ==y.Id).ToList().Select(r=>r.Layerdetails.FillingMaterial).ToArray().Distinct()).ToString(),
+        createdAt = y.CreatedAt != null ? y.CreatedAt.Value.ToString("yyyy-MM-dd"):""
+        
         }).ToList();
             
 } else {
 
         ltssubContrdata = _context.Subcontractors.Where(x=>x.IsDelete == false ).ToList()
         .Select( y=> new SubContractorReport {  code =y.Code, name = y.Name, subContractorId = y.Id.ToString(), quantity = _context.LayerSubcontractors.Where(z=>z.SubcontractorId == y.Id).Count(), 
-        materialDesc =  String.Join(',', _context.LayerSubcontractors.Include(c=>c.Layerdetails).Where(w=>w.SubcontractorId ==y.Id).ToList().Select(r=>r.Layerdetails.FillingMaterial).ToArray().Distinct()).ToString()
+        materialDesc =  String.Join(',', _context.LayerSubcontractors.Include(c=>c.Layerdetails).Where(w=>w.SubcontractorId ==y.Id).ToList().Select(r=>r.Layerdetails.FillingMaterial).ToArray().Distinct()).ToString(),
+        createdAt = y.CreatedAt != null ? y.CreatedAt.Value.ToString("yyyy-MM-dd"):""
+
         }).ToList();          
         
 } 

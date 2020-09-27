@@ -12,6 +12,7 @@ namespace GridManagement.Model.Dto
 
         public int quantity {get;set;}
         public string materialDesc {get;set;}
+        public string createdAt{get;set;}
          
 
     }

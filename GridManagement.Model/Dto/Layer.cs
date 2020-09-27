@@ -227,6 +227,8 @@ public class layerNoFilter{
         public bool isApproved {get;set;}
         public DateTime createdAt {get;set;}
         public DateTime updatedAt {get;set;}
+        public string createdDate {get;set;}
+        public string updatedDate {get;set;}
 
         public ICollection<LayerSubcontractor> layerSubContractor { get; set; }  
         public List<Layer_Docs> layerDocs {get;set;}

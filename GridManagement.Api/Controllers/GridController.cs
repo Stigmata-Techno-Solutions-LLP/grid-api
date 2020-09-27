@@ -39,6 +39,7 @@ namespace GridManagement.Api.Controllers
         {
             try
             {
+                   Log.Logger.Error("Error");
                 var response = _gridService.AddGrid(model);              
                 return StatusCode(StatusCodes.Status201Created, (new { message = "Grid added successfully",code =201}));
             }

@@ -96,12 +96,12 @@ CREATE TABLE gridManagement.dbo.application_forms (
 CREATE TABLE gridManagement.dbo.users (
 	id int NOT NULL identity(1,1),	
 	
-	username varchar(100) NOT NULL UNIQUE,
+	username varchar(100),
 	"password" varchar(500) NOT NULL,
 	first_name varchar(100),
 	last_name varchar(100),
 	phoneno varchar(15),
-	email varchar(100) NOT NULL UNIQUE,
+	email varchar(100) ,
 	role_id int null,
     is_active bit NULL DEFAULT 0,    
     is_delete bit NULL DEFAULT 0,
