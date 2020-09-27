@@ -19,6 +19,9 @@ namespace GridManagement.Api.Controllers
     [ApiController]
     [EnableCors("AllowAll")]
     [Route("api/[controller]")]
+    [Authorize]
+   // [ValidateAntiForgeryToken]
+
     public class ClientController : ControllerBase
     {
 
@@ -45,11 +48,12 @@ namespace GridManagement.Api.Controllers
                   return StatusCode(StatusCodes.Status201Created, (new { message = "Client Billing Generated successfully",code =201}));
             }
             catch(ValueNotFoundException e) {
+                Util.LogError(e);
                 return StatusCode(StatusCodes.Status422UnprocessableEntity, new ErrorClass() { code= StatusCodes.Status422UnprocessableEntity.ToString(), message=e.Message});
             }
              catch (Exception e)
             {
-                Log.Logger.Error(e.StackTrace);
+Util.LogError(e);
                 return StatusCode(StatusCodes.Status500InternalServerError, new ErrorClass() { code= StatusCodes.Status500InternalServerError.ToString(), message="Something went wrong"});
             } 
         }
@@ -67,7 +71,7 @@ namespace GridManagement.Api.Controllers
             }
              catch (Exception e)
             {
-                Log.Logger.Error(e.StackTrace);
+                Util.LogError(e);
                 return StatusCode(StatusCodes.Status500InternalServerError, new ErrorClass() { code= StatusCodes.Status500InternalServerError.ToString(), message="Something went wrong"});
             }          
         }

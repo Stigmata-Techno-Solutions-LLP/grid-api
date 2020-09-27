@@ -15,6 +15,8 @@ namespace GridManagement.Api.Controllers
 {
     [ApiController]
     [EnableCors("AllowAll")]
+    //[ValidateAntiForgeryToken]
+
     [Route("api/[controller]")]
     public class AuthController : ControllerBase
     {
@@ -34,12 +36,12 @@ namespace GridManagement.Api.Controllers
             {
                 var response = _authService.Authenticate(model);
                 if (response == null)
-                    return BadRequest(new { message = "Username or password is incorrect", isAPIValid = false });
+                    return Unauthorized(new { message = "Username or password is incorrect", code = StatusCodes.Status401Unauthorized.ToString() });
                 return Ok(response);
             }
             catch (Exception e)
             {
-                _loggerService.Error(e.StackTrace);
+                Util.LogError(e); 
                 return StatusCode(StatusCodes.Status500InternalServerError, new ErrorClass() { code= StatusCodes.Status500InternalServerError.ToString(), message="Something went wrong"});
             } 
         }
@@ -68,7 +70,7 @@ namespace GridManagement.Api.Controllers
             {
                 var response = _authService.ForgotPassword(forgotPassword.emailId);
                 if (response == null)
-                    return BadRequest(new { message = "Error in sending the details", isAPIValid = false });
+                    return BadRequest(new { message = "Error in sending the details", code  = 422 });
                 return Ok(new { message = response.Message, code = 200 });
             }
             catch (Exception e)

@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using GridManagement.common;
 using System.Reflection;
+using System.IO;
 namespace GridManagement.repository
 {
 
@@ -30,6 +31,7 @@ namespace GridManagement.repository
             {
                 if (_context.Grids.Where(x => x.Gridno == gridReq.gridno && x.IsDelete == false).Count() > 0) throw new ValueNotFoundException("GridNo already exists");            
                 Grids grid = _mapper.Map<Grids>(gridReq);
+                grid.Status = commonEnum.GridStatus.New.ToString();
                _context.Grids.Add(grid);
                 _context.SaveChanges();
                 foreach (GridGeoLocation geoLoc in gridReq.gridGeoLocation)
@@ -53,9 +55,9 @@ namespace GridManagement.repository
         {
             try
             {
-                Grids gridDtls = _context.Grids.Where(x => x.Id == Id).FirstOrDefault();
+                Grids gridDtls = _context.Grids.Where(x => x.Id == Id && x.IsDelete ==false).FirstOrDefault();
                 if (gridDtls == null ) throw new ValueNotFoundException("GridId doesn't exists");
-                if ( _context.Grids.Where(x => x.Gridno == gridReq.gridno && x.IsDelete == false && x.Id != Id).Count() >0 )  throw new ValueNotFoundException("new GridNo value already exists, should be unique");           
+                if ( _context.Grids.Where(x => x.Gridno == gridReq.gridno && x.Id != Id && x.IsDelete == false).Count() >0 )  throw new ValueNotFoundException("new GridNo value already exists, should be unique");           
                 gridDtls.GridArea = gridReq.grid_area;
                 gridDtls.Gridno = gridReq.gridno;
                 gridDtls.MarkerLatitide = gridReq.marker_latitide.ToString();
@@ -94,7 +96,77 @@ namespace GridManagement.repository
                 gridDtls.CgRfino = gridCGReq.CG_RFIno;
                 gridDtls.CgInspectionDate = gridCGReq.CG_inspection_date;
                 gridDtls.CgApprovalDate = gridCGReq.CG_approval_date;
-                gridDtls.Status = gridCGReq.CG_RFI_status.ToString();
+                gridDtls.CgRfiStatus = gridCGReq.CG_RFI_status.ToString();
+                _context.SaveChanges();              
+                return true;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+         public bool CleaningGrubEntryUploadDocs(Grid_Docs gridCGReq, int Id)
+        {
+            try
+            {
+                GridDocuments gridDocs = new GridDocuments();
+                gridDocs.FileName = gridCGReq.fileName;
+                gridDocs.FileType = gridCGReq.fileType;
+                gridDocs.Path = gridCGReq.filepath;
+                gridDocs.UploadType = gridCGReq.uploadType;
+                gridDocs.GridId = Id;
+                _context.GridDocuments.Add(gridDocs);
+                _context.SaveChanges();              
+                return true;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public bool LayerDocsUpload(Layer_Docs layerReq, int Id)
+        {
+            try
+            {
+                LayerDocuments lyrDocs = new LayerDocuments();
+                lyrDocs.FileName = layerReq.fileName;
+                lyrDocs.FileType = layerReq.fileType;
+                lyrDocs.Path = layerReq.filepath;
+                lyrDocs.UploadType = layerReq.uploadType;
+                lyrDocs.LayerdetailsId = Id;
+                _context.LayerDocuments.Add(lyrDocs);
+                _context.SaveChanges();              
+                return true;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+           public bool LayerRemoveDocs(string filePath)
+        {
+            try
+            {
+                LayerDocuments gridDocs = _context.LayerDocuments.Where(x=>x.Path.Contains(filePath)).FirstOrDefault();
+                _context.LayerDocuments.Remove( gridDocs);
+                _context.SaveChanges();              
+                return true;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public bool CleaningGrubEntryRemoveDocs(string filePath)
+        {
+            try
+            {
+                GridDocuments gridDocs = _context.GridDocuments.Where(x=>x.Path.Contains(filePath)).FirstOrDefault();
+                _context.GridDocuments.Remove( gridDocs);
                 _context.SaveChanges();              
                 return true;
             }
@@ -126,7 +198,7 @@ namespace GridManagement.repository
             {     
 
         var res = _context.Grids
-        .Include(c => c.GridGeolocations).Where(x=>x.IsDelete== false).ToList();        
+        .Include(c => c.GridGeolocations).Include(c =>c.GridDocuments).Where(x=>x.IsDelete== false).ToList();        
        
        if (!string.IsNullOrEmpty(filterReq.gridNo)) res = res.Where(x=> x.Gridno == filterReq.gridNo).ToList();
        if (!string.IsNullOrEmpty(filterReq.status)) res = res.Where(x=> x.Status == filterReq.status).ToList();
@@ -134,8 +206,8 @@ namespace GridManagement.repository
        if (!string.IsNullOrEmpty(filterReq.CG_RFI_status.ToString())) res = res.Where(x=> x.CgRfiStatus == filterReq.CG_RFI_status.ToString()).ToList();
        if (!string.IsNullOrEmpty(filterReq.gridId.ToString())) res = res.Where(x=> x.Id == filterReq.gridId).ToList();
           
-          List<GridDetails> lstGridDetails = _mapper.Map<List<GridDetails>>(res);
-
+        List<GridDetails> lstGridDetails = _mapper.Map<List<GridDetails>>(res);
+       
                 return lstGridDetails;
             }
             catch (Exception ex)
@@ -144,7 +216,33 @@ namespace GridManagement.repository
 
             }
         }
+
+        
     
+
+      public GridProgressMap GetGridProgress()
+        {
+            try
+            {     
+
+        var res = _context.Grids
+        .Include(c => c.GridGeolocations).Where(x=>x.IsDelete== false).ToList();        
+       
+          List<GridDetails> lstGridDetails = _mapper.Map<List<GridDetails>>(res);
+double gLat = lstGridDetails.Sum(x=>x.marker_latitide)/lstGridDetails.Count();
+double gLong = lstGridDetails.Sum(x=>x.marker_longitude)/lstGridDetails.Count();
+GridProgressMap grdMap = new GridProgressMap();
+grdMap.lstGridDtls = lstGridDetails;
+grdMap.gLatitide = gLat;
+grdMap.gLongitude = gLong;
+                return grdMap;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+
+            }
+        }
 
       public GridDetails GetGridDetails(int Id)
         {
@@ -160,6 +258,14 @@ namespace GridManagement.repository
           GridDetails lstGridDetails = _mapper.Map<GridDetails>(res);
 
             lstGridDetails.lyrDtls =  _mapper.Map<List<layerDtls>>(_context.LayerDetails.Include(c => c.Layer).Include(c =>c.LayerSubcontractors).Where(x=>x.GridId==Id).ToList()); //  _mapper.Map<List<LayerDetails>>(_context.LayerDetails.Where(x=>x.GridId == Id).ToList());
+            // LayerSubcontractors layerSubcontractors= new LayerSubcontractors();
+  //        lstGridDetails.lyrDtls = lstGridDetails.lyrDtls.Select(x=>x.layerSubContractor.Select(y=>y.subContractorName = _context.Subcontractors.Where(z=>z.Id == Convert.ToInt32(y.subContractorId)).Select(a=>a.Name; return a;)))
+           lstGridDetails.lyrDtls.ForEach(x=>x.layerSubContractor.ToList().ForEach(y=>y.subContractorName = _context.Subcontractors.Where(z =>z.Id== Convert.ToInt32( y.subContractorId)).FirstOrDefault().Name));
+//            foreach(layerDtls lyr in lstGridDetails.lyrDtls) {
+//                foreach (LayerSubcontractor subcon in  lyr.layerSubContractor) {
+// subcon.subContractorName = _context.Subcontractors.Where(x=>x.Id == subcon.subContractorId).FirstOrDefault().Name;
+//                }
+//            }
             return lstGridDetails;
             }
             catch (Exception ex)
@@ -207,7 +313,7 @@ var res = _context.LayerDetails
      
  
           List<layerDtls> lstGridDetails = _mapper.Map<List<layerDtls>>(res);
-
+lstGridDetails.ForEach(x=>x.layerSubContractor.ToList().ForEach(y=>y.subContractorName = _context.Subcontractors.Where(z =>z.Id== Convert.ToInt32( y.subContractorId)).FirstOrDefault().Name));
                 return lstGridDetails;
             }
             catch (Exception ex)
@@ -234,12 +340,15 @@ var res = _context.LayerDetails
     
 
 
-        public bool InsertNewLayer(AddLayer layerReq)
+        public int InsertNewLayer(AddLayer layerReq)
         {
             try
             {             
                 LayerDetails layerDtls = _context.LayerDetails.Where(x=>x.GridId == layerReq.gridId && x.LayerId == layerReq.layerId).FirstOrDefault();
                 int layerId;
+              //  int roleLevel = Convert.ToInt32(commonEnum.RolesLevel.Level3);
+              //  Users userData = _context.Users.Include(c=>c.Role).Where(x=>x.Id==layerReq.user_id && x.Role.Level == roleLevel ).FirstOrDefault();
+                
                 if (layerDtls != null) {
                     layerId = layerDtls.Id;
                 layerDtls.AreaLayer = layerReq.area_layer;
@@ -258,13 +367,26 @@ var res = _context.LayerDetails
                 layerDtls.Remarks = layerReq.remarks;
                 layerDtls.ToplevelFillmaterial = layerReq.topFillMaterial;
                 layerDtls.TotalQuantity = layerReq.totalQuantity;   
-                 layerDtls.Status = layerReq.status.ToString();                   
+                layerDtls.Status = layerReq.status.ToString();     
+                
+                // if (userData != null) {
+                //     layerDtls.IsApproved = true;                   
+                // }              
                 }  
                 else {
                 LayerDetails layer = _mapper.Map<LayerDetails>(layerReq);
+                //  if (userData != null) {
+                //     layer.IsApproved = true;                   
+                // }
+                layer.IsApproved= false;
+                layer.IsBillGenerated = false;
                 _context.LayerDetails.Add(layer);
+                Grids grid = _context.Grids.Where(x=>x.Id == layerReq.gridId).FirstOrDefault();
+                grid.Status = commonEnum.GridStatus.InProgress.ToString();
+
                 _context.SaveChanges();
                 layerId= layer.Id;
+
                 }
                 List<LayerSubcontractors> lstlayerSub =  _context.LayerSubcontractors.Where(x=>x.LayerdetailsId == layerId).ToList();
                 _context.RemoveRange(lstlayerSub);
@@ -279,9 +401,15 @@ var res = _context.LayerDetails
                     layerSub.Quantity = ls.quantity;
                     _context.LayerSubcontractors.Add(layerSub);
                 }
-                }
+                }                
                _context.SaveChanges();
-                return true;
+
+               if (_context.Layers.Count() == _context.LayerDetails.Where(x=>x.GridId == layerReq.gridId).Count()) {
+                    Grids grid = _context.Grids.Where(x=>x.Id == layerReq.gridId).FirstOrDefault();
+                    grid.Status = commonEnum.GridStatus.Completed.ToString();
+                    _context.SaveChanges();
+               }
+                return layerId;
             }
             catch (Exception ex)
             {
@@ -294,7 +422,9 @@ var res = _context.LayerDetails
 public void ApproveLayer(int layerDtlsId) {
     try {
 
-    
+    // int roleLevel = Convert.ToInt32(commonEnum.RolesLevel.Level3);
+           //    Users userData = _context.Users.Include(c=>c.Role).Where(x=>x.Id==layerReq.user_id && x.Role.Level == roleLevel ).FirstOrDefault();
+                
    LayerDetails lyrDtls=  _context.LayerDetails.Where(x=>x.Id == layerDtlsId && x.Status == commonEnum.LayerStatus.Completed.ToString() && x.IsApproved == false).FirstOrDefault();
     if (lyrDtls == null ) throw new ValueNotFoundException("LayerDetailsId doesn't exists in below criteria(should be completed & non-approved layers)");
    lyrDtls.IsApproved = true;
@@ -494,6 +624,10 @@ dshSummary.BilledLayer = lstLayer.Where(x=>x.IsBillGenerated == true).Count().To
     public List<MasterReport> MasterReport(FilterReport filterReport) {
 try {
 
+     if (!string.IsNullOrEmpty(filterReport.startDate.ToString()) &&  !string.IsNullOrEmpty(filterReport.startDate.ToString())) {
+    if (filterReport.startDate >= filterReport.endDate) throw new ValueNotFoundException("start date should not greater than end date");            
+ }
+
 List<MasterReport> masterRpt = new List<MasterReport>();
        masterRpt  =  (from grid in _context.Grids
 join lyr in _context.LayerDetails on grid.Id equals lyr.GridId
@@ -517,7 +651,6 @@ catch (Exception ex) {
     throw ex;
 }
     }
-
 
 
         public void Dispose()

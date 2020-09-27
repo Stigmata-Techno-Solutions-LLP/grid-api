@@ -38,7 +38,7 @@ INSERT INTO application_forms VALUES (7,'Report', 0,0,0,1)
 INSERT INTO application_forms VALUES (8,'Dashboard', 0,0,0,1)
 INSERT INTO application_forms VALUES (9,'CleaningAndGrubbing', 0,0,0,1)
 INSERT INTO application_forms VALUES (10,'LayerPhotograph', 0,0,0,1)
-
+INSERT INTO application_forms VALUES (11,'PlanningManager', 1,1,1,1)
 
 
 
@@ -52,6 +52,7 @@ INSERT INTO roles_applicationforms VALUES (7,1,1,1,1,1)
 INSERT INTO roles_applicationforms VALUES (8,1,1,1,1,1) 
 INSERT INTO roles_applicationforms VALUES (9,1,1,1,1,1) 
 INSERT INTO roles_applicationforms VALUES (10,1,1,1,1,1) 
+INSERT INTO roles_applicationforms VALUES (11,1,1,1,1,1) 
 
 INSERT INTO roles_applicationforms VALUES (1,2,1,1,1,1) 
 INSERT INTO roles_applicationforms VALUES (2,2,1,1,1,1) 
@@ -63,6 +64,7 @@ INSERT INTO roles_applicationforms VALUES (7,2,1,1,1,1)
 INSERT INTO roles_applicationforms VALUES (8,2,1,1,1,1) 
 INSERT INTO roles_applicationforms VALUES (9,2,1,1,1,1) 
 INSERT INTO roles_applicationforms VALUES (10,2,1,1,1,1) 
+INSERT INTO roles_applicationforms VALUES (11,2,1,1,1,1) 
 
 INSERT INTO roles_applicationforms VALUES (1,3,1,1,1,1) 
 INSERT INTO roles_applicationforms VALUES (2,3,1,1,1,1) 
@@ -74,6 +76,7 @@ INSERT INTO roles_applicationforms VALUES (7,3,1,1,1,1)
 INSERT INTO roles_applicationforms VALUES (8,3,1,1,1,1) 
 INSERT INTO roles_applicationforms VALUES (9,3,1,1,1,1) 
 INSERT INTO roles_applicationforms VALUES (10,3,1,1,1,1) 
+INSERT INTO roles_applicationforms VALUES (11,3,1,1,1,1) 
 
 INSERT INTO roles_applicationforms VALUES (1,4,1,1,1,1) 
 INSERT INTO roles_applicationforms VALUES (2,4,1,1,1,1) 
@@ -85,4 +88,5 @@ INSERT INTO roles_applicationforms VALUES (7,4,1,1,1,1)
 INSERT INTO roles_applicationforms VALUES (8,4,1,1,1,1) 
 INSERT INTO roles_applicationforms VALUES (9,4,1,1,1,1) 
 INSERT INTO roles_applicationforms VALUES (10,4,1,1,1,1) 
+INSERT INTO roles_applicationforms VALUES (11,4,1,1,1,1) 
 

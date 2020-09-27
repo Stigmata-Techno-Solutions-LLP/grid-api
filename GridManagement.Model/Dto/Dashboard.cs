@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 namespace GridManagement.Model.Dto
 {
     public class DashboardSummary
@@ -19,5 +21,11 @@ namespace GridManagement.Model.Dto
         public string[] Date{get;set;}
         public int[] Completed {get;set;}
         public int[]  Billed {get;set;}
+    }
+    public class GridProgressMap{
+        public List<GridDetails> lstGridDtls {get;set;}
+        public double gLatitide {get;set;} 
+        public double gLongitude{get;set;}
+
     }
 }
