@@ -145,7 +145,7 @@ public class AddCG_RFI {
 
         [EnumDataType(typeof(commonEnum.CG_RFIStatus), ErrorMessage = "RFI Status value doesn't exist within enum")]
         public commonEnum.CG_RFIStatus CG_RFI_status { get; set;}
-        public string layerSubContractor { get; set; }         
+        public string layerSubContractor { get; set; }   
         public IFormFile[] uploadDocs { get; set; }  
         public string[] remove_docs_filename {get;set;} 
 

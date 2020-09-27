@@ -54,7 +54,7 @@ namespace GridManagement.Api.Controllers
                 var response = _authService.RefreshToken(refreshToken.token);
                 if (response == null)
                     return Unauthorized(new { message = "Invalid token",code = 401 });
-                return Ok(new { response = response.Message, code = 200 });
+                return Ok(response);
             }
             catch(ValueNotFoundException e) {
                 Util.LogError(e);
