@@ -61,20 +61,21 @@ namespace GridManagement.service
             return tokenHandler.WriteToken(token);
         }
 
-        private RefreshToken generateRefreshToken(string userId)
+        private string generateRefreshToken(string userId)
         {
-            using (var rngCryptoServiceProvider = new RNGCryptoServiceProvider())
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var key = Encoding.ASCII.GetBytes(_appSettings.Secret);
+            var tokenDescriptor = new SecurityTokenDescriptor
             {
-                var randomBytes = new byte[64];
-                rngCryptoServiceProvider.GetBytes(randomBytes);
-                return new RefreshToken
+                Subject = new ClaimsIdentity(new Claim[]
                 {
-                    Token = Convert.ToBase64String(randomBytes),
-                    Expires = DateTime.UtcNow.AddMinutes(15),
-                    Created = DateTime.UtcNow,
-                    CreatedBy = userId
-                };
-            }
+                    new Claim(ClaimTypes.Name, userId)
+                }),
+                Expires = DateTime.UtcNow.AddMinutes(5),
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+            };
+            var token = tokenHandler.CreateJwtSecurityToken(tokenDescriptor);
+            return tokenHandler.WriteToken(token);
         }
 
         public RefreshResponse RefreshToken(string token)

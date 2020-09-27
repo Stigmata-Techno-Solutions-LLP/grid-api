@@ -15,7 +15,7 @@ namespace GridManagement.Model.Dto
         public bool IsActive { get; set; }
         public int RoleId { get; set; }
         public string Token { get; set; }
-        public RefreshToken RefreshToken { get; set; }
+        public string RefreshToken { get; set; }
 
     }
 
@@ -35,7 +35,7 @@ namespace GridManagement.Model.Dto
     public class RefreshResponse
     {
         public string Token { get; set; }
-        public RefreshToken RefreshToken { get; set; }
+        public string RefreshToken { get; set; }
         public string Message {get;set;}
         public bool IsAPIValid {get;set;}
     }

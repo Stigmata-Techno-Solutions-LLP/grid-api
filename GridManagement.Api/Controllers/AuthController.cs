@@ -52,7 +52,7 @@ namespace GridManagement.Api.Controllers
                 var response = _authService.RefreshToken(refreshToken.token);
                 if (response == null)
                     return Unauthorized(new { message = "Invalid token" });
-                return Ok(new { response = response.Message, code = 200 });
+                return Ok(response);
             }
              catch (Exception e)
             {
