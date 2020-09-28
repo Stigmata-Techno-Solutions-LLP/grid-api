@@ -236,4 +236,11 @@ public class layerNoFilter{
 
     }
 
+
+public class UploadLayerImages {
+    public int layerDtlsId {get;set;}
+    
+    public IFormFile[] uploadDocs { get; set; }  
+    public string[] remove_docs_filename {get;set;} 
+}
 }
