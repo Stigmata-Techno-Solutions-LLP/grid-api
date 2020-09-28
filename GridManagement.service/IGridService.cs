@@ -29,6 +29,8 @@ namespace GridManagement.service
         public DashboardSummary dashboardSummary(FilterDashboard filter);
         public List<MasterReport> MasterReport(FilterReport filter);
         public GridProgressMap GetGridProgress();
+        public bool UploadLayer(UploadLayerImages model);
+
 
         }
 }

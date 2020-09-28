@@ -256,7 +256,8 @@ grdMap.gLongitude = gLong;
         
       //  .Include(c =>c.LayerDetails)
        .FirstOrDefault();
-          
+              if (res == null ) throw new ValueNotFoundException("Grid Id doesn't exists");
+
           GridDetails lstGridDetails = _mapper.Map<GridDetails>(res);
 
             lstGridDetails.lyrDtls =  _mapper.Map<List<layerDtls>>(_context.LayerDetails.Include(c => c.Layer).Include(c =>c.LayerSubcontractors).Where(x=>x.GridId==Id).ToList()); //  _mapper.Map<List<LayerDetails>>(_context.LayerDetails.Where(x=>x.GridId == Id).ToList());

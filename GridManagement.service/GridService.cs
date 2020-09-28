@@ -58,7 +58,8 @@ namespace GridManagement.service
              foreach(IFormFile file in model.uploadDocs) {                
                  Layer_Docs layerDoc = new Layer_Docs();
                  layerDoc.fileName = file.FileName;
-                 layerDoc.filepath =  UploadedFile(file);                 
+                 layerDoc.filepath =  UploadedFile(file);             
+                 layerDoc.uploadType = "Docs";    
                  layerDoc.fileType = Path.GetExtension(file.FileName);
                  _gridRepo.LayerDocsUpload(layerDoc, layerId);
              }
@@ -71,6 +72,29 @@ namespace GridManagement.service
             }
         }
 
+
+        public bool UploadLayer(UploadLayerImages model)
+        {
+            try
+            {
+            RemoveLayerDocs(model.remove_docs_filename);
+            if (model.uploadDocs != null) {
+             foreach(IFormFile file in model.uploadDocs) {                
+                 Layer_Docs layerDoc = new Layer_Docs();
+                 layerDoc.fileName = file.FileName;
+                 layerDoc.filepath =  UploadedFile(file);                 
+                 layerDoc.fileType = Path.GetExtension(file.FileName);
+                 layerDoc.uploadType = "Images";
+                 _gridRepo.LayerDocsUpload(layerDoc, model.layerDtlsId);
+             }
+            }
+             return true;                    
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
         private string UploadedFile(IFormFile file)  
         { 
             try {

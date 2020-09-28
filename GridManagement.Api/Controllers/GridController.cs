@@ -23,7 +23,7 @@ namespace GridManagement.Api.Controllers
     [ApiController]
     [EnableCors("AllowAll")]
     [Route("api/[controller]")]
-    //[Authorize]
+    [Authorize]
     //[ValidateAntiForgeryToken]
 
 
@@ -122,6 +122,10 @@ namespace GridManagement.Api.Controllers
               try {
            var response =  _gridService.GetGridDetails(Id);
            return Ok(response); 
+            }
+            catch(ValueNotFoundException e) {
+                Util.LogError(e);
+                return StatusCode(StatusCodes.Status422UnprocessableEntity, new ErrorClass() { code= StatusCodes.Status422UnprocessableEntity.ToString(), message=e.Message});
             }
         catch (Exception e)
             {
