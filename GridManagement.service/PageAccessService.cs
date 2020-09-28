@@ -31,6 +31,13 @@ namespace GridManagement.service
             if (pageAccess == null || pageAccess.Count == 0) return null;
             return pageAccess;
         }
+
+        public List<Role> GetRoles()
+        {
+            List<Role> roles = _pageAccessRepository.GetRoles();
+            if (roles == null || roles.Count == 0) return null;
+            return roles;
+        }
         public List<PageAccess> GetPageAccessBasedonRoleId(int roleId)
         {
             List<PageAccess> pageAccess = _pageAccessRepository.GetPageAccessBasedOnRoleId(roleId);

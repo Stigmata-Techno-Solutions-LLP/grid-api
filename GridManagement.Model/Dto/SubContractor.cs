@@ -6,7 +6,6 @@ namespace GridManagement.Model.Dto
     public class AddSubContractorModel
     {
         [Required]
-        [StringLength(200)]
         [Display(Name = "SubContractor Name")]        
         public string name {get;set;}   
 
@@ -21,13 +20,10 @@ namespace GridManagement.Model.Dto
         [StringLength(2000)]
         [Display(Name = "SubContractor Address")]
         public string contact_address {get;set;}
-        [StringLength(20)]
-        [Phone]
+        
         [Display(Name = "SubContractor PhoneNo")]
         public string phone {get;set;}
         
-        [StringLength(100)]
-        [EmailAddress(ErrorMessage = "Invalid Email Address")]        
         [Display(Name = "SubContractor EmailId")]
         public string email {get;set;}
 
@@ -37,7 +33,7 @@ namespace GridManagement.Model.Dto
 
     public class SubContractorDetails
     {             
-        public string SubContrtactorId{get;set;}
+        public string SubContractorId{get;set;}
         public string name {get;set;}           
         public string code {get;set;}
 
@@ -55,6 +51,12 @@ namespace GridManagement.Model.Dto
         public DateTime? createdDate{get;set;}
         public DateTime? updatedDate{get;set;}
 
+    }
+
+    public class SubContractorName {
+        public int Id{get;set;}
+        public string SubContName{get;set;}
+        public string SubContCode{get;set;}
     }
 
 }

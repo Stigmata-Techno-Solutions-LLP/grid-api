@@ -10,12 +10,12 @@ namespace GridManagement.Model.Dto
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string Username { get; set; }
-        public string PhoneNumber{ get; set; }
-        public string Email {get;set;}
-        public bool IsActive {get;set;}
-        public int RoleId {get;set;}
+        public string PhoneNumber { get; set; }
+        public string Email { get; set; }
+        public bool IsActive { get; set; }
+        public int RoleId { get; set; }
         public string Token { get; set; }
-        public RefreshToken RefreshToken {get;set;}
+        public string RefreshToken { get; set; }
 
     }
 
@@ -28,7 +28,15 @@ namespace GridManagement.Model.Dto
         public DateTime Expires { get; set; }
         public bool IsExpired => DateTime.UtcNow >= Expires;
         public DateTime Created { get; set; }
-        public string CreatedBy {get;set;}
-        public bool IsActive {get;set;}
+        public string CreatedBy { get; set; }
+        public bool IsActive { get; set; }
+    }
+
+    public class RefreshResponse
+    {
+        public string Token { get; set; }
+        public string RefreshToken { get; set; }
+        public string Message {get;set;}
+        public bool IsAPIValid {get;set;}
     }
 }

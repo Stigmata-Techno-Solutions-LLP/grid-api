@@ -28,7 +28,7 @@ namespace GridManagement.repository
         {
             try
             {
-                if (_context.Subcontractors.Where(x => x.Code == subContReq.code).Count() > 0) throw new ValueNotFoundException("SubContractorId already exists");             
+                if (_context.Subcontractors.Where(x => x.Code == subContReq.code  && x.IsDelete ==false).Count() > 0) throw new ValueNotFoundException("SubContractorId already exists");             
                 Subcontractors subCont = _mapper.Map<Subcontractors>(subContReq);
                 subCont.CreatedBy = subContReq.user_id;
                _context.Subcontractors.Add(subCont);
@@ -45,10 +45,10 @@ namespace GridManagement.repository
         {
             try
             {
-                Subcontractors subCont = _context.Subcontractors.Where(x => x.Id == Id).FirstOrDefault();
+                Subcontractors subCont = _context.Subcontractors.Where(x => x.Id == Id && x.IsDelete ==false).FirstOrDefault();
                 if (subCont == null ) throw new ValueNotFoundException("SubContrtactorId doesn't exists");
                 
-             if ( _context.Subcontractors.Where(x => x.Code == subContReq.code && x.Id != Id).Count() >0 ) throw new ValueNotFoundException("new value SubContractor Code already exists, give unique value");                           
+             if ( _context.Subcontractors.Where(x => x.Code == subContReq.code && x.Id != Id && x.IsDelete == false).Count() >0 ) throw new ValueNotFoundException("new value SubContractor Code already exists, give unique value");                           
                 // subCont = _mapper.Map<Subcontractors>(subContReq);
                 subCont.Email = subContReq.email;
                 subCont.Mobile = subContReq.phone;
@@ -73,7 +73,8 @@ namespace GridManagement.repository
             {                    
                Subcontractors subCon =  _context.Subcontractors.Where(x=>x.Id == Id).FirstOrDefault(); 
                if (subCon == null) throw new ValueNotFoundException("SubContrtactorId doesn't exists");
-                _context.Remove(subCon);  
+                subCon.IsDelete = true;
+                _context.Update(subCon);
                  _context.SaveChanges();        
                 return true;
             }
@@ -83,15 +84,15 @@ namespace GridManagement.repository
             }
         }
 
-          public List<SubContractorDetails> GetSubContractorsList()
+          public List<SubContractorDetails> GetSubContractorsList(int? SubId)
         {
             try
             {     
-
-                var res = _context.Subcontractors
+        var res = _context.Subcontractors
         .Include(c => c.CreatedByNavigation)
-        .ToList();
-          List<SubContractorDetails> lstSubContDetails = _mapper.Map<List<SubContractorDetails>>(res);
+        .ToList().Where(x=>x.IsDelete == false);
+        List<SubContractorDetails> lstSubContDetails = _mapper.Map<List<SubContractorDetails>>(res);        
+        if (!string.IsNullOrEmpty(SubId.ToString())) lstSubContDetails = lstSubContDetails.Where(x=> x.SubContractorId == SubId.ToString()).ToList();
 
                 return lstSubContDetails;
             }
@@ -100,6 +101,57 @@ namespace GridManagement.repository
                 throw ex;
             }
         }
+
+
+      public List<SubContractorName> GetSubContNoList()
+        {
+            try
+            {               
+          List<SubContractorName> lstGridDetails = _mapper.Map<List<SubContractorName>>(_context.Subcontractors.ToList().Where(x=>x.IsDelete == false));
+                return lstGridDetails;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+            public List<SubContractorReport> SubContractorReports(FilterReport filterReport) {
+        try {
+
+                 if (!string.IsNullOrEmpty(filterReport.startDate.ToString()) &&  !string.IsNullOrEmpty(filterReport.startDate.ToString())) {
+    if (filterReport.startDate >= filterReport.endDate) throw new ValueNotFoundException("start date should not be greater than end date");            
+ }
+                    List<SubContractorReport> ltssubContrdata = new List<SubContractorReport>();
+if ( filterReport.startDate != null && filterReport.endDate != null) {
+
+
+  ltssubContrdata = _context.Subcontractors.Where(x=>x.IsDelete == false && x.CreatedAt >= filterReport.startDate && x.CreatedAt< filterReport.endDate.Value.AddDays(1)).ToList()
+        .Select( y=> new SubContractorReport {  code =y.Code, name = y.Name, subContractorId = y.Id.ToString(), quantity = _context.LayerSubcontractors.Where(z=>z.SubcontractorId == y.Id).Count(), 
+        materialDesc =  String.Join(',', _context.LayerSubcontractors.Include(c=>c.Layerdetails).Where(w=>w.SubcontractorId ==y.Id).ToList().Select(r=>r.Layerdetails.FillingMaterial).ToArray().Distinct()).ToString(),
+        createdAt = y.CreatedAt != null ? y.CreatedAt.Value.ToString("yyyy-MM-dd"):""
+        
+        }).ToList();
+            
+} else {
+
+        ltssubContrdata = _context.Subcontractors.Where(x=>x.IsDelete == false ).ToList()
+        .Select( y=> new SubContractorReport {  code =y.Code, name = y.Name, subContractorId = y.Id.ToString(), quantity = _context.LayerSubcontractors.Where(z=>z.SubcontractorId == y.Id).Count(), 
+        materialDesc =  String.Join(',', _context.LayerSubcontractors.Include(c=>c.Layerdetails).Where(w=>w.SubcontractorId ==y.Id).ToList().Select(r=>r.Layerdetails.FillingMaterial).ToArray().Distinct()).ToString(),
+        createdAt = y.CreatedAt != null ? y.CreatedAt.Value.ToString("yyyy-MM-dd"):""
+
+        }).ToList();          
+        
+} 
+
+
+    return ltssubContrdata; 
+        }
+        catch (Exception ex) {
+         throw ex;   
+        }   
     
+    }
+        
     }
 }

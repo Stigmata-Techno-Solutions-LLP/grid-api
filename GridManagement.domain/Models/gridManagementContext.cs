@@ -6,7 +6,7 @@ namespace GridManagement.domain.Models
 {
     public partial class gridManagementContext : DbContext
     {
-    
+     
 
         public gridManagementContext(DbContextOptions<gridManagementContext> options)
             : base(options)
@@ -18,6 +18,7 @@ namespace GridManagement.domain.Models
         public virtual DbSet<ClientBilling> ClientBilling { get; set; }
         public virtual DbSet<ClientBillingLayerDetails> ClientBillingLayerDetails { get; set; }
         public virtual DbSet<Clients> Clients { get; set; }
+        public virtual DbSet<GridDocuments> GridDocuments { get; set; }
         public virtual DbSet<GridGeolocations> GridGeolocations { get; set; }
         public virtual DbSet<Grids> Grids { get; set; }
         public virtual DbSet<LayerDetails> LayerDetails { get; set; }
@@ -33,6 +34,7 @@ namespace GridManagement.domain.Models
         {
             if (!optionsBuilder.IsConfigured)
             {
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
                 optionsBuilder.UseSqlServer("Server=landt.ctxkj3vcelr3.ap-southeast-1.rds.amazonaws.com;Database=gridManagement;User Id=admin;Password=PlH34cwug3tqupePJcAp;");
             }
         }
@@ -102,6 +104,10 @@ namespace GridManagement.domain.Models
             {
                 entity.ToTable("client_billing");
 
+                entity.HasIndex(e => e.Ipcno)
+                    .HasName("UQ__client_b__650AE67368D1D633")
+                    .IsUnique();
+
                 entity.Property(e => e.Id).HasColumnName("id");
 
                 entity.Property(e => e.BillMonth)
@@ -116,8 +122,6 @@ namespace GridManagement.domain.Models
                     .HasDefaultValueSql("(getdate())");
 
                 entity.Property(e => e.CreatedBy).HasColumnName("created_by");
-
-                entity.Property(e => e.GridLayerDetails).HasColumnName("grid_layer_details");
 
                 entity.Property(e => e.Ipcno)
                     .IsRequired()
@@ -146,10 +150,15 @@ namespace GridManagement.domain.Models
 
                 entity.Property(e => e.LayerDetailsId).HasColumnName("layer_details_id");
 
+                entity.HasOne(d => d.ClientBilling)
+                    .WithMany(p => p.ClientBillingLayerDetails)
+                    .HasForeignKey(d => d.ClientBillingId)
+                    .HasConstraintName("client_billinglayerDtls_clientBilling_id__fkey");
+
                 entity.HasOne(d => d.LayerDetails)
                     .WithMany(p => p.ClientBillingLayerDetails)
                     .HasForeignKey(d => d.LayerDetailsId)
-                    .HasConstraintName("client_billing_layerDtls_id__fkey");
+                    .HasConstraintName("client_billinglayerDtls_LayerDetks_id__fkey");
             });
 
             modelBuilder.Entity<Clients>(entity =>
@@ -179,6 +188,53 @@ namespace GridManagement.domain.Models
                     .IsUnicode(false);
             });
 
+            modelBuilder.Entity<GridDocuments>(entity =>
+            {
+                entity.ToTable("grid_documents");
+
+                entity.Property(e => e.Id).HasColumnName("id");
+
+                entity.Property(e => e.CreatedAt)
+                    .HasColumnName("created_at")
+                    .HasColumnType("datetime")
+                    .HasDefaultValueSql("(getdate())");
+
+                entity.Property(e => e.CreatedBy).HasColumnName("created_by");
+
+                entity.Property(e => e.FileName)
+                    .HasColumnName("file_name")
+                    .HasMaxLength(500)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.FileType)
+                    .HasColumnName("file_type")
+                    .HasMaxLength(10)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.GridId).HasColumnName("grid_id");
+
+                entity.Property(e => e.Path)
+                    .HasColumnName("path")
+                    .HasMaxLength(1000)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.UploadType)
+                    .HasColumnName("upload_type")
+                    .HasMaxLength(10)
+                    .IsUnicode(false);
+
+                entity.HasOne(d => d.CreatedByNavigation)
+                    .WithMany(p => p.GridDocuments)
+                    .HasForeignKey(d => d.CreatedBy)
+                    .HasConstraintName("grid_documents_createdby_users__fkey");
+
+                entity.HasOne(d => d.Grid)
+                    .WithMany(p => p.GridDocuments)
+                    .HasForeignKey(d => d.GridId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("grid_documents_gridid_fkey");
+            });
+
             modelBuilder.Entity<GridGeolocations>(entity =>
             {
                 entity.ToTable("grid_geolocations");
@@ -188,12 +244,16 @@ namespace GridManagement.domain.Models
                 entity.Property(e => e.GridId).HasColumnName("grid_id");
 
                 entity.Property(e => e.Latitude)
+                    .IsRequired()
                     .HasColumnName("latitude")
-                    .HasColumnType("decimal(10, 6)");
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
 
                 entity.Property(e => e.Longitude)
+                    .IsRequired()
                     .HasColumnName("longitude")
-                    .HasColumnType("decimal(10, 6)");
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
 
                 entity.HasOne(d => d.Grid)
                     .WithMany(p => p.GridGeolocations)
@@ -205,10 +265,6 @@ namespace GridManagement.domain.Models
             modelBuilder.Entity<Grids>(entity =>
             {
                 entity.ToTable("grids");
-
-                entity.HasIndex(e => e.Gridno)
-                    .HasName("UQ__grids__4FA6C35D0184446D")
-                    .IsUnique();
 
                 entity.Property(e => e.Id).HasColumnName("id");
 
@@ -247,9 +303,19 @@ namespace GridManagement.domain.Models
                     .HasMaxLength(10)
                     .IsUnicode(false);
 
-                entity.Property(e => e.IsActive)
-                    .HasColumnName("is_active")
+                entity.Property(e => e.IsDelete)
+                    .HasColumnName("is_delete")
                     .HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.MarkerLatitide)
+                    .HasColumnName("marker_latitide")
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.MarkerLongitude)
+                    .HasColumnName("marker_longitude")
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
 
                 entity.Property(e => e.Status)
                     .HasColumnName("status")
@@ -329,6 +395,10 @@ namespace GridManagement.domain.Models
 
                 entity.Property(e => e.GridId).HasColumnName("grid_id");
 
+                entity.Property(e => e.IsApproved)
+                    .HasColumnName("isApproved")
+                    .HasDefaultValueSql("((0))");
+
                 entity.Property(e => e.IsBillGenerated)
                     .HasColumnName("isBillGenerated")
                     .HasDefaultValueSql("((0))");
@@ -406,13 +476,33 @@ namespace GridManagement.domain.Models
 
                 entity.Property(e => e.Id).HasColumnName("id");
 
+                entity.Property(e => e.CreatedAt)
+                    .HasColumnName("created_at")
+                    .HasColumnType("datetime")
+                    .HasDefaultValueSql("(getdate())");
+
                 entity.Property(e => e.CreatedBy).HasColumnName("created_by");
+
+                entity.Property(e => e.FileName)
+                    .HasColumnName("file_name")
+                    .HasMaxLength(500)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.FileType)
+                    .HasColumnName("file_type")
+                    .HasMaxLength(10)
+                    .IsUnicode(false);
 
                 entity.Property(e => e.LayerdetailsId).HasColumnName("layerdetails_id");
 
                 entity.Property(e => e.Path)
                     .HasColumnName("path")
-                    .HasMaxLength(500)
+                    .HasMaxLength(1000)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.UploadType)
+                    .HasColumnName("uploadType")
+                    .HasMaxLength(10)
                     .IsUnicode(false);
 
                 entity.HasOne(d => d.CreatedByNavigation)
@@ -456,7 +546,7 @@ namespace GridManagement.domain.Models
                 entity.ToTable("layers");
 
                 entity.HasIndex(e => e.Layerno)
-                    .HasName("UQ__layers__91C38FFC7438194F")
+                    .HasName("UQ__layers__91C38FFC63174B1F")
                     .IsUnique();
 
                 entity.Property(e => e.Id).HasColumnName("id");
@@ -539,10 +629,6 @@ namespace GridManagement.domain.Models
             {
                 entity.ToTable("subcontractors");
 
-                entity.HasIndex(e => e.Code)
-                    .HasName("UQ__subcontr__357D4CF98B4C4C3F")
-                    .IsUnique();
-
                 entity.Property(e => e.Id).HasColumnName("id");
 
                 entity.Property(e => e.Address)
@@ -572,6 +658,10 @@ namespace GridManagement.domain.Models
                     .HasColumnName("email")
                     .HasMaxLength(100)
                     .IsUnicode(false);
+
+                entity.Property(e => e.IsDelete)
+                    .HasColumnName("is_delete")
+                    .HasDefaultValueSql("((0))");
 
                 entity.Property(e => e.Mobile)
                     .HasColumnName("mobile")
@@ -606,11 +696,11 @@ namespace GridManagement.domain.Models
                 entity.ToTable("users");
 
                 entity.HasIndex(e => e.Email)
-                    .HasName("UQ__users__AB6E6164E1914CAF")
+                    .HasName("UQ__users__AB6E6164CC9656C3")
                     .IsUnique();
 
                 entity.HasIndex(e => e.Username)
-                    .HasName("UQ__users__F3DBC5729B5CBF10")
+                    .HasName("UQ__users__F3DBC5723DC2134A")
                     .IsUnique();
 
                 entity.Property(e => e.Id).HasColumnName("id");

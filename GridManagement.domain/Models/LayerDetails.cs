@@ -32,6 +32,7 @@ namespace GridManagement.domain.Models
         public DateTime? LvApprovalDate { get; set; }
         public string LvRfiStatus { get; set; }
         public bool? IsBillGenerated { get; set; }
+        public bool? IsApproved { get; set; }
         public DateTime? CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
         public int? CreatedBy { get; set; }

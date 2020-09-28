@@ -7,21 +7,29 @@ using GridManagement.Model.Dto;
 using Serilog;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
+using GridManagement.common;
 
 // For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace GridManagement.Api.Controllers
 {
-    [Authorize]
+    [EnableCors("AllowAll")]
+    // [Authorize]
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize]
+  //  [ValidateAntiForgeryToken]
+
     public class UserController : ControllerBase
     {
         private readonly IUserService _userService;
+        private readonly ILogger _loggerService;
 
         public UserController(IUserService userService)
         {
             _userService = userService;
+            _loggerService = new LoggerConfiguration().WriteTo.File("logs\\UserManagement.txt", rollingInterval:RollingInterval.Day).CreateLogger();
         }
 
         [HttpGet("getuser")]
@@ -30,14 +38,27 @@ namespace GridManagement.Api.Controllers
             try
             {
                 var response = _userService.getUser();
-                if (response == null)
-                    return BadRequest(new { message = "No records found", isAPIValid = false });
-                return Ok(new { response = response, isAPIVaid = true });
+                return Ok(response);
             }
-            catch (Exception ex)
+            catch (Exception e)
             {
-                Log.Logger.Error(ex.Message);
-                return BadRequest(new { message = "Something went wrong", isAPIValid = false });
+               Util.LogError(e);
+                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorClass() { code = StatusCodes.Status500InternalServerError.ToString(), message = "Something went wrong" });
+            }
+        }
+
+        [HttpGet("getuser/{id}")]
+        public IActionResult GetUserById(int id)
+        {
+            try
+            {
+                var response = _userService.getUserById(id);
+                return Ok(response);
+            }
+            catch (Exception e)
+            {
+                Util.LogError(e);
+                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorClass() { code = StatusCodes.Status500InternalServerError.ToString(), message = "Something went wrong" });
             }
         }
 
@@ -47,14 +68,17 @@ namespace GridManagement.Api.Controllers
             try
             {
                 var response = _userService.AddUser(userDetails);
-                if (response == null)
-                    return BadRequest(new { message = "Error in adding the user", isAPIValid = false });
-                return Ok(new { response = response, isAPIVaid = true });
+                return StatusCode(StatusCodes.Status201Created, (new { message = response.Message, code = 201 }));
             }
-            catch (Exception ex)
+            catch (ValueNotFoundException e)
             {
-                Log.Logger.Error(ex.Message);
-                return BadRequest(new { message = "Something went wrong", isAPIValid = false });
+                Util.LogError(e);
+                return StatusCode(StatusCodes.Status422UnprocessableEntity, new ErrorClass() { code = StatusCodes.Status422UnprocessableEntity.ToString(), message = e.Message });
+            }
+            catch (Exception e)
+            {
+                _loggerService.Error(e.StackTrace);
+                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorClass() { code = StatusCodes.Status500InternalServerError.ToString(), message = "Something went wrong" });
             }
         }
 
@@ -64,14 +88,17 @@ namespace GridManagement.Api.Controllers
             try
             {
                 var response = _userService.UpdateUser(userDetails, id);
-                if (response == null)
-                    return BadRequest(new { message = "Error in updating the user", isAPIValid = false });
-                return Ok(new { response = response, isAPIVaid = true });
+                return Ok(new { message = response.Message, code = 204 });
             }
-            catch (Exception ex)
+            catch (ValueNotFoundException e)
             {
-                Log.Logger.Error(ex.Message);
-                return BadRequest(new { message = "Something went wrong", isAPIValid = false });
+               Util.LogError(e);
+                return StatusCode(StatusCodes.Status422UnprocessableEntity, new ErrorClass() { code = StatusCodes.Status422UnprocessableEntity.ToString(), message = e.Message });
+            }
+            catch (Exception e)
+            {
+                Util.LogError(e);
+                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorClass() { code = StatusCodes.Status500InternalServerError.ToString(), message = "Something went wrong" });
             }
         }
 
@@ -81,14 +108,39 @@ namespace GridManagement.Api.Controllers
             try
             {
                 var response = _userService.DeleteUser(id);
-                if (response == null)
-                    return BadRequest(new { message = "Error in deleting the user", isAPIValid = false });
-                return Ok(new { response = response, isAPIVaid = true });
+                return Ok(new { message = response.Message, code = 204 });
             }
-            catch (Exception ex)
+            catch (ValueNotFoundException e)
             {
-                Log.Logger.Error(ex.Message);
-                return BadRequest(new { message = "Something went wrong", isAPIValid = false });
+                Util.LogError(e);
+                return StatusCode(StatusCodes.Status422UnprocessableEntity, new ErrorClass() { code = StatusCodes.Status422UnprocessableEntity.ToString(), message = e.Message });
+            }
+            catch (Exception e)
+            {
+                Util.LogError(e);
+                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorClass() { code = StatusCodes.Status500InternalServerError.ToString(), message = "Something went wrong" });
+            }
+        }
+
+        [HttpPost("changepassword")]
+        public IActionResult ChangePassword(ChangePassword changePassword)
+        {
+            try
+            {
+                var response = _userService.ChangePassword(changePassword);
+                if (response == null)
+                    return BadRequest(new { message = "Error in changing the password.", code = 400 });
+                return Ok(new { message = response.Message, code = 204 });
+            }
+            catch (ValueNotFoundException e)
+            {
+                Util.LogError(e);
+                return StatusCode(StatusCodes.Status422UnprocessableEntity, new ErrorClass() { code = StatusCodes.Status422UnprocessableEntity.ToString(), message = e.Message });
+            }
+            catch (Exception e)
+            {
+                Util.LogError(e);
+                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorClass() { code = StatusCodes.Status500InternalServerError.ToString(), message = "Something went wrong" });
             }
         }
     }

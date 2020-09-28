@@ -15,6 +15,9 @@ namespace GridManagement.repository
         bool InsertNewSubContractor(AddSubContractorModel gridReq);
         bool UpdateSubContractor(AddSubContractorModel subContReq, int Id);
         bool DeleteSubContractor (int Id);
-        List<SubContractorDetails> GetSubContractorsList();
+        List<SubContractorDetails> GetSubContractorsList(int? subId);
+
+      public List<SubContractorName> GetSubContNoList();
+      public List<SubContractorReport> SubContractorReports(FilterReport filterRep); 
     }
 }

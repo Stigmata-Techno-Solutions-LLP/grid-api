@@ -20,8 +20,8 @@ namespace GridManagement.repository
 
         public AuthenticateResponse ValidateUser(AuthenticateRequest userReq)
         {
-            AuthenticateResponse result = new AuthenticateResponse();
-            Users user = _context.Users.Where(x => x.Username == userReq.Username && x.Password == userReq.Password).FirstOrDefault();
+            AuthenticateResponse result = null;
+            Users user = _context.Users.Where(x => x.Username == userReq.Username && x.Password == userReq.Password && x.IsActive==true && x.IsDelete== false).FirstOrDefault();
             if (user != null)
             {
                 result = new AuthenticateResponse
@@ -35,42 +35,54 @@ namespace GridManagement.repository
                     RoleId = Convert.ToInt32(user.RoleId)
                 };
             }
-
             return result;
         }
 
-
-        public bool InsertNewUser(AddUser userReq)
+        public ResponseMessageForgotPassword ForgotPassword(string emailId)
         {
+            ResponseMessageForgotPassword responseMessage = new ResponseMessageForgotPassword();
             try
             {
-                var data = _context.Users.Where(x => x.Email == userReq.email).FirstOrDefault();
-
-                if (_context.Users.Where(x => x.Email == userReq.email).Count() > 0)
+                Users user = _context.Users.Where(x => x.Email.ToLower() == emailId.ToLower()).FirstOrDefault();
+                if (user != null)
                 {
-                    return false;
+                    return responseMessage = new ResponseMessageForgotPassword()
+                    {
+                        Message = "Password sent via the email. Kindly check email.",
+                        IsValid = true,
+                        Password = user.Password,
+                        EmailId = user.Email,
+                        FirstName = user.FirstName,
+                        LastName = user.LastName
+                    };
                 }
-
-                _context.Users.Add(_mapper.Map<Users>(userReq));
-                _context.SaveChanges();
-                return true;
-
-                // .FirstOrDefaultAsync(x => x.email == userReq.Username && x.password == userReq.Password);
-
+                else
+                {
+                    return responseMessage = new ResponseMessageForgotPassword()
+                    {
+                        Message = "No User found for this Email",
+                        IsValid = false,
+                        Password = string.Empty,
+                        EmailId = string.Empty,
+                        FirstName = string.Empty,
+                        LastName = string.Empty
+                    };
+                }
             }
             catch (Exception ex)
             {
-                throw ex;
+                return responseMessage = new ResponseMessageForgotPassword()
+                {
+                    Message = "Error in reseting the Password. Kindly contact Administrator. Error : " + ex.Message,
+                    IsValid = false,
+                    Password = string.Empty,
+                    EmailId = string.Empty,
+                    FirstName = string.Empty,
+                    LastName = string.Empty
+                };
             }
+
         }
-
-
-        public bool chkUserId(int id)
-        {
-            var data = _context.Users.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
-            return data != null ? true : false;
-        }
-
 
         public void Dispose()
         {
