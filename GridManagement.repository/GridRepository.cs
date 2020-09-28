@@ -232,6 +232,8 @@ namespace GridManagement.repository
 double gLat = lstGridDetails.Sum(x=>x.marker_latitide)/lstGridDetails.Count();
 double gLong = lstGridDetails.Sum(x=>x.marker_longitude)/lstGridDetails.Count();
 GridProgressMap grdMap = new GridProgressMap();
+int layerCount = _context.Layers.Count();
+lstGridDetails.ForEach(x=>x.isBilled  = (x.lyrDtls.Where(x=>x.IsBillGenerated == true).Count() == layerCount ? true : false));
 grdMap.lstGridDtls = lstGridDetails;
 grdMap.gLatitide = gLat;
 grdMap.gLongitude = gLong;
