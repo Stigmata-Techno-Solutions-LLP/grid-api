@@ -99,6 +99,7 @@ public double? latitude {get;set;} = null;
         public decimal grid_area { get; set; }
 
         public string status { get; set; }
+        public bool isBilled {get;set;}
 
         public string CG_RFIno { get; set; }
 
