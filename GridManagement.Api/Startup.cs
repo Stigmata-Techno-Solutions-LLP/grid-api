@@ -36,8 +36,15 @@ namespace GridManagement.Api
         // This method gets called by the runtime. Use this method to add services to the container.
         public  void ConfigureServices(IServiceCollection services)
         {
+
+          // configure strongly typed settings objects
+            var appSettingsSection = Configuration.GetSection("AppSettings");
+            services.Configure<GridManagement.Model.Dto.AppSettings>(appSettingsSection);
+
+            // configure jwt authentication
+            var appSettings = appSettingsSection.Get<GridManagement.Model.Dto.AppSettings>();
             //Extension method for less clutter in startup
-            services.AddApplicationDbContext();
+            services.AddApplicationDbContext(appSettings);
             services.AddControllers().AddNewtonsoftJson(options =>
                options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
             );
@@ -52,12 +59,6 @@ namespace GridManagement.Api
             services.AddScoped<IGridService, GridService>();
             
 
-          // configure strongly typed settings objects
-            var appSettingsSection = Configuration.GetSection("AppSettings");
-            services.Configure<GridManagement.Model.Dto.AppSettings>(appSettingsSection);
-
-            // configure jwt authentication
-            var appSettings = appSettingsSection.Get<GridManagement.Model.Dto.AppSettings>();
             var key = Encoding.ASCII.GetBytes(appSettings.Secret);
             services.AddAuthentication(x =>
             {
@@ -158,7 +159,7 @@ ValidateModelAttribute val = new ValidateModelAttribute();
            // app.UseCors(x => x.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
     
            // app.UseCustomSerilogRequestLogging();
-                               app.UseCustomSerilogRequestLogging();
+            app.UseCustomSerilogRequestLogging();
 
             app.UseRouting();
             app.UseStaticFiles();
