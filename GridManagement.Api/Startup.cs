@@ -19,6 +19,7 @@ using Microsoft.AspNetCore.Mvc;
 using GridManagement.Api.Helper;
 using System.Collections.Generic;
 using System.Linq;
+using System.IO;
 namespace GridManagement.Api
 {
     public class Startup
@@ -161,6 +162,7 @@ ValidateModelAttribute val = new ValidateModelAttribute();
 
             app.UseRouting();
             app.UseStaticFiles();
+       if (!Directory.Exists("./Images"))    Directory.CreateDirectory("./Images");
            app.UseStaticFiles(new StaticFileOptions
     {
         FileProvider = new PhysicalFileProvider(
