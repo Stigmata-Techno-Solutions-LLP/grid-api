@@ -1,6 +1,6 @@
 # grid-api
 
- Pre-requistes:
+ ## Pre-requistes:
 .NET Core SDK 3.1 (https://dotnet.microsoft.com/download/dotnet-core/3.1)
 
 ## Running app via cmdline
