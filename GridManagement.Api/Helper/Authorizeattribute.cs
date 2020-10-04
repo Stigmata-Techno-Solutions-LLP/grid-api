@@ -7,18 +7,30 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Text;
 using Serilog;
+using GridManagement.Model.Dto;
+using Microsoft.Extensions.Options;
+//using System.Configuration;
+using Microsoft.Extensions.Configuration;
+
+
 
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
-public class AuthorizeAttribute : Attribute, IAuthorizationFilter
+public class AuthorizeAttribute : Attribute, IAuthorizationFilter 
 {
+            IConfiguration Configuration{get;}
+
     public void OnAuthorization(AuthorizationFilterContext context)
     {
         HttpContext httpContext = context.HttpContext;
+        
+          //  var appSettingsSection = Configuration.GetSection("AppSettings");
+         //   var appSettings = appSettingsSection.Get<GridManagement.Model.Dto.AppSettings>();
+
         var token = httpContext.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
         try
         {
             var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes("THIS IS USED TO SIGN AND VERIFY JWT TOKENS, REPLACE IT WITH YOUR OWN SECRET, IT CAN BE ANY STRING");
+            var key = Encoding.ASCII.GetBytes("8Zz5tw0Ionm3XPZZfN0NOml3z9FMfmpgXwovR9fp6ryDIoGRM8EPHAB6iHsc0fb");
             tokenHandler.ValidateToken(token, new TokenValidationParameters
             {
                 ValidateIssuerSigningKey = true,

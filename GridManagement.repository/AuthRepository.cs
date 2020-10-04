@@ -4,6 +4,8 @@ using GridManagement.Model.Dto;
 using Microsoft.EntityFrameworkCore;
 using AutoMapper;
 using System.Linq;
+using GridManagement.common;
+
 
 namespace GridManagement.repository
 {
@@ -20,10 +22,10 @@ namespace GridManagement.repository
 
         public AuthenticateResponse ValidateUser(AuthenticateRequest userReq)
         {
+            try {
             AuthenticateResponse result = null;
             Users user = _context.Users.Where(x => x.Username == userReq.Username && x.Password == userReq.Password && x.IsActive==true && x.IsDelete== false).FirstOrDefault();
-            if (user != null)
-            {
+            if (user == null)  throw new ValueNotFoundException("Username or password is incorrect");
                 result = new AuthenticateResponse
                 {
                     FirstName = user.FirstName,
@@ -34,8 +36,11 @@ namespace GridManagement.repository
                     PhoneNumber = user.Phoneno,
                     RoleId = Convert.ToInt32(user.RoleId)
                 };
-            }
+            
             return result;
+            } catch(Exception ex) {
+                throw ex;
+            }
         }
 
         public ResponseMessageForgotPassword ForgotPassword(string emailId)
@@ -44,44 +49,21 @@ namespace GridManagement.repository
             try
             {
                 Users user = _context.Users.Where(x => x.Email.ToLower() == emailId.ToLower()).FirstOrDefault();
-                if (user != null)
-                {
+                if (user == null)  throw new ValueNotFoundException("EmailId doesn't exist");
+                
                     return responseMessage = new ResponseMessageForgotPassword()
                     {
                         Message = "Password sent via the email. Kindly check email.",
                         IsValid = true,
-                        Password = user.Password,
                         EmailId = user.Email,
                         FirstName = user.FirstName,
                         LastName = user.LastName
-                    };
-                }
-                else
-                {
-                    return responseMessage = new ResponseMessageForgotPassword()
-                    {
-                        Message = "No User found for this Email",
-                        IsValid = false,
-                        Password = string.Empty,
-                        EmailId = string.Empty,
-                        FirstName = string.Empty,
-                        LastName = string.Empty
-                    };
-                }
+                    };                            
             }
             catch (Exception ex)
             {
-                return responseMessage = new ResponseMessageForgotPassword()
-                {
-                    Message = "Error in reseting the Password. Kindly contact Administrator. Error : " + ex.Message,
-                    IsValid = false,
-                    Password = string.Empty,
-                    EmailId = string.Empty,
-                    FirstName = string.Empty,
-                    LastName = string.Empty
-                };
+               throw ex;
             }
-
         }
 
         public void Dispose()

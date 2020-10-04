@@ -20,7 +20,7 @@ namespace GridManagement.Api.Controllers
     [ApiController]
     [EnableCors("AllowAll")]
     [Route("api/[controller]")]
-    [Authorize]
+   [Authorize]
    // [ValidateAntiForgeryToken]
 
     public class LayerController : ControllerBase
@@ -93,10 +93,10 @@ private readonly IGridService _gridService;
         [ProducesResponseType(401)]
         [ProducesResponseType(200)]        
         [Route("LayerNoList")]
-        public async Task<ActionResult<List<LayerNo>>> GetLayerNoList( )
+        public async Task<ActionResult<List<LayerNo>>> GetLayerNoList( [FromQuery] LayerNoFilterSkip layerNoFilter)
         {
         try {
-           var response =  _gridService.GetLayerNoList();
+           var response =  _gridService.GetLayerNoList(layerNoFilter);
            return Ok(response); 
             }
              catch (Exception e)

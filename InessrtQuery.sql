@@ -5,7 +5,7 @@ insert into roles values('Manager','Manager',3,getdate(),null);
 insert into roles values('Site Engineer','Site Engineer',4,getdate(),null);
 
 
-insert into users(username,password,email,is_active,role_id,created_at,updated_by,created_by ,updated_at ) values('amal90','amal90','amal.chinnah@gmail.com',1,1,getdate(),null,null,null)
+insert into users(username,password,email,is_active,role_id,created_at,updated_by,created_by ,updated_at ) values('admin','admin','admin@gmail.com',1,1,getdate(),null,null,null)
 
 insert into clients values ('kunal', 'MUMBAI CORP','abc@gmail.com','9934w4qwer' )
 

@@ -20,7 +20,7 @@ namespace GridManagement.common
 
         public static string Encrypt(string value, string password)
         {
-            return Encrypt<AesManaged>(value, password);
+            return Encrypt< AesManaged>(value, password);
         }
         public static string Encrypt<T>(string value, string password)
                 where T : SymmetricAlgorithm, new()

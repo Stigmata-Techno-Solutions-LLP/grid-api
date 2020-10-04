@@ -16,7 +16,7 @@ namespace GridManagement.repository
         public List<GridNo> GetGridNoList();
 
 
-        public List<LayerNo> GetLayerNoList();
+        public List<LayerNo> GetLayerNoList(LayerNoFilterSkip lyr);
 
         public List<layerDtls> GetLayerList(layerFilter filterReq);
         public bool CreateClientBilling(AddClientBilling billingReq);

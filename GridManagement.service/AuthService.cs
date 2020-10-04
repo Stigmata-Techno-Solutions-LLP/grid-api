@@ -29,11 +29,13 @@ namespace GridManagement.service
         {
             _authRepository = authRepository;
             _appSettings = appSettings.Value;
-        }
+        }      
 
         public AuthenticateResponse Authenticate(AuthenticateRequest model)
         {
-
+try {
+            string decodedVal = Util.Base64Decode(model.Password);
+            model.Password = Cryptography.Encrypt(_appSettings.SecretKeyPwd, decodedVal);            
             AuthenticateResponse user = _authRepository.ValidateUser(model);
             // return null if user not found
             if (user == null) return null;
@@ -41,6 +43,9 @@ namespace GridManagement.service
             user.Token = generateJwtToken(user.Id.ToString());
             user.RefreshToken = generateRefreshToken(user.Id.ToString());
             return user;
+            } catch(Exception ex) {
+    throw ex;
+}
         }
 
 
@@ -54,7 +59,7 @@ namespace GridManagement.service
                 {
                     new Claim(ClaimTypes.Name, userId)
                 }),
-                Expires = DateTime.UtcNow.AddMinutes(2),
+                Expires = DateTime.UtcNow.AddMinutes(100),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
             };
             var token = tokenHandler.CreateJwtSecurityToken(tokenDescriptor);
@@ -71,7 +76,7 @@ namespace GridManagement.service
                 {
                     new Claim(ClaimTypes.Name, userId)
                 }),
-                Expires = DateTime.UtcNow.AddMinutes(5),
+                Expires = DateTime.UtcNow.AddMinutes(20),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
             };
             var token = tokenHandler.CreateJwtSecurityToken(tokenDescriptor);
@@ -122,7 +127,9 @@ namespace GridManagement.service
                 responseMessageForgotPassword = _authRepository.ForgotPassword(emailId);
                 if (!string.IsNullOrEmpty(responseMessageForgotPassword.Password))
                 {
-                    SendMail("Reset Password for L & T project", "<h1>Password for the user : " + responseMessageForgotPassword.FirstName + " " + responseMessageForgotPassword.LastName + " </h1><br /><p>Your Password is " + responseMessageForgotPassword.Password + "</p>", responseMessageForgotPassword.EmailId);
+                    responseMessageForgotPassword.Password = Cryptography.Decrypt(_appSettings.SecretKeyPwd,responseMessageForgotPassword.Password);
+                
+                    Util.SendMail("Reset Password for L & T project", "<h1>Password for the user : " + responseMessageForgotPassword.FirstName + " " + responseMessageForgotPassword.LastName + " </h1><br /><p>Your Password is " + responseMessageForgotPassword.Password + "</p>", responseMessageForgotPassword.EmailId, _appSettings.FromEmail, _appSettings.Password);
                 }
                 responseMessage = new ResponseMessage()
                 {

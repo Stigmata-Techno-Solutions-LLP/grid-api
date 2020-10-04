@@ -18,7 +18,6 @@ namespace GridManagement.Api.Controllers
     [EnableCors("AllowAll")]
     [Route("api/[controller]")]
     [Authorize]
-   // [ValidateAntiForgeryToken]
 
    
     public class SubContController : ControllerBase
@@ -37,6 +36,8 @@ private readonly ISubContService _subContService;
         [ProducesResponseType(401)]
         [ProducesResponseType(201)]
         [Route("AddSubcontractor")]
+           // [ValidateAntiForgeryToken]
+
         public IActionResult AddSubCont(AddSubContractorModel model)
         {
             try

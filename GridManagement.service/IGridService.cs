@@ -1,36 +1,33 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using GridManagement.Model.Dto;
-using System.Collections.Generic;
-namespace GridManagement.service
-{
-   
-        public interface IGridService
-        {
-         bool AddGrid(AddGrid model);
+namespace GridManagement.service {
 
-        bool AddLayer(AddLayer model);
+        public interface IGridService {
+                bool AddGrid (AddGrid model);
 
-        public bool UpdateGrid(AddGrid gridReq, int Id);
+                bool AddLayer (AddLayer model);
 
-        public List<GridDetails> GetGridList(gridFilter filterReq); 
-        public bool DeleteGrid( int Id);
-        public bool CleaningGrubbingEntry( AddCG_RFI gridReq, int Id);
-        public List<GridNo> GetGridNoList(); 
+                public bool UpdateGrid (AddGrid gridReq, int Id);
 
-        public List<LayerNo> GetLayerNoList();
-        public List<layerDtls> GetLayerList(layerFilter filterReq);
-        public bool CreateClientBilling(AddClientBilling billingReq);
-        public List<LayerNo> ClientBillingLayersNo(layerNoFilter layerNoFilter);
-        public GridDetails GetGridDetails(int Id);
-        public string GetCompletedLayerCountByGridNo(int gridId);
-        public void ApproveLayer(int layerDtlsId);
-        public LayerMonthWiseDashboard LayerMonthDashboard(FilterDashboard filter);
-        public DashboardSummary dashboardSummary(FilterDashboard filter);
-        public List<MasterReport> MasterReport(FilterReport filter);
-        public GridProgressMap GetGridProgress();
-        public bool UploadLayer(UploadLayerImages model);
+                public List<GridDetails> GetGridList (gridFilter filterReq);
+                public bool DeleteGrid (int Id);
+                public bool CleaningGrubbingEntry (AddCG_RFI gridReq, int Id);
+                public List<GridNo> GetGridNoList ();
 
+                public List<layerDtls> GetLayerList (layerFilter filterReq);
+                public bool CreateClientBilling (AddClientBilling billingReq);
+                public List<LayerNo> ClientBillingLayersNo (layerNoFilter layerNoFilter);
+                public GridDetails GetGridDetails (int Id);
+                public string GetCompletedLayerCountByGridNo (int gridId);
+                public void ApproveLayer (int layerDtlsId);
+                public LayerMonthWiseDashboard LayerMonthDashboard (FilterDashboard filter);
+                public DashboardSummary dashboardSummary (FilterDashboard filter);
+                public List<MasterReport> MasterReport (FilterReport filter);
+                public GridProgressMap GetGridProgress ();
+                public bool UploadLayer (UploadLayerImages model);
+                public List<LayerNo> GetLayerNoList (LayerNoFilterSkip lyr);
 
         }
 }

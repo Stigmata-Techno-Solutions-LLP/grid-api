@@ -28,7 +28,7 @@ Completed
         }
 
               public enum LayerStatus{
-New,
+
 InProgress ,
 Completed
         }

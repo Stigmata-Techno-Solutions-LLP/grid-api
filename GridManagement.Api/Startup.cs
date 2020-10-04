@@ -20,6 +20,7 @@ using GridManagement.Api.Helper;
 using System.Collections.Generic;
 using System.Linq;
 using System.IO;
+using OwaspHeaders.Core.Extensions;
 namespace GridManagement.Api
 {
     public class Startup
@@ -57,7 +58,8 @@ namespace GridManagement.Api
             services.AddScoped<IPageAccessRepository, PageAccessRepository>();
             services.AddScoped<IGridRepository, GridRepository>();
             services.AddScoped<IGridService, GridService>();
-            
+            services.AddAntiforgery(options => options.HeaderName = "X-XSRF-TOKEN");
+
 
             var key = Encoding.ASCII.GetBytes(appSettings.Secret);
             services.AddAuthentication(x =>
@@ -65,6 +67,7 @@ namespace GridManagement.Api
                 x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                 x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
             })
+            
             .AddJwtBearer(x =>
             {
                 x.RequireHttpsMetadata = false;
@@ -196,6 +199,7 @@ ValidateModelAttribute val = new ValidateModelAttribute();
             app.UseResponseCompression();
             app.UseAuthentication();
             app.UseAuthorization();
+            app.UseSecureHeadersMiddleware(SecureHeadersMiddlewareExtensions.BuildDefaultConfiguration());
             app.UseEndpoints(endpoints => {
             endpoints.MapControllers();
         });

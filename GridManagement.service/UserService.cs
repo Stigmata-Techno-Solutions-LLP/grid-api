@@ -7,6 +7,11 @@ using MailKit.Net.Smtp;
 using MailKit.Security;
 using MimeKit;
 using MimeKit.Text;
+using Serilog;
+using SendGrid;
+using SendGrid.Helpers.Mail;
+using System.Threading.Tasks;
+using GridManagement.common;
 
 namespace GridManagement.service
 {
@@ -39,9 +44,11 @@ namespace GridManagement.service
         public ResponseMessage AddUser(UserDetails userDetails)
         {
             ResponseMessage responseMessage = new ResponseMessage();
-            userDetails.password = CreateRandomPassword(10);
+            string pwd = CreateRandomPassword(10);
+            userDetails.password = Cryptography.Encrypt(_appSettings.SecretKeyPwd,pwd);
             responseMessage = _userRepository.AddUser(userDetails);
-            bool isEmailSent = SendMail("Password for L & T project", "<h1>Password for the user : " + userDetails.firstName + " " + userDetails.lastName + " </h1><br /><br /><p>Your Password is " + userDetails.password + "</p>", userDetails.email);
+           
+            bool isEmailSent = Util.SendMail("Password for L & T project", "<h1>Password for the user : " + userDetails.firstName + " " + userDetails.lastName + " </h1><br /><br /><p>Your Username is " + userDetails.userName + "</p><br /><p>Your Password is " + pwd + "</p>", userDetails.email, _appSettings.FromEmail, _appSettings.Password);
             if (isEmailSent)
                 return responseMessage;
             else
@@ -71,6 +78,9 @@ namespace GridManagement.service
         public ResponseMessage ChangePassword(ChangePassword changePassword)
         {
             ResponseMessage responseMessage = new ResponseMessage();
+            changePassword.newPassword = Cryptography.Encrypt(_appSettings.SecretKeyPwd, Util.Base64Decode(changePassword.newPassword));
+            changePassword.currentPassword = Cryptography.Encrypt(_appSettings.SecretKeyPwd, Util.Base64Decode(changePassword.currentPassword));
+
             responseMessage = _userRepository.ChangePassword(changePassword);
             return responseMessage;
         }
@@ -94,30 +104,25 @@ namespace GridManagement.service
             }
         }
 
-        public bool SendMail(string subject, string bodyHtml, string toEmail)
-        {
-            bool isEMailSent = false;
-            try
-            {
-                var email = new MimeMessage();
-                email.Sender = MailboxAddress.Parse(_appSettings.FromEmail);
-                email.To.Add(MailboxAddress.Parse(toEmail));
-                email.Subject = subject;
-                email.Body = new TextPart(TextFormat.Html) { Text = bodyHtml };
 
-                // send email
-                using var smtp = new SmtpClient();
-                smtp.Connect(_appSettings.Server, Convert.ToInt32(_appSettings.Port), SecureSocketOptions.StartTls);
-                smtp.Authenticate(_appSettings.Username, _appSettings.Password);
-                smtp.Send(email);
-                smtp.Disconnect(true);
-                isEMailSent = true;
-                return isEMailSent;
-            }
-            catch (Exception ex)
+        public Task Execute(string apiKey, string subject, string message, List<string> emails)
+        {
+            var client = new SendGridClient(apiKey);
+            var msg = new SendGridMessage()
             {
-                return false;
+                From = new EmailAddress(_appSettings.FromEmail, "L&T GridManagement"),
+                Subject = subject,
+                PlainTextContent = message,
+                HtmlContent = message
+            };
+
+            foreach (var email in emails)
+            {
+                msg.AddTo(new EmailAddress(email));
             }
+
+            Task response = client.SendEmailAsync(msg);
+            return response;
         }
     }
 }

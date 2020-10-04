@@ -190,9 +190,11 @@ List<GridDetails> grdList = _gridRepo.GetGridList(filterReq);
             return _gridRepo.GetGridNoList();
         }
 
-        public List<LayerNo> GetLayerNoList() {
-            return _gridRepo.GetLayerNoList();
+        public List<LayerNo> GetLayerNoList(LayerNoFilterSkip lyr) {
+            return _gridRepo.GetLayerNoList(lyr);
         }
+
+               
          public List<layerDtls> GetLayerList(layerFilter filterReq) {
             return _gridRepo.GetLayerList(filterReq);
         }

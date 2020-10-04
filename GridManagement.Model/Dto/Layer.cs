@@ -243,4 +243,9 @@ public class UploadLayerImages {
     public IFormFile[] uploadDocs { get; set; }  
     public string[] remove_docs_filename {get;set;} 
 }
+public class LayerNoFilterSkip{
+    public int? gridId {get;set;} = null;
+    public bool?  isBilled {get;set;} = null;
+    public bool?  isApproved {get;set;} = null;
+}
 }

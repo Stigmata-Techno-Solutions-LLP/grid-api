@@ -36,8 +36,12 @@ namespace GridManagement.Api.Controllers
             {
                 var response = _authService.Authenticate(model);
                 if (response == null)
-                    return Unauthorized(new { message = "Username or password is incorrect", code = StatusCodes.Status401Unauthorized.ToString() });
+                    return BadRequest(new { message = "Username or password is incorrect", code = StatusCodes.Status401Unauthorized.ToString() });
                 return Ok(response);
+            }
+            catch(ValueNotFoundException e) {
+                 Util.LogError(e);
+                return StatusCode(StatusCodes.Status400BadRequest, new ErrorClass() { code= StatusCodes.Status400BadRequest.ToString(), message=e.Message});
             }
             catch (Exception e)
             {
@@ -56,6 +60,10 @@ namespace GridManagement.Api.Controllers
                     return Unauthorized(new { message = "Invalid token" });
                 return Ok(response);
             }
+             catch(ValueNotFoundException e) {
+                 Util.LogError(e);
+                return StatusCode(StatusCodes.Status401Unauthorized, new ErrorClass() { code= StatusCodes.Status401Unauthorized.ToString(), message=e.Message});
+            }
              catch (Exception e)
             {
                 _loggerService.Error(e.StackTrace);
@@ -73,12 +81,15 @@ namespace GridManagement.Api.Controllers
                     return BadRequest(new { message = "Error in sending the details", code  = 422 });
                 return Ok(new { message = response.Message, code = 200 });
             }
+            catch(ValueNotFoundException e) {
+                 Util.LogError(e);
+                return StatusCode(StatusCodes.Status422UnprocessableEntity, new ErrorClass() { code= StatusCodes.Status422UnprocessableEntity.ToString(), message=e.Message});
+            }
             catch (Exception e)
             {
                 _loggerService.Error(e.StackTrace);
                 return StatusCode(StatusCodes.Status500InternalServerError, new ErrorClass() { code= StatusCodes.Status500InternalServerError.ToString(), message="Something went wrong"});
             } 
         }
-
     }
 }
