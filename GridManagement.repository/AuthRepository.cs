@@ -48,7 +48,7 @@ namespace GridManagement.repository
             ResponseMessageForgotPassword responseMessage = new ResponseMessageForgotPassword();
             try
             {
-                Users user = _context.Users.Where(x => x.Email.ToLower() == emailId.ToLower()).FirstOrDefault();
+                Users user = _context.Users.Where(x => x.Email.ToLower() == emailId.ToLower() && x.IsDelete == false).FirstOrDefault();
                 if (user == null)  throw new ValueNotFoundException("EmailId doesn't exist");
                 
                     return responseMessage = new ResponseMessageForgotPassword()
@@ -57,7 +57,10 @@ namespace GridManagement.repository
                         IsValid = true,
                         EmailId = user.Email,
                         FirstName = user.FirstName,
-                        LastName = user.LastName
+                        LastName = user.LastName,
+                        Password = user.Password,
+                        UserId = user.Id
+
                     };                            
             }
             catch (Exception ex)

@@ -22,13 +22,15 @@ namespace GridManagement.service
     public class AuthService : IAuthService
     {
         IAuthRepository _authRepository;
+        IUserRepository _userRepository;
 
         private readonly AppSettings _appSettings;
 
-        public AuthService(IOptions<AppSettings> appSettings, IAuthRepository authRepository)
+        public AuthService(IOptions<AppSettings> appSettings, IAuthRepository authRepository, IUserRepository userRepository)
         {
             _authRepository = authRepository;
             _appSettings = appSettings.Value;
+            _userRepository = userRepository;
         }      
 
         public AuthenticateResponse Authenticate(AuthenticateRequest model)
@@ -127,9 +129,15 @@ try {
                 responseMessageForgotPassword = _authRepository.ForgotPassword(emailId);
                 if (!string.IsNullOrEmpty(responseMessageForgotPassword.Password))
                 {
-                    responseMessageForgotPassword.Password = Cryptography.Decrypt(_appSettings.SecretKeyPwd,responseMessageForgotPassword.Password);
-                
-                    Util.SendMail("Reset Password for L & T project", "<h1>Password for the user : " + responseMessageForgotPassword.FirstName + " " + responseMessageForgotPassword.LastName + " </h1><br /><p>Your Password is " + responseMessageForgotPassword.Password + "</p>", responseMessageForgotPassword.EmailId, _appSettings.FromEmail, _appSettings.Password);
+                    string newPass = Util.CreateRandomPassword(10);
+                   // responseMessageForgotPassword.Password = Cryptography.Encrypt(_appSettings.SecretKeyPwd,Util.CreateRandomPassword(10));
+                ChangePassword chngePwd = new ChangePassword{
+                     currentPassword = responseMessageForgotPassword.Password,
+                     newPassword = Cryptography.Encrypt(_appSettings.SecretKeyPwd,newPass),
+                     userId = responseMessageForgotPassword.UserId
+                                     };
+                _userRepository.ChangePassword(chngePwd);
+                Util.SendMail("Reset Password for L & T project", "<h1>New Password for the user : " + responseMessageForgotPassword.FirstName + " " + responseMessageForgotPassword.LastName + " </h1><br /><p>Your Password is " + newPass + "</p>", responseMessageForgotPassword.EmailId, _appSettings.FromEmail, _appSettings.Password);
                 }
                 responseMessage = new ResponseMessage()
                 {

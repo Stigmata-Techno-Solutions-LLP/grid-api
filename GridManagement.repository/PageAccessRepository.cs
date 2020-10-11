@@ -5,6 +5,7 @@ using GridManagement.Model.Dto;
 using Microsoft.EntityFrameworkCore;
 using AutoMapper;
 using System.Linq;
+using Microsoft.Extensions.Configuration;
 
 namespace GridManagement.repository
 {
@@ -117,6 +118,20 @@ namespace GridManagement.repository
             }
         }
 
+
+
+        public RolesApplicationforms CheckRoleWiseAccess(int PageFormId, int userId)
+        {
+           try {
+RolesApplicationforms res = _context.RolesApplicationforms.Where(x=>x.RoleId == (_context.Users.Where(x=>x.Id == userId).FirstOrDefault().RoleId) && x.FormId == PageFormId).FirstOrDefault();
+       return res;    
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
         public void Dispose()
         {
             Dispose(true);
@@ -131,4 +146,7 @@ namespace GridManagement.repository
             }
         }
     }
+
+
+
 }

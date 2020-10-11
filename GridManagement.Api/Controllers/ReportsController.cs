@@ -17,7 +17,7 @@ namespace GridManagement.Api.Controllers
     [EnableCors("AllowAll")]
     [Authorize]
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/[controller]")] 
        // [ValidateAntiForgeryToken]
 
 
@@ -53,7 +53,7 @@ namespace GridManagement.Api.Controllers
         [ProducesResponseType(401)]
         [ProducesResponseType(200)]        
         [Route("SubContracorReport")]
-        public  ActionResult<List<SubContractorReport>> SubSontReport([FromQuery] FilterReport filterReport)
+        public  ActionResult<List<SubContractorReport>> SubContReport([FromQuery] FilterReport filterReport)
         {
             try {
            var response = _subContService.SubContReport(filterReport);
@@ -113,7 +113,26 @@ namespace GridManagement.Api.Controllers
         public async Task<ActionResult<GridProgressMap>> GetGridProgressMap()
         {
               try {
-           var response =  _gridService.GetGridProgress();
+           var response =  _gridService.GetGridProgress("");
+           return Ok(response); 
+            }
+            catch (Exception e)
+            {
+                Util.LogError(e);
+                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorClass() { code= StatusCodes.Status500InternalServerError.ToString(), message="Something went wrong"});
+            }        
+        }
+
+
+
+        [HttpGet]
+        [ProducesResponseType(401)]
+        [ProducesResponseType(200)]        
+        [Route("GridProgressMapbyFilter")]
+        public async Task<ActionResult<GridProgressMap>> GetGridProgressMapwithFilter([FromQuery] string? layerId)
+        {
+              try {
+           var response =  _gridService.GetGridProgresswithFilter(layerId);
            return Ok(response); 
             }
             catch (Exception e)

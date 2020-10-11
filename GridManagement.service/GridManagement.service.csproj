@@ -8,10 +8,14 @@
     <ProjectReference Include="..\GridManagement.Model\GridManagement.Model.csproj" />
     <ProjectReference Include="..\GridManagement.repository\GridManagement.repository.csproj" />
     <ProjectReference Include="..\GridManagement.common\GridManagement.common.csproj" />
+        <ProjectReference Include="..\GridManagement.domain\GridManagement.domain.csproj">
+      <GlobalPropertiesToRemove></GlobalPropertiesToRemove>
+    </ProjectReference>
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="MailKit" Version="2.8.0" />
     <PackageReference Include="SendGrid" Version="9.21.0" />
+    <PackageReference Include="System.Drawing.Common" Version="4.7.0" />
   </ItemGroup>
 </Project>

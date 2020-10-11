@@ -84,7 +84,7 @@ namespace GridManagement.Api
             });
             services.AddScoped<ISubContService, SubContService>();
             services.AddScoped<ISubContractorRepository, SubContractorRepository>();
-
+          
             services.Configure<GridManagement.Model.Dto.AppSettings>(Configuration.GetSection("AppSettings"));
 
 

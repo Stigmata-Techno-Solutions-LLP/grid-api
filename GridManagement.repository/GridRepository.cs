@@ -23,6 +23,11 @@ namespace GridManagement.repository {
         public bool InsertNewGrid (AddGrid gridReq) {
             try {
                 if (_context.Grids.Where (x => x.Gridno == gridReq.gridno && x.IsDelete == false).Count () > 0) throw new ValueNotFoundException ("GridNo already exists");
+                if (gridReq.gridGeoLocation.Count()<3) throw new ValueNotFoundException ("Latitude & longitide value should be greater than 3");
+                if (gridReq.gridGeoLocation.Count()>6) throw new ValueNotFoundException ("Latitude & longitide value should not be greater than 6");
+                if (gridReq.marker_latitide ==0 ) throw new ValueNotFoundException ("Please give valid latitude.");
+                if (gridReq.marker_longitude ==0 ) throw new ValueNotFoundException ("Please give valid longitude.");
+
                 Grids grid = _mapper.Map<Grids> (gridReq);
                 grid.Status = commonEnum.GridStatus.New.ToString ();
                 _context.Grids.Add (grid);
@@ -170,19 +175,61 @@ namespace GridManagement.repository {
             }
         }
 
-        public GridProgressMap GetGridProgress () {
+        public GridProgressMap GetGridProgress (string layerId) {
             try {
 
                 var res = _context.Grids
                     .Include (c => c.GridGeolocations).Where (x => x.IsDelete == false).ToList ();
 
                 List<GridDetails> lstGridDetails = _mapper.Map<List<GridDetails>> (res);
+                                List<GridDetails> lstNewGridDetails = new List<GridDetails>();
                 double gLat = lstGridDetails.Sum (x => x.marker_latitide) / lstGridDetails.Count ();
                 double gLong = lstGridDetails.Sum (x => x.marker_longitude) / lstGridDetails.Count ();
                 GridProgressMap grdMap = new GridProgressMap ();
                 int layerCount = _context.Layers.Count ();
                 lstGridDetails.ForEach (x => x.isBilled = (x.lyrDtls.Where (x => x.IsBillGenerated == true).Count () == layerCount ? true : false));
+
                 grdMap.lstGridDtls = lstGridDetails;
+                grdMap.gLatitide = gLat; 
+                grdMap.gLongitude = gLong;
+                return grdMap;
+            } catch (Exception ex) {
+                throw ex;
+
+            }
+        }
+
+
+    public GridProgressMap GetGridProgresswithFilter (string layerId) {
+            try {
+
+                var res = _context.Grids
+                    .Include (c => c.GridGeolocations).Include(c=>c.LayerDetails).Where (x => x.IsDelete == false).ToList ();
+
+                List<GridDetails> lstGridDetails = _mapper.Map<List<GridDetails>> (res);
+                                List<GridDetails> lstNewGridDetails = new List<GridDetails>();
+                double gLat = lstGridDetails.Sum (x => x.marker_latitide) / lstGridDetails.Count ();
+                double gLong = lstGridDetails.Sum (x => x.marker_longitude) / lstGridDetails.Count ();
+                GridProgressMap grdMap = new GridProgressMap ();
+                int layerCount = _context.Layers.Count ();
+                lstGridDetails.ForEach (x => x.isBilled = (x.lyrDtls.Where (x => x.IsBillGenerated == true).Count () == layerCount ? true : false));
+if (!string.IsNullOrEmpty(layerId)) {
+    string[] layerIdArr = layerId.Split(',');
+              lstGridDetails.ForEach(x=> x.lyrDtls.Where(z=> layerIdArr.Contains(z.layerId.ToString()) && x.status == commonEnum.LayerStatus.Completed.ToString() ).ToList());
+
+foreach(GridDetails grid in lstGridDetails) {
+if (grid.lyrDtls.Where(x=>x.status == commonEnum.LayerStatus.Completed.ToString() && layerIdArr.Contains(x.layerId.ToString())).Count()>0) {
+lstNewGridDetails.Add(grid);
+}
+}
+} else {
+
+    lstNewGridDetails = lstGridDetails;
+
+}
+    lstNewGridDetails.ForEach(x=>x.lyrDtls= null);
+
+                grdMap.lstGridDtls = lstNewGridDetails;
                 grdMap.gLatitide = gLat;
                 grdMap.gLongitude = gLong;
                 return grdMap;
@@ -192,7 +239,7 @@ namespace GridManagement.repository {
             }
         }
 
-        public GridDetails GetGridDetails (int Id) {
+               public GridDetails GetGridDetails (int Id) {
             try {
 
                 var res = _context.Grids

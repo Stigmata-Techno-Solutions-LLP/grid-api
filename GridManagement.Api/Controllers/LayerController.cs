@@ -13,6 +13,10 @@ using GridManagement.common;
 using Microsoft.AspNetCore.Cors;
 // For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 using Newtonsoft.Json;
+using System.IO;
+using System.Drawing;
+using Microsoft.AspNetCore.Hosting;  
+using Microsoft.AspNetCore.Http;  
 
 namespace GridManagement.Api.Controllers
 {
@@ -23,7 +27,7 @@ namespace GridManagement.Api.Controllers
    [Authorize]
    // [ValidateAntiForgeryToken]
 
-    public class LayerController : ControllerBase
+    public class LayerController :ControllerBase
     {
 
 
@@ -131,7 +135,7 @@ private readonly IGridService _gridService;
             }          
         }
 
-        [HttpPut]
+        [HttpPost]
         [ProducesResponseType(401)]
         [ProducesResponseType(204)]
         [Route("UploadLayer")]
@@ -139,23 +143,9 @@ private readonly IGridService _gridService;
         {
             try
             {
-
-                if (model.uploadDocs != null) {
-                  if (model.uploadDocs.Length > 1)  throw new ValueNotFoundException("Document count should not greater than 1"); 
-                      foreach(IFormFile file in model.uploadDocs) {                
-                     if ( constantVal.AllowedIamgeFileTypes.Where(x=>x.Contains(file.ContentType)).Count() == 0 )  throw new ValueNotFoundException( string.Format("File Type {0} is not allowed", file.ContentType)); 
-                      }
-                 if (model.uploadDocs.Select(x=>x.Length).Sum() > 50000000)   throw new ValueNotFoundException(" File size exceeded limit");
-  
-    }
-                var response = _gridService.UploadLayer(model);
-                // return Ok(response);   
-                return StatusCode(StatusCodes.Status201Created, (new { message = "Layer Image uploaded successfully",code =204}));             
-            }
-            catch(ValueNotFoundException e) {
-                Util.LogError(e);
-                return StatusCode(StatusCodes.Status422UnprocessableEntity, new ErrorClass() { code= StatusCodes.Status422UnprocessableEntity.ToString(), message=e.Message});
-            }
+                _gridService.UploadLayer(model);
+                   return Ok(new { message = "Layer Uploaded successfully",code =204});      
+            }         
             catch (Exception e)
             {
                 Util.LogError(e);

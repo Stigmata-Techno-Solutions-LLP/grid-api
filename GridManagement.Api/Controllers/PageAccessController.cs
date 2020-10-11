@@ -10,20 +10,22 @@ using System.Net;
 using Microsoft.AspNetCore.Http;
 using GridManagement.common;
 using Microsoft.AspNetCore.Cors;
+
 // For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace GridManagement.Api.Controllers
 {
+
     [EnableCors("AllowAll")]
-    [Authorize]
+     [Authorize]
     [ApiController]
    //[ValidateAntiForgeryToken]
 
     [Route("api/[controller]")]
     public class PageAccessController : ControllerBase
     {
-        private readonly IPageAccessService _pageAccessService;
         private readonly ILogger _loggerService;
+        private readonly IPageAccessService _pageAccessService;
 
         public PageAccessController(IPageAccessService pageAccessService)
         {

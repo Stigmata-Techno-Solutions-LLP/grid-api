@@ -15,6 +15,8 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;  
 using System.Collections;
 using System.Linq;
+using System.IO;
+using System.Drawing;
 
 namespace GridManagement.service
 {
@@ -79,14 +81,23 @@ namespace GridManagement.service
             {
             RemoveLayerDocs(model.remove_docs_filename);
             if (model.uploadDocs != null) {
-             foreach(IFormFile file in model.uploadDocs) {                
-                 Layer_Docs layerDoc = new Layer_Docs();
-                 layerDoc.fileName = file.FileName;
-                 layerDoc.filepath =  UploadedFile(file);                 
-                 layerDoc.fileType = Path.GetExtension(file.FileName);
+
+        string uploadsFolder = Path.Combine(webHostEnvironment.ContentRootPath, prefixPath);  
+        byte[] bytes = Convert.FromBase64String(model.uploadDocs);
+        string fileName = Guid.NewGuid().ToString();
+
+        using (MemoryStream ms = new MemoryStream(bytes))
+        {
+            Image pic = Image.FromStream(ms);
+            pic.Save(Path.Join(uploadsFolder, fileName+model.fileName));
+        }
+         Layer_Docs layerDoc = new Layer_Docs();
+                 layerDoc.fileName = fileName;
+                 layerDoc.filepath =  Path.Join(prefixPath, fileName+model.fileName);                
+                 layerDoc.fileType = Path.GetExtension(model.fileName);
                  layerDoc.uploadType = "Images";
                  _gridRepo.LayerDocsUpload(layerDoc, model.layerDtlsId);
-             }
+            
             }
              return true;                    
             }
@@ -243,12 +254,14 @@ throw ex;
 }
      public List<MasterReport> MasterReport(FilterReport filter){
          return _gridRepo.MasterReport(filter);
+         
      }
-           public GridProgressMap GetGridProgress() {
-               return _gridRepo.GetGridProgress();
+           public GridProgressMap GetGridProgress(string layerId) {
+               return _gridRepo.GetGridProgress(layerId);
            }
-
-
+ public GridProgressMap GetGridProgresswithFilter(string layerId) {
+               return _gridRepo.GetGridProgresswithFilter(layerId);
+           }
    
 }
 

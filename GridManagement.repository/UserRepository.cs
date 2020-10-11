@@ -167,10 +167,7 @@ namespace GridManagement.repository
             }
             catch (Exception ex)
             {
-                return responseMessage = new ResponseMessage()
-                {
-                    Message = "Error in updating the change password. Please contact administrator. Error : " + ex.Message
-                };
+                throw ex;
             }
         }
 

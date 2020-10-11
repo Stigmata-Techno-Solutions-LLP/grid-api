@@ -29,4 +29,12 @@ namespace GridManagement.Model.Dto
     {
         public List<PageAccess> pageAccessDetails {get;set;}
     }
+
+        public class PageRoleAccess
+    {
+        public string ControllerName{ get;set;}
+        public string ActionName {get;set;}
+        public string Operation {get;set;}
+        public int PageFormId {get;set;}
+    }
 }

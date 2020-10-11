@@ -44,7 +44,7 @@ namespace GridManagement.service
         public ResponseMessage AddUser(UserDetails userDetails)
         {
             ResponseMessage responseMessage = new ResponseMessage();
-            string pwd = CreateRandomPassword(10);
+            string pwd = Util.CreateRandomPassword(10);
             userDetails.password = Cryptography.Encrypt(_appSettings.SecretKeyPwd,pwd);
             responseMessage = _userRepository.AddUser(userDetails);
            
@@ -85,26 +85,7 @@ namespace GridManagement.service
             return responseMessage;
         }
 
-        private string CreateRandomPassword(int length = 10)
-        {
-            try
-            {
-                string validChars = "ABCDEFGHJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*?_-";
-                Random random = new Random();
-                char[] chars = new char[length];
-                for (int i = 0; i < length; i++)
-                {
-                    chars[i] = validChars[random.Next(0, validChars.Length)];
-                }
-                return new string(chars);
-            }
-            catch (Exception ex)
-            {
-                return "";
-            }
-        }
-
-
+      
         public Task Execute(string apiKey, string subject, string message, List<string> emails)
         {
             var client = new SendGridClient(apiKey);

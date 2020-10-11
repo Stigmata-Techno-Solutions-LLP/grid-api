@@ -17,7 +17,6 @@ namespace GridManagement.Api.Extensions
             services.AddDbContextPool<gridManagementContext>(o =>
             {
                 o.UseSqlServer(app.DBConn);
-               // o.UseInMemoryDatabase(databaseName: "heroesdb");
             });
 
             return services;

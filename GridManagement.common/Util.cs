@@ -70,5 +70,24 @@ Log.Logger.Error( ex.Message  + "\n"  +(ex.InnerException == null ? "": ex.Inner
                 throw  new ValueNotFoundException("password is incorrect");
             }
         }
+
+          public static string CreateRandomPassword(int length = 10)
+        {
+            try
+            {
+                string validChars = "ABCDEFGHJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*?_-";
+                Random random = new Random();
+                char[] chars = new char[length];
+                for (int i = 0; i < length; i++)
+                {
+                    chars[i] = validChars[random.Next(0, validChars.Length)];
+                }
+                return new string(chars);
+            }
+            catch (Exception ex)
+            {
+                return "";
+            }
+        }
     }
 }

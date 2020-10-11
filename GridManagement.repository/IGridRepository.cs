@@ -29,13 +29,14 @@ namespace GridManagement.repository
        public LayerMonthWiseDashboard LayerMonthDashboard(FilterDashboard filter);
         public DashboardSummary dashboardSummary(FilterDashboard filterDash); 
         public List<MasterReport> MasterReport(FilterReport filter);
-        public GridProgressMap GetGridProgress();
+        public GridProgressMap GetGridProgress(string layerId);
+        public GridProgressMap GetGridProgresswithFilter (string layerId);
         public bool CleaningGrubEntryRemoveDocs(string filePath);
 
         public bool CleaningGrubEntryUploadDocs(Grid_Docs gridCGReq, int Id);
 
         public bool LayerDocsUpload(Layer_Docs layerReq, int Id);
-                   public bool LayerRemoveDocs(string filePath);
+        public bool LayerRemoveDocs(string filePath);
 
 
 

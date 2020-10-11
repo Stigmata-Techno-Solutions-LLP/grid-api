@@ -11,6 +11,7 @@ using System.Text;
 using System.Security.Cryptography;
 using System.IO;
 using GridManagement.common;
+using GridManagement.domain.Models;
 namespace GridManagement.service
 {
     public class PageAccessService : IPageAccessService
@@ -51,5 +52,15 @@ namespace GridManagement.service
             responseMessage = _pageAccessRepository.UpdatePageAccess(pageAccessDetails);
             return responseMessage;
         }
+        
+       public  RolesApplicationforms CheckRoleWiseAccess(int PageFormId, int userId) {
+           try {
+
+ return _pageAccessRepository.CheckRoleWiseAccess(PageFormId,userId);
+           } catch(Exception ex) {
+throw ex;
+           }
+       }
+
     }
 }

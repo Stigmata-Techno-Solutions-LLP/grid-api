@@ -38,7 +38,7 @@ namespace GridManagement.Api.Controllers
         [ProducesResponseType(401)]
         [ProducesResponseType(201)]
         [Route("CreateClientBilling")]
-        public IActionResult CLientBilling(AddClientBilling model)
+        public IActionResult ClientBilling(AddClientBilling model)
         {
             try
             {

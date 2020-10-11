@@ -5,7 +5,7 @@ insert into roles values('Manager','Manager',3,getdate(),null);
 insert into roles values('Site Engineer','Site Engineer',4,getdate(),null);
 
 
-insert into users(username,password,email,is_active,role_id,created_at,updated_by,created_by ,updated_at ) values('admin','admin','admin@gmail.com',1,1,getdate(),null,null,null)
+insert into users(username,password,email,is_active,role_id,created_at,updated_by,created_by ,updated_at ) values('admin','dL37tZVNK3V60v2HjhCXFA==','admin@gmail.com',1,1,getdate(),null,null,null)
 
 insert into clients values ('kunal', 'MUMBAI CORP','abc@gmail.com','9934w4qwer' )
 
@@ -24,7 +24,7 @@ insert into layers  values ('At +5.10m CD','Layer4')
  insert into layers  values ('At +7.25m CD','Layer13')
  insert into layers  values ('At +7.5m CD','Layer14')
  insert into layers  values ('At +7.75m CD','Layer15')
-  insert into layers  values ('At +8.0m CD','Layer16')
+ insert into layers  values ('At +8.0m CD','Layer16')
   
 
 

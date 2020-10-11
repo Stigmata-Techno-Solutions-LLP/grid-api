@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using GridManagement.Model.Dto;
-
+using GridManagement.domain.Models;
 namespace GridManagement.repository
 {
     public interface IPageAccessRepository
@@ -10,5 +10,7 @@ namespace GridManagement.repository
         ResponseMessage UpdatePageAccess(List<PageAccess> pageAccessDetails);
 
         List<Role> GetRoles();
+         RolesApplicationforms CheckRoleWiseAccess(int PageFormId, int userId);
+
     }
 }

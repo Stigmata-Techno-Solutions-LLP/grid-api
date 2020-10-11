@@ -25,9 +25,11 @@ namespace GridManagement.service {
                 public LayerMonthWiseDashboard LayerMonthDashboard (FilterDashboard filter);
                 public DashboardSummary dashboardSummary (FilterDashboard filter);
                 public List<MasterReport> MasterReport (FilterReport filter);
-                public GridProgressMap GetGridProgress ();
+                public GridProgressMap GetGridProgress (string layerId);
                 public bool UploadLayer (UploadLayerImages model);
                 public List<LayerNo> GetLayerNoList (LayerNoFilterSkip lyr);
+                public GridProgressMap GetGridProgresswithFilter (string layerId);
+
 
         }
 }
