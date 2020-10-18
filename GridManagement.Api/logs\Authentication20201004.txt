@@ -1,0 +1,2 @@
+2020-10-04 14:37:21.052 +08:00 [ERR]    at GridManagement.service.AuthService.ForgotPassword(String emailId) in /Users/admin/Documents/GridManagement/GridManagement.service/AuthService.cs:line 141
+   at GridManagement.Api.Controllers.AuthController.ForgotPassword(ForgotPasswordRequest forgotPassword) in /Users/admin/Documents/GridManagement/GridManagement.Api/Controllers/AuthController.cs:line 79

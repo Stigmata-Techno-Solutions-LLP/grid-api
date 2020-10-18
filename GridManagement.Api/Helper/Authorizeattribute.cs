@@ -23,9 +23,14 @@ public class AuthorizeAttribute : Attribute, IAuthorizationFilter
 {
     
             IConfiguration Configuration{get;}
+// IServiceProvider _serviceProvider;
+// public AuthorizeAttribute(IServiceProvider serviceProvider)  
+// {  
+//    _serviceProvider = serviceProvider;  
+// }  
     public void OnAuthorization(AuthorizationFilterContext context)
     {
-        
+//var t4 = _serviceProvider.GetService<UserService>();    
 
 
         string controllerName = context.RouteData.Values["Controller"].ToString();
@@ -118,8 +123,8 @@ public class AuthorizeAttribute : Attribute, IAuthorizationFilter
             }
             PageRoleAccess pageAcc = pageRoleAccesslst.Where(x=>x.ActionName == actionName && x.ControllerName==controllerName  && x.Operation != "Common").FirstOrDefault();
   
-            if (pageAcc != null) {
-              //  RolesApplicationforms res = t4.CheckRoleWiseAccess(pageAcc.PageFormId,userId);
+//             if (pageAcc != null) {
+//               // RolesApplicationforms res = t4.CheckRoleWiseAccess(pageAcc.PageFormId,userId);
 // //pageAcc.PageFormId
 // if ((pageAcc.Operation == "Add" && res.IsAdd == true) || (pageAcc.Operation == "Edit" && res.IsUpdate == true) || (pageAcc.Operation == "Delete" && res.IsDelete == true) || (pageAcc.Operation == "View" && res.IsView == true)) {
 // }
@@ -127,7 +132,7 @@ public class AuthorizeAttribute : Attribute, IAuthorizationFilter
 //                 context.Result = new JsonResult(new { message = "User dont have access", isAPIValid = false }) { StatusCode = StatusCodes.Status403Forbidden };
 
 //  }
-            }
+//             }
 
         }
         catch (Exception ex)
@@ -136,20 +141,5 @@ public class AuthorizeAttribute : Attribute, IAuthorizationFilter
             context.Result = new JsonResult(new { message = "Something went wrong" + ex.Message, isAPIValid = false }) { StatusCode = StatusCodes.Status401Unauthorized };
         }
     }
-// public class AccountHandler : AuthorizeAttribute
-// {
-//     protected override  HandleRequirementAsync(
-//         AuthorizationHandlerContext context,
-//         AccountRequirement requirement)
-//     {
-//         // Your logic here... or anything else you need to do.
-//         if (context.User.IsInRole("fooBar"))
-//         {
-//             // Call 'Succeed' to mark current requirement as passed
-//             context.Succeed(requirement);
-//         }
 
-//         return Task.CompletedTask;
-//     }
-// }
 }

@@ -25,8 +25,16 @@ namespace GridManagement.repository
                 if (_context.Subcontractors.Where (x => x.Code == subContReq.code && x.IsDelete == false).Count () > 0) throw new ValueNotFoundException ("SubContractorId already exists");
                 Subcontractors subCont = _mapper.Map<Subcontractors> (subContReq);
                 subCont.CreatedBy = subContReq.user_id;
+                subCont.CreatedAt = DateTime.Now;
                 _context.Subcontractors.Add (subCont);
                 _context.SaveChanges ();
+                AuditLogs audit = new AuditLogs() {
+                     Action ="SubContractor",
+                     Message="Insert Subcontractor Succussfully",
+                     CreatedAt = DateTime.Now,
+                     CreatedBy = subContReq.user_id
+            };
+            AudtitLog(audit);
                 return true;
             } catch (Exception ex) {
                 throw ex;
@@ -47,8 +55,16 @@ namespace GridManagement.repository
                 subCont.ContactName = subContReq.contact_person;
                 subCont.Address = subContReq.contact_address;
                 subCont.UpdatedBy = subContReq.user_id;
+                subCont.UpdateAt = DateTime.Now;
                 //    _context.Entry(subCont).State = EntityState.Modified;            
                 _context.SaveChanges ();
+                AuditLogs audit = new AuditLogs() {
+                     Action ="SubContractor",
+                     Message="Update Subcontractor Succussfully",
+                     CreatedAt = DateTime.Now,
+                     CreatedBy = subContReq.user_id
+            };
+            AudtitLog(audit);
                 return true;
             } catch (Exception ex) {
                 throw ex;
@@ -62,6 +78,12 @@ namespace GridManagement.repository
                 subCon.IsDelete = true;
                 _context.Update (subCon);
                 _context.SaveChanges ();
+                    AuditLogs audit = new AuditLogs() {
+                     Action ="SubContractor",
+                     Message="Delete Subcontractor Succussfully",
+                     CreatedAt = DateTime.Now,                 
+            };
+            AudtitLog(audit);
                 return true;
             } catch (Exception ex) {
                 throw ex;
@@ -103,7 +125,7 @@ namespace GridManagement.repository
                     ltssubContrdata = _context.Subcontractors.Where (x => x.IsDelete == false && x.CreatedAt >= filterReport.startDate && x.CreatedAt < filterReport.endDate.Value.AddDays (1)).ToList ()
                         .Select (y => new SubContractorReport {
                             code = y.Code, name = y.Name, subContractorId = y.Id.ToString (), quantity = _context.LayerSubcontractors.Include (c => c.Layerdetails).Where (z => z.SubcontractorId == y.Id && z.Layerdetails.Grid.IsDelete == false).Select (x => x.Quantity).Sum ().Value,
-                                materialDesc = String.Join (',', _context.LayerSubcontractors.Include (c => c.Layerdetails).Where (w => w.SubcontractorId == y.Id).ToList ().Select (r => r.Layerdetails.FillingMaterial).ToArray ().Distinct ()).ToString (),
+                               // materialDesc = String.Join (',', _context.LayerSubcontractors.Include (c => c.Layerdetails).Where (w => w.SubcontractorId == y.Id).ToList ().Select (r => r.Layerdetails.FillingMaterial).ToArray ().Distinct ()).ToString (),
                                 createdAt = y.CreatedAt != null ? y.CreatedAt.Value.ToString ("yyyy-MM-dd") : ""
 
                         }).ToList ();
@@ -113,7 +135,7 @@ namespace GridManagement.repository
                     ltssubContrdata = _context.Subcontractors.Where (x => x.IsDelete == false).ToList ()
                         .Select (y => new SubContractorReport {
                             code = y.Code, name = y.Name, subContractorId = y.Id.ToString (), quantity = _context.LayerSubcontractors.Include (c => c.Layerdetails).Where (z => z.SubcontractorId == y.Id && z.Layerdetails.Grid.IsDelete == false).Select (x => x.Quantity).Sum ().Value,
-                                materialDesc = String.Join (',', _context.LayerSubcontractors.Include (c => c.Layerdetails).Where (w => w.SubcontractorId == y.Id).ToList ().Select (r => r.Layerdetails.FillingMaterial).ToArray ().Distinct ()).ToString (),
+                              // materialDesc = String.Join (',', _context.LayerSubcontractors.Include (c => c.Layerdetails).Where (w => w.SubcontractorId == y.Id).ToList ().Select (r => r.Layerdetails.FillingMaterial).ToArray ().Distinct ()).ToString (),
                                 createdAt = y.CreatedAt != null ? y.CreatedAt.Value.ToString ("yyyy-MM-dd") : ""
 
                         }).ToList ();
@@ -124,7 +146,11 @@ namespace GridManagement.repository
             } catch (Exception ex) {
                 throw ex;
             }
+        }
 
+        public void AudtitLog(AuditLogs audit) {
+            _context.AuditLogs.Add(audit);
+            _context.SaveChanges();
         }
 
     }

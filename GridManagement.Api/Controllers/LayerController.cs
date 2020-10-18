@@ -154,6 +154,44 @@ private readonly IGridService _gridService;
         }
 
    
+
+        [HttpGet]
+        [ProducesResponseType(401)]
+        [ProducesResponseType(200)]        
+        [Route("UserLayerList")]
+        public async Task<ActionResult<List<LayerNo>>> GetUserLayerList()
+        {
+        try {
+           var response =  _gridService.GetUserLayerList();
+           return Ok(response); 
+            }
+             catch (Exception e)
+            {
+                Util.LogError(e);
+                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorClass() { code= StatusCodes.Status500InternalServerError.ToString(), message="Something went wrong"});
+            }      
+        }
+
+
+
+        [HttpGet]
+        [ProducesResponseType(401)]
+        [ProducesResponseType(200)]        
+        [Route("ClientLayerList")]
+        public async Task<ActionResult<List<LayerNo>>> GetClientLayerList()
+        {
+        try {
+           var response =  _gridService.GetClientLayerList();
+           return Ok(response); 
+            }
+             catch (Exception e)
+            {
+                Util.LogError(e);
+                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorClass() { code= StatusCodes.Status500InternalServerError.ToString(), message="Something went wrong"});
+            }      
+        }
+   
+   
     #endregion
     }
 

@@ -55,6 +55,8 @@ namespace GridManagement.repository {
                 gridDtls.Gridno = gridReq.gridno;
                 gridDtls.MarkerLatitide = gridReq.marker_latitide.ToString ();
                 gridDtls.MarkerLongitude = gridReq.marker_longitude.ToString ();
+                gridDtls.UpdatedAt = DateTime.Now;
+                gridDtls.UpdatedBy = gridReq.user_id;
                 List<GridGeolocations> gridLocList = _context.GridGeolocations.Where (x => x.GridId == Id).ToList ();
                 _context.RemoveRange (gridLocList);
                 _context.SaveChanges ();
@@ -134,8 +136,8 @@ namespace GridManagement.repository {
         public bool CleaningGrubEntryRemoveDocs (string filePath) {
             try {
                 GridDocuments gridDocs = _context.GridDocuments.Where (x => x.Path.Contains (filePath)).FirstOrDefault ();
-                _context.GridDocuments.Remove (gridDocs);
-                _context.SaveChanges ();
+                _context.GridDocuments.Remove(gridDocs);
+                _context.SaveChanges();
                 return true;
             } catch (Exception ex) {
                 throw ex;
@@ -342,7 +344,10 @@ lstNewGridDetails.Add(grid);
                     layerDtls.ToplevelFillmaterial = layerReq.topFillMaterial;
                     layerDtls.TotalQuantity = layerReq.totalQuantity;
                     layerDtls.Status = layerReq.status.ToString ();
-
+                    layerDtls.UpdatedAt = DateTime.Now;
+                    layerDtls.UpdatedBy = layerReq.user_id;
+                    layerDtls.ClientLayerId = layerReq.ClientLayerId;
+                    layerDtls.UserLayerId= layerReq.UserLayerId;
                     // if (userData != null) {
                     //     layerDtls.IsApproved = true;                   
                     // }       
@@ -353,6 +358,8 @@ lstNewGridDetails.Add(grid);
                     }
                 } else {
                     LayerDetails layer = _mapper.Map<LayerDetails> (layerReq);
+                    layer.CreatedAt = DateTime.Now;
+                    layer.CreatedBy = layerReq.user_id;
                     //  if (userData != null) {
                     //     layer.IsApproved = true;                   
                     // }
@@ -360,9 +367,9 @@ lstNewGridDetails.Add(grid);
                     layer.IsBillGenerated = false;
                     _context.LayerDetails.Add (layer);
                     Grids grid = _context.Grids.Where (x => x.Id == layerReq.gridId).FirstOrDefault ();
-                    grid.Status = commonEnum.GridStatus.InProgress.ToString ();
-
+                    grid.Status = commonEnum.GridStatus.InProgress.ToString();
                     _context.SaveChanges ();
+
                     layerId = layer.Id;
 
                 }
@@ -386,6 +393,12 @@ lstNewGridDetails.Add(grid);
                     grid.Status = commonEnum.GridStatus.Completed.ToString ();
                     _context.SaveChanges ();
                 }
+                                AuditLogs audit = new AuditLogs() {
+                     Action ="Layer",
+                     Message =string.Format( "Layer updated Succussfully.LayerId {0}",layerId),
+                     CreatedAt = DateTime.Now,
+            };
+            AudtitLog(audit);
                 return layerId;
             } catch (Exception ex) {
                 throw ex;
@@ -394,20 +407,25 @@ lstNewGridDetails.Add(grid);
 
         public void ApproveLayer (int layerDtlsId) {
             try {
-
                 // int roleLevel = Convert.ToInt32(commonEnum.RolesLevel.Level3);
                 //    Users userData = _context.Users.Include(c=>c.Role).Where(x=>x.Id==layerReq.user_id && x.Role.Level == roleLevel ).FirstOrDefault();
-
-                LayerDetails lyrDtls = _context.LayerDetails.Where (x => x.Id == layerDtlsId && x.Status == commonEnum.LayerStatus.Completed.ToString () && x.IsApproved == false).FirstOrDefault ();
+                LayerDetails lyrDtls = _context.LayerDetails.Where (x => x.Id == layerDtlsId && x.Status == commonEnum.LayerStatus.Completed.ToString () && x.IsApproved == false).FirstOrDefault();
                 if (lyrDtls == null) throw new ValueNotFoundException ("LayerDetailsId doesn't exists in below criteria(should be completed & non-approved layers)");
                 lyrDtls.IsApproved = true;
-                _context.SaveChanges ();
+                lyrDtls.UpdatedAt = DateTime.Now;
+                _context.SaveChanges();
+                AuditLogs audit = new AuditLogs() {
+                     Action ="Layer",
+                     Message =string.Format( "Layer Approved Succussfully.LayerId {0}",layerDtlsId),
+                     CreatedAt = DateTime.Now,
+            };
+            AudtitLog(audit);
             } catch (Exception ex) {
                 throw ex;
             }
         }
         public bool CreateClientBilling (AddClientBilling billingReq) {
-            try {
+            try {                
                 if (_context.ClientBilling.Where (x => x.Ipcno == billingReq.IPCNo).Count () > 0) throw new ValueNotFoundException ("IPC No already exists");
 
                 using (var transaction = _context.Database.BeginTransaction ()) {
@@ -418,9 +436,10 @@ lstNewGridDetails.Add(grid);
                         clBill.CreatedBy = billingReq.userId;
                         clBill.Ipcno = billingReq.IPCNo;
                         clBill.BillMonth = billingReq.billingMonth;
-
+                        clBill.CreatedAt = DateTime.Now;
+                        clBill.CreatedBy = billingReq.userId;
                         _context.ClientBilling.Add (clBill);
-                        _context.SaveChanges ();
+                        _context.SaveChanges();
 
                         foreach (BillingLayerGrid blGrid in billingReq.billingLayerGrid) {
                             ClientBillingLayerDetails clBillingLayerDtls = new ClientBillingLayerDetails ();
@@ -434,7 +453,12 @@ lstNewGridDetails.Add(grid);
                             }
                         }
                         _context.SaveChanges ();
-
+                    AuditLogs audit = new AuditLogs() {
+                     Action ="Layer",
+                     Message =string.Format( "Client Billing Created Succussfully.IPC No {0}",billingReq.IPCNo),
+                     CreatedAt = DateTime.Now,
+            };
+            AudtitLog(audit);
                         transaction.Commit ();
                     } catch (Exception ex) {
                         transaction.Rollback ();
@@ -616,6 +640,30 @@ lstNewGridDetails.Add(grid);
         protected virtual void Dispose (bool disposing) {
             if (disposing) {
                 _context.Dispose ();
+            }
+        }
+
+          public void AudtitLog(AuditLogs audit) {
+            _context.AuditLogs.Add(audit);
+            _context.SaveChanges();
+        }
+
+        public List<UserLayer> GetUserLayerList () {
+            try {
+                List<UserLayer> lstGridDetails = _mapper.Map<List<UserLayer>> (_context.UserLayerNew.ToList ());
+                return lstGridDetails;
+            } catch (Exception ex) {
+                throw ex;
+            }
+        }
+
+
+        public List<ClientLayer> GetClientLayerList () {
+            try {
+                List<ClientLayer> lstGridDetails = _mapper.Map<List<ClientLayer>> (_context.ClientLayerNew.ToList());
+                return lstGridDetails;
+            } catch (Exception ex) {
+                throw ex;
             }
         }
 

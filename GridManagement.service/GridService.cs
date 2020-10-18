@@ -54,9 +54,7 @@ namespace GridManagement.service
             {
                 int layerId =  _gridRepo.InsertNewLayer(model);
             RemoveLayerDocs(model.remove_docs_filename);
-            if (model.uploadDocs != null) {
-
-            
+            if (model.uploadDocs != null) {            
              foreach(IFormFile file in model.uploadDocs) {                
                  Layer_Docs layerDoc = new Layer_Docs();
                  layerDoc.fileName = file.FileName;
@@ -262,6 +260,23 @@ throw ex;
  public GridProgressMap GetGridProgresswithFilter(string layerId) {
                return _gridRepo.GetGridProgresswithFilter(layerId);
            }
+
+                   public List<UserLayer> GetUserLayerList (){
+                       try {
+
+return _gridRepo.GetUserLayerList();
+                       } catch (Exception ex) {
+throw ex;
+                       }
+                   }
+        public List<ClientLayer> GetClientLayerList () {
+            try {
+                return _gridRepo.GetClientLayerList();
+            } catch(Exception ex) {
+throw ex;
+            }
+        }
+
    
 }
 

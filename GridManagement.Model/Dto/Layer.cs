@@ -43,6 +43,13 @@ namespace GridManagement.Model.Dto
         [Display(Name = "Remarks of layer")]
         public string remarks { get; set; }
 
+
+        [Display(Name = "CLient Name")]
+        public int? ClientLayerId { get; set; } = null;
+
+        [Display(Name = "User Name")]
+        public int? UserLayerId { get; set; } = null;
+
         [Required]
         [Display(Name = "User Id")]
         public int? user_id { get; set; }
@@ -225,6 +232,8 @@ public class layerNoFilter{
         public string LV_RFI_status { get; set;}
         public bool IsBillGenerated {get;set;}
         public bool isApproved {get;set;}
+        public int? ClientLayerId { get; set; }
+        public int? UserLayerId { get; set; }
         public DateTime createdAt {get;set;}
         public DateTime updatedAt {get;set;}
         public string createdDate {get;set;}
@@ -250,4 +259,14 @@ public class LayerNoFilterSkip{
     public bool?  isBilled {get;set;} = null;
     public bool?  isApproved {get;set;} = null;
 }
+
+   public class UserLayer {
+        public int Id{get;set;}
+        public string Name{get;set;}
+    }
+
+       public class ClientLayer {
+        public int Id{get;set;}
+        public string Name{get;set;}
+    }
 }

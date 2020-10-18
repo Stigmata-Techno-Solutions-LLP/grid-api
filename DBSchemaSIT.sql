@@ -65,6 +65,27 @@ DROP TABLE GridManagement_SIT.dbo.users;
  
 
 
+IF OBJECT_ID('GridManagement_SIT.dbo.user_layer_new', 'U') IS NOT NULL 
+DROP TABLE GridManagement_SIT.dbo.user_layer_new; 
+ 
+
+IF OBJECT_ID('GridManagement_SIT.dbo.client_layer_new', 'U') IS NOT NULL 
+DROP TABLE GridManagement_SIT.dbo.client_layer_new; 
+ 
+create table client_layer_new(
+id int primary key identity(1,1),
+name varchar(200),
+email varchar(50),
+PSNo varchar(50)
+)	
+
+
+create table user_layer_new(
+id int primary key identity(1,1),
+name varchar(200),
+email varchar(50),
+)
+
 
 CREATE TABLE GridManagement_SIT.dbo.roles (
   id int NOT NULL IDENTITY (1,1),
@@ -242,7 +263,9 @@ CREATE TABLE layer_details(
     LV_RFIno varchar(20) null,
     LV_inspection_date date null,
     LV_approval_date date null,
-    LV_RFI_status varchar(50) null,    
+    LV_RFI_status varchar(50) null,   
+    userLayerId int NULL,
+    clientLayerId int NULL, 
     isBillGenerated bit null default 0, 
     isApproved bit NULL DEFAULT 0,
     created_at DATETIME NULL DEFAULT CURRENT_TIMESTAMP,

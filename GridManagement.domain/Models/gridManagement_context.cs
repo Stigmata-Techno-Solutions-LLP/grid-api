@@ -6,7 +6,7 @@ namespace GridManagement.domain.Models
 {
     public partial class gridManagementContext : DbContext
     {
-     
+   
 
         public gridManagementContext(DbContextOptions<gridManagementContext> options)
             : base(options)
@@ -17,6 +17,7 @@ namespace GridManagement.domain.Models
         public virtual DbSet<AuditLogs> AuditLogs { get; set; }
         public virtual DbSet<ClientBilling> ClientBilling { get; set; }
         public virtual DbSet<ClientBillingLayerDetails> ClientBillingLayerDetails { get; set; }
+        public virtual DbSet<ClientLayerNew> ClientLayerNew { get; set; }
         public virtual DbSet<Clients> Clients { get; set; }
         public virtual DbSet<GridDocuments> GridDocuments { get; set; }
         public virtual DbSet<GridGeolocations> GridGeolocations { get; set; }
@@ -28,16 +29,13 @@ namespace GridManagement.domain.Models
         public virtual DbSet<Roles> Roles { get; set; }
         public virtual DbSet<RolesApplicationforms> RolesApplicationforms { get; set; }
         public virtual DbSet<Subcontractors> Subcontractors { get; set; }
+        public virtual DbSet<UserLayerNew> UserLayerNew { get; set; }
         public virtual DbSet<Users> Users { get; set; }
 
-//         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-//         {
-//             if (!optionsBuilder.IsConfigured)
-//             {
-// #warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-//                 optionsBuilder.UseSqlServer("Server=landt.ctxkj3vcelr3.ap-southeast-1.rds.amazonaws.com;Database=gridManagement;User Id=admin;Password=PlH34cwug3tqupePJcAp;");
-//             }
-//         }
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            
+        }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -105,7 +103,7 @@ namespace GridManagement.domain.Models
                 entity.ToTable("client_billing");
 
                 entity.HasIndex(e => e.Ipcno)
-                    .HasName("UQ__client_b__650AE67368D1D633")
+                    .HasName("UQ__client_b__650AE6733AE437E2")
                     .IsUnique();
 
                 entity.Property(e => e.Id).HasColumnName("id");
@@ -159,6 +157,28 @@ namespace GridManagement.domain.Models
                     .WithMany(p => p.ClientBillingLayerDetails)
                     .HasForeignKey(d => d.LayerDetailsId)
                     .HasConstraintName("client_billinglayerDtls_LayerDetks_id__fkey");
+            });
+
+            modelBuilder.Entity<ClientLayerNew>(entity =>
+            {
+                entity.ToTable("client_layer_new");
+
+                entity.Property(e => e.Id).HasColumnName("id");
+
+                entity.Property(e => e.Email)
+                    .HasColumnName("email")
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Name)
+                    .HasColumnName("name")
+                    .HasMaxLength(200)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Psno)
+                    .HasColumnName("PSNo")
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
             });
 
             modelBuilder.Entity<Clients>(entity =>
@@ -354,6 +374,8 @@ namespace GridManagement.domain.Models
                     .HasColumnName("area_layer")
                     .HasColumnType("decimal(18, 2)");
 
+                entity.Property(e => e.ClientLayerId).HasColumnName("clientLayerId");
+
                 entity.Property(e => e.CreatedAt)
                     .HasColumnName("created_at")
                     .HasColumnType("datetime")
@@ -446,6 +468,8 @@ namespace GridManagement.domain.Models
                     .HasDefaultValueSql("(getdate())");
 
                 entity.Property(e => e.UpdatedBy).HasColumnName("updated_by");
+
+                entity.Property(e => e.UserLayerId).HasColumnName("userLayerId");
 
                 entity.HasOne(d => d.CreatedByNavigation)
                     .WithMany(p => p.LayerDetailsCreatedByNavigation)
@@ -546,7 +570,7 @@ namespace GridManagement.domain.Models
                 entity.ToTable("layers");
 
                 entity.HasIndex(e => e.Layerno)
-                    .HasName("UQ__layers__91C38FFC63174B1F")
+                    .HasName("UQ__layers__91C38FFCAEEB711F")
                     .IsUnique();
 
                 entity.Property(e => e.Id).HasColumnName("id");
@@ -691,17 +715,26 @@ namespace GridManagement.domain.Models
                     .HasConstraintName("subcont_updatedby_users__fkey");
             });
 
+            modelBuilder.Entity<UserLayerNew>(entity =>
+            {
+                entity.ToTable("user_layer_new");
+
+                entity.Property(e => e.Id).HasColumnName("id");
+
+                entity.Property(e => e.Email)
+                    .HasColumnName("email")
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Name)
+                    .HasColumnName("name")
+                    .HasMaxLength(200)
+                    .IsUnicode(false);
+            });
+
             modelBuilder.Entity<Users>(entity =>
             {
                 entity.ToTable("users");
-
-                entity.HasIndex(e => e.Email)
-                    .HasName("UQ__users__AB6E6164CC9656C3")
-                    .IsUnique();
-
-                entity.HasIndex(e => e.Username)
-                    .HasName("UQ__users__F3DBC5723DC2134A")
-                    .IsUnique();
 
                 entity.Property(e => e.Id).HasColumnName("id");
 
@@ -713,7 +746,6 @@ namespace GridManagement.domain.Models
                 entity.Property(e => e.CreatedBy).HasColumnName("created_by");
 
                 entity.Property(e => e.Email)
-                    .IsRequired()
                     .HasColumnName("email")
                     .HasMaxLength(100)
                     .IsUnicode(false);
@@ -757,7 +789,6 @@ namespace GridManagement.domain.Models
                 entity.Property(e => e.UpdatedBy).HasColumnName("updated_by");
 
                 entity.Property(e => e.Username)
-                    .IsRequired()
                     .HasColumnName("username")
                     .HasMaxLength(100)
                     .IsUnicode(false);

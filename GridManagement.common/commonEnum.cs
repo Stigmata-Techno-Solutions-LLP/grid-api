@@ -4,11 +4,13 @@ namespace GridManagement.common
     {
         public enum CG_RFIStatus {
 No,
-Yes
+Yes,
+InProgress
         }
         public enum LV_RFIStatus {
 No,
-Yes
+Yes,
+InProgress
         }
         public enum CT_RFIStatus{
 No,

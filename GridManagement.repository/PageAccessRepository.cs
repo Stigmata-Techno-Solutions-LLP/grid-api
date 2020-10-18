@@ -25,8 +25,6 @@ namespace GridManagement.repository
         {
             try
             {
-
-
                 List<PageAccess> result = new List<PageAccess>();
                 var pageAccesses = _context.RolesApplicationforms.ToList();
                 List<ApplicationForms> applicationForms = _context.ApplicationForms.ToList();
@@ -106,6 +104,12 @@ namespace GridManagement.repository
                     pageAccessFromDB.IsUpdate = pageAccess.PageDetail.IsUpdate;
                     pageAccessFromDB.IsView = pageAccess.PageDetail.IsView;
                     _context.SaveChanges();
+                    AuditLogs audit = new AuditLogs() {
+                     Action ="Role Management",
+                     Message="PageAccess Updated Succussfully",
+                     CreatedAt = DateTime.Now,                 
+            };
+            AudtitLog(audit);
                 }
                 return responseMessage = new ResponseMessage()
                 {
@@ -144,6 +148,11 @@ RolesApplicationforms res = _context.RolesApplicationforms.Where(x=>x.RoleId == 
             {
                 _context.Dispose();
             }
+        }
+
+          public void AudtitLog(AuditLogs audit) {
+            _context.AuditLogs.Add(audit);
+            _context.SaveChanges();
         }
     }
 

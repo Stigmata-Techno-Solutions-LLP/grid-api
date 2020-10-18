@@ -82,5 +82,10 @@ namespace GridManagement.repository
                 _context.Dispose();
             }
         }
+
+          public void AudtitLog(AuditLogs audit) {
+            _context.AuditLogs.Add(audit);
+            _context.SaveChanges();
+        }
     }
 }

@@ -57,6 +57,13 @@ namespace GridManagement.repository
                 {
                     _context.Users.Add(_mapper.Map<Users>(userDetails));
                     _context.SaveChanges();
+                    AuditLogs audit = new AuditLogs() {
+                     Action ="User",
+                     Message =string.Format( "New User added Succussfully {0}",userDetails.userName),
+                     CreatedAt = DateTime.Now,
+                     CreatedBy = userDetails.userId
+            };
+            AudtitLog(audit);
                     return responseMessage = new ResponseMessage()
                     {
                         Message = "User added successfully."
@@ -98,6 +105,13 @@ namespace GridManagement.repository
                         userData.RoleId = userDetails.roleId;
                         userData.UpdatedBy = userDetails.updatedBy;
                         _context.SaveChanges();
+                             AuditLogs audit = new AuditLogs() {
+                     Action ="User",
+                     Message =string.Format( "Update User  Succussfully {0}",userDetails.userName),
+                     CreatedAt = DateTime.Now,
+                     CreatedBy = userDetails.userId
+            };
+            AudtitLog(audit);
                         return responseMessage = new ResponseMessage()
                         {
                             Message = "User updated successfully.",
@@ -126,6 +140,12 @@ namespace GridManagement.repository
                 if (userData == null) throw new ValueNotFoundException("User Id doesnt exist."); 
                 userData.IsDelete = true;
                 _context.SaveChanges();
+                AuditLogs audit = new AuditLogs() {
+                     Action ="User",
+                     Message =string.Format( "Update User  Succussfully {0}",userData.Username),
+                     CreatedAt = DateTime.Now,
+            };
+            AudtitLog(audit);
                 return responseMessage = new ResponseMessage()
                 {
                     Message = "User deleted successfully."                  
@@ -183,6 +203,11 @@ namespace GridManagement.repository
             {
                 _context.Dispose();
             }
+        }
+
+          public void AudtitLog(AuditLogs audit) {
+            _context.AuditLogs.Add(audit);
+            _context.SaveChanges();
         }
     }
 }

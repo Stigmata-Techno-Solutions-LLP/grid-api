@@ -29,7 +29,8 @@ namespace GridManagement.service {
                 public bool UploadLayer (UploadLayerImages model);
                 public List<LayerNo> GetLayerNoList (LayerNoFilterSkip lyr);
                 public GridProgressMap GetGridProgresswithFilter (string layerId);
-
+                public List<UserLayer> GetUserLayerList ();
+                public List<ClientLayer> GetClientLayerList ();
 
         }
 }

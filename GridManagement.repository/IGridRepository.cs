@@ -37,6 +37,8 @@ namespace GridManagement.repository
 
         public bool LayerDocsUpload(Layer_Docs layerReq, int Id);
         public bool LayerRemoveDocs(string filePath);
+        public List<UserLayer> GetUserLayerList ();
+        public List<ClientLayer> GetClientLayerList ();
 
 
 
