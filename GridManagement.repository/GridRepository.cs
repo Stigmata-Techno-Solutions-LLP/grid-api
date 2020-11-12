@@ -205,29 +205,34 @@ namespace GridManagement.repository {
     public GridProgressMap GetGridProgresswithFilter (string layerId) {
             try {
 
-                var res = _context.Grids
-                    .Include (c => c.GridGeolocations).Include(c=>c.LayerDetails).Where (x => x.IsDelete == false).ToList ();
+                var res = _context.Grids.Include(c => c.GridGeolocations).Include(c=>c.LayerDetails).Where(x => x.IsDelete == false).ToList();
 
                 List<GridDetails> lstGridDetails = _mapper.Map<List<GridDetails>> (res);
                                 List<GridDetails> lstNewGridDetails = new List<GridDetails>();
                 double gLat = lstGridDetails.Sum (x => x.marker_latitide) / lstGridDetails.Count ();
                 double gLong = lstGridDetails.Sum (x => x.marker_longitude) / lstGridDetails.Count ();
                 GridProgressMap grdMap = new GridProgressMap ();
-                int layerCount = _context.Layers.Count ();
-                lstGridDetails.ForEach (x => x.isBilled = (x.lyrDtls.Where (x => x.IsBillGenerated == true).Count () == layerCount ? true : false));
+                int layerCount = _context.Layers.Count();
+            //    lstGridDetails.ForEach (x => x.isBilled = (x.lyrDtls.Where (x => x.IsBillGenerated == true).Count () == layerCount ? true : false));
 if (!string.IsNullOrEmpty(layerId)) {
     string[] layerIdArr = layerId.Split(',');
-              lstGridDetails.ForEach(x=> x.lyrDtls.Where(z=> layerIdArr.Contains(z.layerId.ToString()) && x.status == commonEnum.LayerStatus.Completed.ToString() ).ToList());
+
+    List<LayerDetails> lyrDtls = _context.LayerDetails.Where(x=> layerIdArr.Contains(x.LayerId.ToString())).ToList();
+   // int[] gridIdArr = lyrDtls.Select(x=>x.GridId).ToArray();
+        // lstGridDetails  = lstGridDetails.Where(x=> Array.IndexOf(gridIdArr,x.gridId) >=0).ToList();
+          //  lstGridDetails.ForEach(x=> x.lyrDtls.Where(z=> gridIdArr.Contains(z.layerId.ToString()) == true  ).ToList());
 
 foreach(GridDetails grid in lstGridDetails) {
 if (grid.lyrDtls.Where(x=>x.status == commonEnum.LayerStatus.Completed.ToString() && layerIdArr.Contains(x.layerId.ToString())).Count()>0) {
+grid.status= "LayerCompleted";
 lstNewGridDetails.Add(grid);
+}
+else {
+    lstNewGridDetails.Add(grid);
 }
 }
 } else {
-
     lstNewGridDetails = lstGridDetails;
-
 }
     lstNewGridDetails.ForEach(x=>x.lyrDtls= null);
 

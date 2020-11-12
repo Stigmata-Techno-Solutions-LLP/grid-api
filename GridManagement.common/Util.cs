@@ -22,35 +22,35 @@ Log.Logger.Error( ex.Message  + "\n"  +(ex.InnerException == null ? "": ex.Inner
         }
 
         
-                public static bool SendMail(string subject, string bodyHtml, string toEmail, string fromMail, string pwd)
+                public static bool SendMail(string subject, string bodyHtml, string toEmail, string fromMail, string pwd, string server, int port, string userName )
         {
             bool isEMailSent = false;
             try
             {
-                // var email = new MimeMessage();
-                // email.Sender = MailboxAddress.Parse(_appSettings.FromEmail);
-                // email.To.Add(MailboxAddress.Parse(toEmail));
-                // email.Subject = subject;
-                // email.Body = new TextPart(TextFormat.Html) { Text = bodyHtml };
+                var email = new MimeMessage();
+                email.Sender = MailboxAddress.Parse(fromMail);
+                email.To.Add(MailboxAddress.Parse(toEmail));
+                email.Subject = subject;
+                email.Body = new TextPart(TextFormat.Html) { Text = bodyHtml };
 
-                // // send email
-                // using var smtp = new SmtpClient();
-                // smtp.Connect(_appSettings.Server, Convert.ToInt32(_appSettings.Port), SecureSocketOptions.StartTls);
-                // smtp.Authenticate(_appSettings.Username, _appSettings.Password);
-                // smtp.Send(email);
-                // smtp.Disconnect(true);
+                // send email
+                using var smtp = new SmtpClient();
+                smtp.Connect(server, Convert.ToInt32(port), SecureSocketOptions.StartTls);
+                smtp.Authenticate(userName, pwd);
+                smtp.Send(email);
+                smtp.Disconnect(true);
 
-            var client = new SendGridClient(pwd);
-            var msg = new SendGridMessage()
-            {
-                From = new EmailAddress(fromMail, "L&T GridManagement"),
-                Subject = subject,
-                HtmlContent = bodyHtml
-            };
+            // var client = new SendGridClient(pwd);
+            // var msg = new SendGridMessage()
+            // {
+            //     From = new EmailAddress(fromMail, "L&T GridManagement"),
+            //     Subject = subject,
+            //     HtmlContent = bodyHtml
+            // };
 
             
-            msg.AddTo(new EmailAddress(toEmail));        
-            Task response = client.SendEmailAsync(msg);
+            // msg.AddTo(new EmailAddress(toEmail));        
+            // Task response = client.SendEmailAsync(msg);
                 isEMailSent = true;
                 return isEMailSent;
             }

@@ -48,7 +48,7 @@ namespace GridManagement.service
             userDetails.password = Cryptography.Encrypt(_appSettings.SecretKeyPwd,pwd);
             responseMessage = _userRepository.AddUser(userDetails);
            
-            bool isEmailSent = Util.SendMail("Password for L & T project", "<h1>Password for the user : " + userDetails.firstName + " " + userDetails.lastName + " </h1><br /><br /><p>Your Username is " + userDetails.userName + "</p><br /><p>Your Password is " + pwd + "</p>", userDetails.email, _appSettings.FromEmail, _appSettings.Password);
+            bool isEmailSent = Util.SendMail("Password for L & T project", "<h1>Password for the user : " + userDetails.firstName + " " + userDetails.lastName + " </h1><br /><br /><p>Your Username is " + userDetails.userName + "</p><br /><p>Your Password is " + pwd + "</p>", userDetails.email, _appSettings.FromEmail, _appSettings.Password,_appSettings.Server,_appSettings.Port,_appSettings.Username);
             if (isEmailSent)
                 return responseMessage;
             else

@@ -137,7 +137,7 @@ try {
                      userId = responseMessageForgotPassword.UserId
                                      };
                 _userRepository.ChangePassword(chngePwd);
-                Util.SendMail("Reset Password for L & T project", "<h1>New Password for the user : " + responseMessageForgotPassword.FirstName + " " + responseMessageForgotPassword.LastName + " </h1><br /><p>Your Password is " + newPass + "</p>", responseMessageForgotPassword.EmailId, _appSettings.FromEmail, _appSettings.Password);
+                Util.SendMail("Reset Password for L & T project", "<h1>New Password for the user : " + responseMessageForgotPassword.FirstName + " " + responseMessageForgotPassword.LastName + " </h1><br /><p>Your Password is " + newPass + "</p>", responseMessageForgotPassword.EmailId, _appSettings.FromEmail, _appSettings.Password,_appSettings.Server,_appSettings.Port,_appSettings.Username);
                 }
                 responseMessage = new ResponseMessage()
                 {
