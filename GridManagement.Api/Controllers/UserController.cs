@@ -15,7 +15,7 @@ using GridManagement.common;
 namespace GridManagement.Api.Controllers
 {
     [EnableCors("AllowAll")]
-    [Authorize]
+ [Authorize]
     [ApiController]
     [Route("api/[controller]")]
 

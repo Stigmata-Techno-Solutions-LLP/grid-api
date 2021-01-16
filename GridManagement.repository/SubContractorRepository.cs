@@ -81,9 +81,10 @@ namespace GridManagement.repository
                     AuditLogs audit = new AuditLogs() {
                      Action ="SubContractor",
                      Message="Delete Subcontractor Succussfully",
-                     CreatedAt = DateTime.Now,                 
+                     CreatedAt = DateTime.Now,  
+                     CreatedBy = null               
             };
-            AudtitLog(audit);
+              AudtitLog(audit);
                 return true;
             } catch (Exception ex) {
                 throw ex;

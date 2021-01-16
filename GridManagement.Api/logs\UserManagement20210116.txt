@@ -1,0 +1,18 @@
+2021-01-16 15:05:56.773 +08:00 [ERR]    at GridManagement.repository.UserRepository.AddUser(UserDetails userDetails) in /Users/admin/Documents/personal/grid-api/GridManagement.repository/UserRepository.cs:line 75
+   at GridManagement.service.UserService.AddUser(UserDetails userDetails) in /Users/admin/Documents/personal/grid-api/GridManagement.service/UserService.cs:line 49
+   at GridManagement.Api.Controllers.UserController.AddUser(UserDetails userDetails) in /Users/admin/Documents/personal/grid-api/GridManagement.Api/Controllers/UserController.cs:line 68
+2021-01-16 15:10:12.576 +08:00 [ERR]    at GridManagement.repository.UserRepository.AddUser(UserDetails userDetails) in /Users/admin/Documents/personal/grid-api/GridManagement.repository/UserRepository.cs:line 75
+   at GridManagement.service.UserService.AddUser(UserDetails userDetails) in /Users/admin/Documents/personal/grid-api/GridManagement.service/UserService.cs:line 49
+   at GridManagement.Api.Controllers.UserController.AddUser(UserDetails userDetails) in /Users/admin/Documents/personal/grid-api/GridManagement.Api/Controllers/UserController.cs:line 68
+2021-01-16 15:13:47.025 +08:00 [ERR]    at GridManagement.repository.UserRepository.AddUser(UserDetails userDetails) in /Users/admin/Documents/personal/grid-api/GridManagement.repository/UserRepository.cs:line 75
+   at GridManagement.service.UserService.AddUser(UserDetails userDetails) in /Users/admin/Documents/personal/grid-api/GridManagement.service/UserService.cs:line 49
+   at GridManagement.Api.Controllers.UserController.AddUser(UserDetails userDetails) in /Users/admin/Documents/personal/grid-api/GridManagement.Api/Controllers/UserController.cs:line 68
+2021-01-16 15:24:25.797 +08:00 [ERR]    at GridManagement.repository.UserRepository.AddUser(UserDetails userDetails) in /Users/admin/Documents/personal/grid-api/GridManagement.repository/UserRepository.cs:line 75
+   at GridManagement.service.UserService.AddUser(UserDetails userDetails) in /Users/admin/Documents/personal/grid-api/GridManagement.service/UserService.cs:line 49
+   at GridManagement.Api.Controllers.UserController.AddUser(UserDetails userDetails) in /Users/admin/Documents/personal/grid-api/GridManagement.Api/Controllers/UserController.cs:line 68
+2021-01-16 15:26:34.521 +08:00 [ERR]    at GridManagement.repository.UserRepository.AddUser(UserDetails userDetails) in /Users/admin/Documents/personal/grid-api/GridManagement.repository/UserRepository.cs:line 75
+   at GridManagement.service.UserService.AddUser(UserDetails userDetails) in /Users/admin/Documents/personal/grid-api/GridManagement.service/UserService.cs:line 49
+   at GridManagement.Api.Controllers.UserController.AddUser(UserDetails userDetails) in /Users/admin/Documents/personal/grid-api/GridManagement.Api/Controllers/UserController.cs:line 68
+2021-01-16 15:27:56.593 +08:00 [ERR]    at GridManagement.repository.UserRepository.AddUser(UserDetails userDetails) in /Users/admin/Documents/personal/grid-api/GridManagement.repository/UserRepository.cs:line 75
+   at GridManagement.service.UserService.AddUser(UserDetails userDetails) in /Users/admin/Documents/personal/grid-api/GridManagement.service/UserService.cs:line 49
+   at GridManagement.Api.Controllers.UserController.AddUser(UserDetails userDetails) in /Users/admin/Documents/personal/grid-api/GridManagement.Api/Controllers/UserController.cs:line 68

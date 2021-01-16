@@ -402,6 +402,7 @@ else {
                      Action ="Layer",
                      Message =string.Format( "Layer updated Succussfully.LayerId {0}",layerId),
                      CreatedAt = DateTime.Now,
+                     CreatedBy = layerReq.user_id
             };
             AudtitLog(audit);
                 return layerId;
@@ -423,6 +424,7 @@ else {
                      Action ="Layer",
                      Message =string.Format( "Layer Approved Succussfully.LayerId {0}",layerDtlsId),
                      CreatedAt = DateTime.Now,
+                     CreatedBy = null
             };
             AudtitLog(audit);
             } catch (Exception ex) {
@@ -435,7 +437,6 @@ else {
 
                 using (var transaction = _context.Database.BeginTransaction ()) {
                     try {
-
                         ClientBilling clBill = new ClientBilling ();
                         clBill.ClientId = _context.Clients.FirstOrDefault ().Id;
                         clBill.CreatedBy = billingReq.userId;
@@ -462,6 +463,7 @@ else {
                      Action ="Layer",
                      Message =string.Format( "Client Billing Created Succussfully.IPC No {0}",billingReq.IPCNo),
                      CreatedAt = DateTime.Now,
+                     CreatedBy = billingReq.userId
             };
             AudtitLog(audit);
                         transaction.Commit ();

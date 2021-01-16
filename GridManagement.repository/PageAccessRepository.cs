@@ -107,7 +107,8 @@ namespace GridManagement.repository
                     AuditLogs audit = new AuditLogs() {
                      Action ="Role Management",
                      Message="PageAccess Updated Succussfully",
-                     CreatedAt = DateTime.Now,                 
+                     CreatedAt = DateTime.Now,     
+                     CreatedBy = null            
             };
             AudtitLog(audit);
                 }

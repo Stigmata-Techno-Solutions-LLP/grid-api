@@ -61,7 +61,7 @@ namespace GridManagement.repository
                      Action ="User",
                      Message =string.Format( "New User added Succussfully {0}",userDetails.userName),
                      CreatedAt = DateTime.Now,
-                     CreatedBy = userDetails.userId
+                     CreatedBy = userDetails.createdBy
             };
             AudtitLog(audit);
                     return responseMessage = new ResponseMessage()
@@ -109,7 +109,7 @@ namespace GridManagement.repository
                      Action ="User",
                      Message =string.Format( "Update User  Succussfully {0}",userDetails.userName),
                      CreatedAt = DateTime.Now,
-                     CreatedBy = userDetails.userId
+                     CreatedBy = userDetails.createdBy
             };
             AudtitLog(audit);
                         return responseMessage = new ResponseMessage()
@@ -142,10 +142,11 @@ namespace GridManagement.repository
                 _context.SaveChanges();
                 AuditLogs audit = new AuditLogs() {
                      Action ="User",
-                     Message =string.Format( "Update User  Succussfully {0}",userData.Username),
+                     Message =string.Format( "Deleted User  Succussfully {0}",userData.Username),
                      CreatedAt = DateTime.Now,
+                     CreatedBy = null                    
             };
-            AudtitLog(audit);
+          //  AudtitLog(audit);
                 return responseMessage = new ResponseMessage()
                 {
                     Message = "User deleted successfully."                  
